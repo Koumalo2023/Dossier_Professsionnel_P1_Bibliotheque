@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+// Import des abstractions globales
+@use 'variables';
+@use 'mixins';
+
+// Base
+@use 'base' as *;
+
+// Utilities
+@use 'utilities' as *;
+
+// Styles globaux supplémentaires si nécessaire

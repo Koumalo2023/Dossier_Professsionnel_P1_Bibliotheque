@@ -1,0 +1,73 @@
+@use 'variables';
+
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px; // Base pour les calculs rem
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+  }
+  
+  p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  ul, ol {
+    padding-left: 2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+  
+  button {
+    cursor: pointer;
+    border-radius: variables.$border-radius;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  input, textarea, select {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+    padding: 0.375rem 0.75rem;
+    border: variables.$border-width solid variables.$gray-medium;
+    border-radius: variables.$border-radius;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+    &:focus {
+      border-color: variables.$primary;
+      outline: 0;
+      box-shadow: 0 0 0 0.25rem rgba(variables.$primary, 0.25);
+    }
+  }
+  
+  
