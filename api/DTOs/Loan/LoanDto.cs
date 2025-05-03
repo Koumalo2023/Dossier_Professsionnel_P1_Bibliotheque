@@ -1,4 +1,4 @@
-﻿namespace api.DTOs
+﻿namespace api.DTOs.Loan
 {
     /// <summary>
     /// DTO pour transférer les données d'un emprunt.

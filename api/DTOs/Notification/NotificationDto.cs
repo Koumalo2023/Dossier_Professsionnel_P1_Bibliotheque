@@ -1,4 +1,4 @@
-﻿namespace api.DTOs
+﻿namespace api.DTOs.Notification
 {
     /// <summary>
     /// DTO pour transférer les données d'une notification.
