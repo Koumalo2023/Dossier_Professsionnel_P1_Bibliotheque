@@ -46,7 +46,7 @@ namespace api.Controllers
 
         // GET /api/auth/users
         [HttpGet("users")]
-        //[Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
+        [Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
         public async Task<IActionResult> GetAllUsers()
         {
             var result = await _authService.GetAllUsersAsync();
@@ -55,7 +55,7 @@ namespace api.Controllers
 
         // DELETE /api/auth/users/{userId}
         [HttpDelete("users/{userId}")]
-        //[Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
+        [Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
         public async Task<IActionResult> DeleteUser(string userId)
         {
             var result = await _authService.DeleteUserAsync(userId);
@@ -64,7 +64,7 @@ namespace api.Controllers
 
         // PUT /api/auth/users/{userId}
         [HttpPut("users/{userId}")]
-        //[Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
+        [Authorize(Roles = "Admin")] // Autoriser uniquement les administrateurs
         public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto updateUserDto)
         {
             var result = await _authService.UpdateUserAsync(userId, updateUserDto);
