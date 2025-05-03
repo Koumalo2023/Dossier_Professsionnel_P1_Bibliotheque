@@ -69,5 +69,10 @@ namespace api.Models
         /// Date de mise à jour de l'enregistrement.
         /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Emprunts associés à ce livre.
+        /// </summary>
+        public ICollection<Loan> Loans { get; set; }
     }
 }
