@@ -28,5 +28,15 @@ namespace api.Models
         /// Date de mise à jour de l'utilisateur.
         /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        /// <summary>
+        /// Emprunts effectués par l'utilisateur.
+        /// </summary>
+        public ICollection<Loan> Loans { get; set; }
+
+        /// <summary>
+        /// Notifications reçues par l'utilisateur.
+        /// </summary>
+        public ICollection<Notification> Notifications { get; set; }
     }
 }

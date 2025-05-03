@@ -22,6 +22,11 @@ namespace api.Models
         public Guid UserId { get; set; }
 
         /// <summary>
+        /// Utilisateur qui a reçu la notification.
+        /// </summary>
+        public ApplicationUser User { get; set; }
+
+        /// <summary>
         /// Message de la notification.
         /// </summary>
         [Required(ErrorMessage = "Le message est obligatoire.")]
