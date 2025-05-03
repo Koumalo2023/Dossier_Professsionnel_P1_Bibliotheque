@@ -74,7 +74,7 @@ namespace api.Services
                 };
             }
 
-            await _userManager.AddToRoleAsync(user, "USER");
+            await _userManager.AddToRoleAsync(user, "User");
             return new ServiceResponse<string>
             {
                 Success = true,
@@ -104,7 +104,7 @@ namespace api.Services
                 };
             }
 
-            var token = GenerateJwtToken(user);
+            var token = await GenerateJwtToken(user);
             return new ServiceResponse<string>
             {
                 Success = true,
@@ -277,19 +277,23 @@ namespace api.Services
                 ? new ServiceResponse<string> { Success = true, Message = "User updated successfully" }
                 : new ServiceResponse<string> { Success = false, Errors = result.Errors.Select(e => e.Description).ToList() };
         }
-        private string GenerateJwtToken(ApplicationUser user)
+        
+
+        // Nouvelle version corrigée
+        private async Task<string> GenerateJwtToken(ApplicationUser user) // Ajout de async et Task<string>
         {
             var claims = new List<Claim>
     {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
     };
 
-            // Ajouter le rôle uniquement si l'utilisateur en a un
-            var roles = _userManager.GetRolesAsync(user).Result;
-            if (roles.Any())
+            var roles = await _userManager.GetRolesAsync(user); 
+            foreach (var role in roles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, roles.First()));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
