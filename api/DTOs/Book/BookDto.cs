@@ -1,4 +1,4 @@
-﻿namespace api.DTOs
+﻿namespace api.DTOs.Book
 {
     /// <summary>
     /// DTO pour transférer les données d'un livre.
