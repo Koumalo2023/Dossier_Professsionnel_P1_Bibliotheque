@@ -28,8 +28,14 @@ namespace api
         public DbSet<Notification> Notifications { get; set; }
 
         /// <summary>
+        /// Table le refreshToken.
+        /// </summary>
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        /// <summary>
         /// Configuration des relations entre les entités.
         /// </summary>
+        /// 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

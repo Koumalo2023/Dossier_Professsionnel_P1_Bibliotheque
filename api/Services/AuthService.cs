@@ -2,11 +2,13 @@
 using api.DTOs.ApplicationUser;
 using api.Helpers;
 using api.Models;
+using api.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace api.Services
@@ -17,7 +19,7 @@ namespace api.Services
         Task<ServiceResponse<string>> RegisterAsync(RegisterDto registerDto);
 
         // Connecte un utilisateur existant et retourne un token JWT
-        Task<ServiceResponse<string>> LoginAsync(LoginDto loginDto);
+        Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string ipAddress);
 
         // Récupère les informations de l'utilisateur connecté
         Task<UserDto> GetCurrentUserAsync();
@@ -39,6 +41,8 @@ namespace api.Services
 
         // Met à jour un utilisateur
         Task<ServiceResponse<string>> UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
+
+        Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request, string ipAddress);
     }
     public class AuthService : IAuthService
     {
@@ -47,11 +51,14 @@ namespace api.Services
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        private readonly IUserRepository _userRepository;
+
+       public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -82,35 +89,94 @@ namespace api.Services
             };
         }
 
-        public async Task<ServiceResponse<string>> LoginAsync(LoginDto loginDto)
+        // AuthService.cs
+        public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string ipAddress)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
-            if (user == null)
-            {
-                return new ServiceResponse<string>
-                {
-                    Success = false,
-                    Errors = new List<string> { "Invalid email or password" }
-                };
-            }
+            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+                throw new UnauthorizedAccessException("Email ou mot de passe incorrect");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
-            if (!result.Succeeded)
-            {
-                return new ServiceResponse<string>
-                {
-                    Success = false,
-                    Errors = new List<string> { "Invalid email or password" }
-                };
-            }
+            var jwtToken = await GenerateJwtToken(user);
+            var refreshToken = GenerateRefreshToken(ipAddress);
 
-            var token = await GenerateJwtToken(user);
-            return new ServiceResponse<string>
+            await _userRepository.CreateAsync(refreshToken);
+
+            return new LoginResponseDto
             {
-                Success = true,
-                Message = "Login successful",
-                Data = token
+                Token = jwtToken,
+                RefreshToken = refreshToken.Token,
+                TokenExpires = DateTime.UtcNow.AddMinutes(15),
+                RefreshTokenExpires = refreshToken.Expires
             };
+        }
+
+        public async Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request, string ipAddress)
+        {
+            var principal = GetPrincipalFromExpiredToken(request.Token);
+            var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new SecurityTokenException("Utilisateur introuvable");
+
+            var refreshToken = await _userRepository.GetByTokenAsync(request.RefreshToken);
+            if (refreshToken == null || refreshToken.UserId != userId || !refreshToken.IsActive)
+                throw new SecurityTokenException("Refresh token invalide");
+
+            // Remplacer l'ancien refresh token
+            var newRefreshToken = GenerateRefreshToken(ipAddress);
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+
+            await _userRepository.CreateAsync(newRefreshToken);
+            await _userRepository.UpdateAsync(refreshToken);
+            await _userRepository.RevokeDescendantsAsync(refreshToken, ipAddress, "Remplacé par nouveau token");
+
+            // Générer nouveau JWT
+            var newJwtToken = await GenerateJwtToken(user);
+
+            return new LoginResponseDto
+            {
+                Token = newJwtToken,
+                RefreshToken = newRefreshToken.Token,
+                TokenExpires = DateTime.UtcNow.AddMinutes(15),
+                RefreshTokenExpires = newRefreshToken.Expires
+            };
+        }
+
+        private RefreshToken GenerateRefreshToken(string ipAddress)
+        {
+            return new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(7),
+                Created = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
+        }
+
+        
+
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateAudience = false,
+                ValidateIssuer = false,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                ValidateLifetime = false
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Token invalide");
+
+            return principal;
         }
 
         public async Task<UserDto> GetCurrentUserAsync()
@@ -126,7 +192,7 @@ namespace api.Services
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()
+                Roles = (await _userManager.GetRolesAsync(user)).ToList()
             };
         }
 
@@ -208,7 +274,7 @@ namespace api.Services
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Role = _userManager.GetRolesAsync(user).Result.FirstOrDefault()
+                Roles = _userManager.GetRolesAsync(user).Result.ToList()
             }).ToList();
 
             return new ServiceResponse<List<UserDto>>
