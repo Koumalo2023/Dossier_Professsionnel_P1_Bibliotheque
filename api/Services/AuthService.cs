@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace api.Services
@@ -19,7 +18,7 @@ namespace api.Services
         Task<ServiceResponse<string>> RegisterAsync(RegisterDto registerDto);
 
         // Connecte un utilisateur existant et retourne un token JWT
-        Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string ipAddress);
+        Task<LoginResponseDto> LoginAsync(LoginDto loginDto);
 
         // Récupère les informations de l'utilisateur connecté
         Task<UserDto> GetCurrentUserAsync();
@@ -42,7 +41,6 @@ namespace api.Services
         // Met à jour un utilisateur
         Task<ServiceResponse<string>> UpdateUserAsync(string userId, UpdateUserDto updateUserDto);
 
-        Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request, string ipAddress);
     }
     public class AuthService : IAuthService
     {
@@ -90,94 +88,28 @@ namespace api.Services
         }
 
         // AuthService.cs
-        public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto, string ipAddress)
+        public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
                 throw new UnauthorizedAccessException("Email ou mot de passe incorrect");
 
             var jwtToken = await GenerateJwtToken(user);
-            var refreshToken = GenerateRefreshToken(ipAddress);
-
-            await _userRepository.CreateAsync(refreshToken);
 
             return new LoginResponseDto
             {
                 Token = jwtToken,
-                RefreshToken = refreshToken.Token,
                 TokenExpires = DateTime.UtcNow.AddMinutes(15),
-                RefreshTokenExpires = refreshToken.Expires
+                User = new UserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Roles = (await _userManager.GetRolesAsync(user)).ToList()
+                }
             };
         }
 
-        public async Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto request, string ipAddress)
-        {
-            var principal = GetPrincipalFromExpiredToken(request.Token);
-            var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-                throw new SecurityTokenException("Utilisateur introuvable");
-
-            var refreshToken = await _userRepository.GetByTokenAsync(request.RefreshToken);
-            if (refreshToken == null || refreshToken.UserId != userId || !refreshToken.IsActive)
-                throw new SecurityTokenException("Refresh token invalide");
-
-            // Remplacer l'ancien refresh token
-            var newRefreshToken = GenerateRefreshToken(ipAddress);
-            refreshToken.Revoked = DateTime.UtcNow;
-            refreshToken.RevokedByIp = ipAddress;
-            refreshToken.ReplacedByToken = newRefreshToken.Token;
-
-            await _userRepository.CreateAsync(newRefreshToken);
-            await _userRepository.UpdateAsync(refreshToken);
-            await _userRepository.RevokeDescendantsAsync(refreshToken, ipAddress, "Remplacé par nouveau token");
-
-            // Générer nouveau JWT
-            var newJwtToken = await GenerateJwtToken(user);
-
-            return new LoginResponseDto
-            {
-                Token = newJwtToken,
-                RefreshToken = newRefreshToken.Token,
-                TokenExpires = DateTime.UtcNow.AddMinutes(15),
-                RefreshTokenExpires = newRefreshToken.Expires
-            };
-        }
-
-        private RefreshToken GenerateRefreshToken(string ipAddress)
-        {
-            return new RefreshToken
-            {
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(7),
-                Created = DateTime.UtcNow,
-                CreatedByIp = ipAddress
-            };
-        }
-
-        
-
-        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
-        {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateAudience = false,
-                ValidateIssuer = false,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
-                ValidateLifetime = false
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-
-            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
-                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Token invalide");
-
-            return principal;
-        }
 
         public async Task<UserDto> GetCurrentUserAsync()
         {
