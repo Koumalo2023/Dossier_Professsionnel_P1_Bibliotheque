@@ -27,10 +27,6 @@ namespace api
         /// </summary>
         public DbSet<Notification> Notifications { get; set; }
 
-        /// <summary>
-        /// Table le refreshToken.
-        /// </summary>
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         /// <summary>
         /// Configuration des relations entre les entités.
