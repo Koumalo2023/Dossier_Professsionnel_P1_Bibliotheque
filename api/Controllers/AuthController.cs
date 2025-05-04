@@ -32,7 +32,7 @@ namespace api.Controllers
                 {
                     success = true,
                     message = result.Message,
-                    user = result.User // Ajout des données utilisateur créé
+                    user = result.User 
                 })
                 : BadRequest(new
                 {
@@ -42,20 +42,21 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(
-            [FromBody] LoginDto loginDto,
-            [FromHeader(Name = "X-Forwarded-For")] string ipAddress)
+        public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
-            ipAddress ??= HttpContext.Connection.RemoteIpAddress?.ToString();
-
             try
             {
-                var authResult = await _authService.LoginAsync(loginDto, ipAddress);
+                var authResult = await _authService.LoginAsync(loginDto);
 
-                var response = new
+                // Vérification null supplémentaire
+                if (authResult?.User == null)
+                {
+                    return BadRequest(new { error = "user_data_missing", message = "Données utilisateur manquantes" });
+                }
+
+                return Ok(new
                 {
                     token = authResult.Token,
-                    refreshToken = authResult.RefreshToken,
                     tokenExpires = authResult.TokenExpires.ToString("o"),
                     user = new
                     {
@@ -64,30 +65,17 @@ namespace api.Controllers
                         email = authResult.User.Email,
                         role = authResult.User.Roles
                     }
-                };
-
-                return Ok(response);
+                });
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new
-                {
-                    error = "authentication_failed",
-                    message = "Email ou mot de passe incorrect",
-                    details = ex.Message
-                });
+                return Unauthorized(new { error = "auth_failed", message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    error = "server_error",
-                    message = "Erreur lors de l'authentification",
-                    details = _env.IsDevelopment() ? ex.Message : null
-                });
+                return StatusCode(500, new { error = "server_error", message = ex.Message });
             }
         }
-
 
         // GET /api/auth/me
         [HttpGet("me")]
@@ -166,33 +154,73 @@ namespace api.Controllers
                 });
         }
 
-        // AuthController.cs
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(
-    [FromBody] RefreshTokenRequestDto request,
-    [FromHeader(Name = "X-Forwarded-For")] string ipAddress)
-        {
-            ipAddress ??= HttpContext.Connection.RemoteIpAddress?.ToString();
 
+        [HttpPost("users/{userId}/roles")]
+        [Authorize(Roles = "Admin,Manager")] 
+        public async Task<IActionResult> AddRoleAsync(string userId, [FromBody] AddRoleDto addRoleDto)
+        {
             try
             {
-                var response = await _authService.RefreshTokenAsync(request, ipAddress);
-                return Ok(new
+                var result = await _authService.AddRoleAsync(userId, addRoleDto.Role);
+
+                if (result.Success)
                 {
-                    token = response.Token,
-                    refreshToken = response.RefreshToken,
-                    tokenExpires = response.TokenExpires.ToString("o")
+                    return Ok(new
+                    {
+                        success = true,
+                        message = result.Message
+                    });
+                }
+
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = result.Errors
                 });
             }
-            catch (SecurityTokenException ex)
+            catch (Exception ex)
             {
-                return Unauthorized(new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    error = "invalid_token",
+                    success = false,
+                    error = "server_error",
                     message = ex.Message
                 });
             }
         }
 
+        [HttpDelete("users/{userId}/roles/{role}")]
+        [Authorize(Roles = "Admin, Manager")]
+        public async Task<IActionResult> RemoveRoleAsync(string userId, string role)
+        {
+            try
+            {
+                var result = await _authService.RemoveRoleAsync(userId, role);
+
+                if (result.Success)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = result.Message
+                    });
+                }
+
+                return BadRequest(new
+                {
+                    success = false,
+                    errors = result.Errors
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    error = "server_error",
+                    message = ex.Message
+                });
+            }
+        }
     }
 }

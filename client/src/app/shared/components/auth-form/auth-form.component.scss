@@ -1,0 +1,123 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+
+.auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: $secondary;
+    border-radius: $border-radius;
+    // box-shadow: $box-shadow;
+  
+    .form-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: $primary;
+    }
+  
+    .alert-danger {
+      color: $danger;
+      background-color: lighten($danger, 40%);
+      border-color: lighten($danger, 30%);
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 1rem;
+      border: 1px solid transparent;
+      border-radius: $border-radius;
+    }
+  
+    .form-group {
+      margin-bottom: 1rem;
+  
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: $dark;
+      }
+  
+      .form-control {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: $dark;
+        background-color: $light;
+        background-clip: padding-box;
+        // border: 1px solid $gray-light;
+        border-radius: $border-radius;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  
+        &:focus {
+          color: $dark;
+          background-color: $light;
+          border-color: lighten($primary, 25%);
+          outline: 0;
+          box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
+        }
+  
+        &.is-invalid {
+          border-color: $danger;
+  
+          &:focus {
+            box-shadow: 0 0 0 0.2rem rgba($danger, 0.25);
+          }
+        }
+      }
+  
+      .invalid-feedback {
+        display: none;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 80%;
+        color: $danger;
+      }
+  
+      .form-control.is-invalid ~ .invalid-feedback {
+        display: block;
+      }
+    }
+  
+    .form-check {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+  
+      .form-check-input {
+        margin-right: 0.5rem;
+      }
+  
+      .form-check-label {
+        margin-bottom: 0; // Override default label margin
+        color: $dark;
+      }
+    }
+  
+    .btn-primary {
+      @include button-variant($primary, $secondary);
+      width: 100%; // Make button full width
+      margin-top: 1rem;
+  
+      .spinner-border {
+        margin-right: 0.5rem;
+      }
+    }
+  
+    .form-links {
+      margin-top: 1.5rem;
+      text-align: center;
+  
+      a {
+        color: $primary;
+        text-decoration: none;
+        margin: 0 0.5rem;
+  
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }

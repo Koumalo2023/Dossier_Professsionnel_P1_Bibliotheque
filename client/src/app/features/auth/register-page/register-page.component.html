@@ -1,1 +1,25 @@
-<p>register-page works!</p>
+<div class="register-page">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="register-card">
+            <h1 class="register-card__title">Créer un compte</h1>
+            <p class="register-card__subtitle">Rejoignez notre communauté de lecteurs</p>
+            
+            <!-- register.component.html -->
+            <app-auth-form
+            formType="register"
+            [loading]="loading"
+            [errorMessage]="errorMessage"
+            (formSubmit)="onRegister($event)"
+          ></app-auth-form>
+            
+            <div class="register-card__footer">
+              <p>Déjà un compte ? <a routerLink="/login">Connectez-vous</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

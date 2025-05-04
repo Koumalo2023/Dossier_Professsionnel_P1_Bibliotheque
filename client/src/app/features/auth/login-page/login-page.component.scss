@@ -1,0 +1,63 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.login-page {
+    padding: 3rem 0;
+    min-height: calc(100vh - 150px); // Ajuster en fonction de la hauteur du header/footer
+    display: flex;
+    align-items: center;
+    background-color: $light; // Ou une autre couleur de fond
+  }
+  
+  .login-card {
+    background-color: $secondary;
+    padding: 2.5rem;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 0.5rem 1.5rem rgba($dark, 0.1);
+  
+    &__title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: $dark;
+    }
+  
+    &__subtitle {
+      text-align: center;
+      color: $gray-medium;
+      margin-bottom: 2rem;
+    }
+  
+    // Le composant app-auth-form a déjà ses propres styles
+    // On peut ajouter des ajustements si nécessaire ici
+    app-auth-form {
+      // Exemple: margin-bottom: 1.5rem;
+    }
+  
+    &__footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: $gray-medium;
+  
+      a {
+        color: $primary;
+        font-weight: 500;
+        text-decoration: none;
+  
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  @include media-breakpoint-down(sm) {
+    .login-page {
+      padding: 1.5rem 0;
+    }
+    .login-card {
+      padding: 1.5rem;
+    }
+  }
