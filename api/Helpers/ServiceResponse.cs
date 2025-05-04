@@ -1,4 +1,6 @@
-﻿namespace api.Helpers
+﻿using api.DTOs.ApplicationUser;
+
+namespace api.Helpers
 {
     /// <summary>
     /// Classe générique pour standardiser les réponses des services.
@@ -25,6 +27,12 @@
         /// Liste des erreurs en cas d'échec de l'opération.
         /// </summary>
         public List<string> Errors { get; set; } = new List<string>();
+
+        // Nouvelle propriété pour les données utilisateur
+        public UserDto User { get; set; }
+
+        // Pour les mises à jour
+        public UserDto UpdatedUser { get; set; }
 
         /// <summary>
         /// Constructeur par défaut.

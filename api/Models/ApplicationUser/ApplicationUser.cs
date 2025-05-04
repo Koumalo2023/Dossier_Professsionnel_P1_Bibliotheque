@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace api.Models
 {
@@ -17,7 +18,7 @@ namespace api.Models
         /// <summary>
         /// Rôle de l'utilisateur (USER ou ADMIN).
         /// </summary>
-        public string Role { get; set; } = "USER";
+        public string Roles { get; set; } = "User";
 
         /// <summary>
         /// Date de création de l'utilisateur.
@@ -28,6 +29,13 @@ namespace api.Models
         /// Date de mise à jour de l'utilisateur.
         /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+        // Méthode helper pour les rôles
+        public List<string> GetRolesList() =>
+            Roles.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+
+        public void SetRolesList(IEnumerable<string> roles) =>
+            Roles = string.Join(",", roles.Distinct());
 
         /// <summary>
         /// Emprunts effectués par l'utilisateur.
