@@ -1,1 +1,20 @@
-<p>login-page works!</p>
+<div class="login-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="login-card">
+                    <h1 class="login-card__title">Connexion</h1>
+                    <p class="login-card__subtitle">Accédez à votre compte pour gérer vos emprunts</p>
+
+                    <!-- login.component.html -->
+                    <app-auth-form formType="login" [loading]="loading" [errorMessage]="errorMessage"
+                        (formSubmit)="onLogin($event)"></app-auth-form>
+
+                    <div class="login-card__footer">
+                        <p>Pas encore de compte ? <a routerLink="/register">Inscrivez-vous</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
