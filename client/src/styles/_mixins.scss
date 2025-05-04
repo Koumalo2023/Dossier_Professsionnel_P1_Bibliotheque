@@ -17,6 +17,24 @@
       @warn "Invalid breakpoint name: #{$name}.";
     }
   }
+
+  @mixin media-breakpoint-down($name) {
+    $max-width: map-get((
+      xs: $breakpoint-sm - 0.02px,
+      sm: $breakpoint-md - 0.02px,
+      md: $breakpoint-lg - 0.02px,
+      lg: $breakpoint-xl - 0.02px,
+      xl: $breakpoint-xxl - 0.02px
+    ), $name);
+  
+    @if $max-width {
+      @media (max-width: $max-width) {
+        @content;
+      }
+    } @else {
+      @warn "Invalid breakpoint name: #{$name}.";
+    }
+  }
   
   // Mixin pour centrer des éléments avec Flexbox
   @mixin flex-center($direction: row) {

@@ -19,6 +19,9 @@ import { UserLoansPageComponent } from './features/user/user-loans-page/user-loa
 import { AdminBookFormPageComponent } from './features/admin/admin-book-form-page/admin-book-form-page.component';
 import { AdminLoansPageComponent } from './features/admin/admin-loans-page/admin-loans-page.component';
 import { AdminStatisticsPageComponent } from './features/admin/admin-statistics-page/admin-statistics-page.component';
+import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
+import { roleGuard } from './core/guards/role.guard';
 // Composants utilisateur
 
 // Composants administrateur
@@ -37,34 +40,34 @@ export const routes: Routes = [
     { 
       path: 'profile', 
       component: ProfilePageComponent,
-    //   canActivate: [authGuard]
+       canActivate: [roleGuard(['Manager', 'User', 'Admin'])],
     },
     { 
       path: 'profile/loans', 
       component: UserLoansPageComponent,
-    //   canActivate: [authGuard]
+      canActivate: [roleGuard(['Manager', 'User', 'Admin'])],
     },
     
     // Routes administrateur (protégées par adminGuard)
     { 
       path: 'admin/books/new', 
       component: AdminBookFormPageComponent,
-    //   canActivate: [adminGuard]
+      canActivate: [roleGuard(['Manager', 'Admin'])],
     },
     { 
       path: 'admin/books/:id/edit', 
       component: AdminBookFormPageComponent,
-    //   canActivate: [adminGuard]
+      canActivate: [roleGuard(['Manager', 'Admin'])],
     },
     { 
       path: 'admin/loans', 
       component: AdminLoansPageComponent,
-    //   canActivate: [adminGuard]
+      canActivate: [roleGuard(['Manager', 'Admin'])],
     },
     { 
       path: 'admin/statistics', 
       component: AdminStatisticsPageComponent,
-    //   canActivate: [adminGuard]
+      canActivate: [roleGuard(['Manager', 'Admin'])],
     },
     
     // Route par défaut (redirection vers la page d'accueil)
