@@ -1,5 +1,6 @@
 @use 'variables' as *;
 @use 'mixins' as *;
+@use "sass:color";
 
 .login-page {
     padding: 3rem 0;

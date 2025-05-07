@@ -1,5 +1,4 @@
 @use 'variables' as *;
-@use "sass:color";
 // Mixin pour les media queries (mobile-first)
 @mixin media-breakpoint-up($name) {
     $min-width: map-get((
