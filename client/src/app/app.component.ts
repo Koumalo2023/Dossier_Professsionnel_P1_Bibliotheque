@@ -8,15 +8,14 @@ import { AuthService } from './core/services/auth.service';
 import { CurrentUser, UserInfo } from './core/models/user.model';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule,
-    RouterOutlet, 
-    NavbarComponent, 
-    FooterComponent,
-    SidebarComponent],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'app-root',
+    imports: [CommonModule,
+        RouterOutlet,
+        NavbarComponent,
+        FooterComponent,
+        SidebarComponent],
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss'
 })
 export class AppComponent {
   title = 'library-management-client';

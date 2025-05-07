@@ -4,11 +4,10 @@ import { RouterModule } from '@angular/router';
 import { UserInfo } from '../../../core/models/user.model';
 
 @Component({
-  selector: 'app-navbar',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+    selector: 'app-navbar',
+    imports: [CommonModule, RouterModule],
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
   @Input() userInfo: UserInfo = { isLoggedIn: false };
