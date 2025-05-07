@@ -164,7 +164,7 @@
   
       &:hover,
       &.active {
-        color:  color.adjust($secondary, $lightness: 15%);
+        color:  color.adjust($secondary, 15%);
         &::after {
           width: 100%;
         }

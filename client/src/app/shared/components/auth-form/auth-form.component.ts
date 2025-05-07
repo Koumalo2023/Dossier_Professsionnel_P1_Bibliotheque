@@ -10,11 +10,10 @@ export interface AuthFormData {
   // rememberMe?: boolean; // Optionnel pour la connexion
 }
 @Component({
-  selector: 'app-auth-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './auth-form.component.html',
-  styleUrl: './auth-form.component.scss'
+    selector: 'app-auth-form',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './auth-form.component.html',
+    styleUrl: './auth-form.component.scss'
 })
 export class AuthFormComponent {
   @Input() formType: 'login' | 'register' = 'login';

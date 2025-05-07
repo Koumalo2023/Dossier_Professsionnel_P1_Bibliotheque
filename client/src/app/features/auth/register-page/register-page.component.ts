@@ -7,11 +7,10 @@ import { AuthService } from '../../../core/services/auth.service';
 import { RegisterDto } from '../../../core/models/user.model';
 
 @Component({
-  selector: 'app-register-page',
-  standalone: true,
-  imports: [CommonModule, RouterModule, AuthFormComponent],
-  templateUrl: './register-page.component.html',
-  styleUrl: './register-page.component.scss'
+    selector: 'app-register-page',
+    imports: [CommonModule, RouterModule, AuthFormComponent],
+    templateUrl: './register-page.component.html',
+    styleUrl: './register-page.component.scss'
 })
 export class RegisterPageComponent {
   loading = false;
