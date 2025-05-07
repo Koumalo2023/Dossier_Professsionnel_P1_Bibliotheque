@@ -1,8 +1,9 @@
 @use 'variables' as *;
 @use "sass:color";
+@use "sass:map";
 // Mixin pour les media queries (mobile-first)
 @mixin media-breakpoint-up($name) {
-    $min-width: map-get((
+    $min-width: map.get((
       sm: $breakpoint-sm,
       md: $breakpoint-md,
       lg: $breakpoint-lg,
@@ -20,7 +21,7 @@
   }
 
   @mixin media-breakpoint-down($name) {
-    $max-width: map-get((
+    $max-width: map.get((
       xs: $breakpoint-sm - 0.02px,
       sm: $breakpoint-md - 0.02px,
       md: $breakpoint-lg - 0.02px,

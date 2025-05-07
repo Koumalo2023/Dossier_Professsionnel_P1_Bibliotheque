@@ -98,7 +98,7 @@
     }
   
     .btn-primary {
-      @include button-variant($primary, $lightness: $secondary);
+      @include button-variant($primary, $secondary);
       width: 100%; // Make button full width
       margin-top: 1rem;
   
