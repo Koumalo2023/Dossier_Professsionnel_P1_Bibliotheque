@@ -1,0 +1,333 @@
+// =============================================================================
+// Mixins SCSS - Bibliothèque
+// =============================================================================
+
+@use 'sass:map';
+@use 'variables' as vars;
+
+// =============================================================================
+// Mixins Responsive
+// =============================================================================
+
+/// Mixin pour les media queries mobile-first
+/// @param {String} $breakpoint - Nom du breakpoint
+@mixin respond-to($breakpoint) {
+  @if map-has-key(vars.$breakpoints, $breakpoint) {
+    @media (min-width: map-get(vars.$breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` n'existe pas dans `$breakpoints`.";
+  }
+}
+
+/// Mixin pour cibler uniquement les appareils mobiles
+@mixin mobile-only {
+  @media (max-width: #{map-get(vars.$breakpoints, 'md') - 1px}) {
+    @content;
+  }
+}
+
+/// Mixin pour cibler les tablettes et plus
+@mixin tablet-up {
+  @include respond-to('md') {
+    @content;
+  }
+}
+
+/// Mixin pour cibler les desktop et plus
+@mixin desktop-up {
+  @include respond-to('lg') {
+    @content;
+  }
+}
+
+// =============================================================================
+// Mixins de Typographie
+// =============================================================================
+
+/// Mixin pour appliquer une taille de police
+/// @param {String} $size - Taille de police (xs, sm, base, lg, xl, 2xl, etc.)
+@mixin text-size($size) {
+  $sizes: map.get(vars.$font-sizes, $size);
+  
+  @if $sizes {
+    font-size: $sizes;
+  } @else {
+    @warn "Taille de police `#{$size}` n'existe pas dans `$font-sizes`.";
+  }
+}
+
+/// Mixin pour appliquer un poids de police
+/// @param {String} $weight - Poids de police (light, normal, medium, semibold, bold)
+@mixin text-weight($weight) {
+  $weights: map.get(vars.$font-weights, $weight);
+  
+  @if $weights {
+    font-weight: $weights;
+  } @else {
+    @warn "Poids de police `#{$weight}` n'existe pas dans `$font-weights`.";
+  }
+}
+
+/// Mixin pour appliquer une hauteur de ligne
+/// @param {String} $height - Hauteur de ligne (tight, normal, relaxed)
+@mixin text-height($height) {
+  $heights: map.get(vars.$line-heights, $height);
+  
+  @if $heights {
+    line-height: $heights;
+  } @else {
+    @warn "Hauteur de ligne `#{$height}` n'existe pas dans `$line-heights`.";
+  }
+}
+
+// =============================================================================
+// Mixins d'Espacement
+// =============================================================================
+
+/// Mixin pour appliquer un margin
+/// @param {String} $size - Taille du margin (0, 1, 2, 3, 4, 5, 6, 7, 8)
+@mixin margin($size) {
+  $spacing: map.get(vars.$spacing, $size);
+  
+  @if $spacing {
+    margin: $spacing;
+  } @else {
+    @warn "Taille d'espacement `#{$size}` n'existe pas dans `$spacing`.";
+  }
+}
+
+/// Mixin pour appliquer un padding
+/// @param {String} $size - Taille du padding (0, 1, 2, 3, 4, 5, 6, 7, 8)
+@mixin padding($size) {
+  $spacing: map.get(vars.$spacing, $size);
+  
+  @if $spacing {
+    padding: $spacing;
+  } @else {
+    @warn "Taille d'espacement `#{$size}` n'existe pas dans `$spacing`.";
+  }
+}
+
+/// Mixin pour appliquer un margin vertical
+/// @param {String} $size - Taille du margin
+@mixin margin-y($size) {
+  $spacing: map.get(vars.$spacing, $size);
+  
+  @if $spacing {
+    margin-top: $spacing;
+    margin-bottom: $spacing;
+  } @else {
+    @warn "Taille d'espacement `#{$size}` n'existe pas dans `$spacing`.";
+  }
+}
+
+/// Mixin pour appliquer un margin horizontal
+/// @param {String} $size - Taille du margin
+@mixin margin-x($size) {
+  $spacing: map.get(vars.$spacing, $size);
+  
+  @if $spacing {
+    margin-left: $spacing;
+    margin-right: $spacing;
+  } @else {
+    @warn "Taille d'espacement `#{$size}` n'existe pas dans `$spacing`.";
+  }
+}
+
+// =============================================================================
+// Mixins de Couleurs
+// =============================================================================
+
+/// Mixin pour appliquer une couleur de texte
+/// @param {String} $color - Couleur (primary, secondary, success, warning, error)
+/// @param {Number} $shade - Nuance (50, 100, 200, ..., 900)
+@mixin text-color($color, $shade: 500) {
+  $color-map: map.get(vars.$color-#{$color}, $shade);
+  
+  @if $color-map {
+    color: $color-map;
+  } @else {
+    @warn "Couleur `#{$color}-#{$shade}` n'existe pas.";
+  }
+}
+
+/// Mixin pour appliquer une couleur de fond
+/// @param {String} $color - Couleur (primary, secondary, success, warning, error)
+/// @param {Number} $shade - Nuance (50, 100, 200, ..., 900)
+@mixin bg-color($color, $shade: 500) {
+  $color-map: map.get(vars.$color-#{$color}, $shade);
+  
+  @if $color-map {
+    background-color: $color-map;
+  } @else {
+    @warn "Couleur `#{$color}-#{$shade}` n'existe pas.";
+  }
+}
+
+// =============================================================================
+// Mixins de Bordures et Ombres
+// =============================================================================
+
+/// Mixin pour appliquer un border-radius
+/// @param {String} $radius - Taille du radius (none, sm, base, md, lg, xl, 2xl, full)
+@mixin rounded($radius) {
+  $radius-value: map.get(vars.$border-radius, $radius);
+  
+  @if $radius-value {
+    border-radius: $radius-value;
+  } @else {
+    @warn "Border-radius `#{$radius}` n'existe pas dans `$border-radius`.";
+  }
+}
+
+/// Mixin pour appliquer une ombre
+/// @param {String} $shadow - Type d'ombre (none, sm, base, md, lg, xl)
+@mixin shadow($shadow) {
+  $shadow-value: map.get(vars.$box-shadow, $shadow);
+  
+  @if $shadow-value {
+    box-shadow: $shadow-value;
+  } @else {
+    @warn "Ombre `#{$shadow}` n'existe pas dans `$box-shadow`.";
+  }
+}
+
+// =============================================================================
+// Mixins de Layout
+// =============================================================================
+
+/// Mixin pour créer un conteneur responsive
+@mixin container {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  
+  @include respond-to('sm') {
+    max-width: 540px;
+  }
+  
+  @include respond-to('md') {
+    max-width: 720px;
+  }
+  
+  @include respond-to('lg') {
+    max-width: 960px;
+  }
+  
+  @include respond-to('xl') {
+    max-width: 1140px;
+  }
+  
+  @include respond-to('xxl') {
+    max-width: 1320px;
+  }
+}
+
+/// Mixin pour créer une grille responsive
+/// @param {Number} $columns - Nombre de colonnes
+/// @param {String} $gap - Espacement entre les colonnes
+@mixin grid($columns, $gap: '3') {
+  display: grid;
+  grid-template-columns: repeat(#{$columns}, 1fr);
+  gap: map.get(vars.$spacing, $gap);
+  
+  @include mobile-only {
+    grid-template-columns: 1fr;
+  }
+}
+
+// =============================================================================
+// Mixins d'Accessibilité
+// =============================================================================
+
+/// Mixin pour cacher visuellement mais garder accessible aux lecteurs d'écran
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/// Mixin pour focus visible (accessibilité)
+@mixin focus-visible {
+  outline: 2px solid map.get(vars.$color-primary, 500);
+  outline-offset: 2px;
+}
+
+// =============================================================================
+// Mixins d'Animation
+// =============================================================================
+
+/// Mixin pour transition simple
+/// @param {String} $property - Propriété à animer
+/// @param {String} $duration - Durée (fast, normal, slow)
+/// @param {String} $timing - Timing function (ease, ease-in, ease-out, ease-in-out)
+@mixin transition($property: all, $duration: 'normal', $timing: 'ease') {
+  transition: #{$property} 
+    map.get(vars.$transition-duration, $duration)
+    map.get(vars.$transition-timing, $timing);
+}
+
+/// Mixin pour animation de fade in
+@mixin fade-in {
+  animation: fadeIn map.get(vars.$transition-duration, 'normal') map.get(vars.$transition-timing, 'ease-out');
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// =============================================================================
+// Mixins d'État
+// =============================================================================
+
+/// Mixin pour état hover avec support pour les appareils sans hover
+@mixin hover {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @content;
+    }
+  }
+}
+
+/// Mixin pour état focus
+@mixin focus {
+  &:focus {
+    @content;
+  }
+  
+  &:focus-visible {
+    @include focus-visible;
+  }
+}
+
+/// Mixin pour état actif
+@mixin active {
+  &:active {
+    @content;
+  }
+}
+
+/// Mixin pour état disabled
+@mixin disabled {
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    @content;
+  }
+}

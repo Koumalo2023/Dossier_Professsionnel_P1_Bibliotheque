@@ -1,0 +1,356 @@
+// =============================================================================
+// Light Theme - Bibliothèque
+// Thème clair par défaut pour l'application
+// =============================================================================
+
+@use '../abstract' as abstracts;
+
+// =============================================================================
+// Variables du thème clair
+// =============================================================================
+
+:root, [data-theme="light"] {
+  // Couleurs de base
+  --color-background: #{abstracts.$color-background};
+  --color-surface: #{abstracts.$color-surface};
+  --color-primary: #{abstracts.color('primary', 500)};
+  --color-primary-dark: #{abstracts.color('primary', 700)};
+  --color-primary-light: #{abstracts.color('primary', 100)};
+  --color-secondary: #{abstracts.color('secondary', 500)};
+  --color-success: #{abstracts.color('success', 500)};
+  --color-warning: #{abstracts.color('warning', 500)};
+  --color-error: #{abstracts.color('error', 500)};
+  
+  // Couleurs de texte
+  --color-text-primary: #{abstracts.$color-text-primary};
+  --color-text-secondary: #{abstracts.$color-text-secondary};
+  --color-text-muted: #{abstracts.$color-text-muted};
+  --color-text-on-primary: #ffffff;
+  --color-text-on-secondary: #{abstracts.$color-text-primary};
+  
+  // Couleurs de bordure
+  --color-border: #{abstracts.$color-border};
+  --color-border-light: #{abstracts.color('secondary', 100)};
+  --color-border-dark: #{abstracts.color('secondary', 300)};
+  
+  // Couleurs d'état
+  --color-hover: #{abstracts.color('secondary', 50)};
+  --color-active: #{abstracts.color('primary', 50)};
+  --color-focus: #{abstracts.color('primary', 200)};
+  --color-disabled: #{abstracts.color('secondary', 200)};
+  
+  // Couleurs d'élévation
+  --color-elevation-1: #{abstracts.$color-background};
+  --color-elevation-2: #{abstracts.color('secondary', 50)};
+  --color-elevation-3: #{abstracts.color('secondary', 100)};
+  
+  // Ombres
+  --shadow-sm: #{abstracts.shadow('sm')};
+  --shadow-base: #{abstracts.shadow('base')};
+  --shadow-md: #{abstracts.shadow('md')};
+  --shadow-lg: #{abstracts.shadow('lg')};
+  --shadow-xl: #{abstracts.shadow('xl')};
+  
+  // Overlay
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-backdrop: rgba(0, 0, 0, 0.1);
+}
+
+// =============================================================================
+// Styles spécifiques au thème clair
+// =============================================================================
+
+[data-theme="light"] {
+  // Backgrounds
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  
+  // Cards
+  .card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-base);
+    
+    &-elevated {
+      background-color: var(--color-elevation-1);
+      box-shadow: var(--shadow-md);
+    }
+  }
+  
+  // Buttons
+  .btn {
+    &-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-primary-dark);
+      }
+    }
+    
+    &-secondary {
+      background-color: var(--color-secondary);
+      color: var(--color-text-on-secondary);
+      border-color: var(--color-border);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-hover);
+      }
+    }
+    
+    &-outline {
+      background-color: transparent;
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-primary);
+        color: var(--color-text-on-primary);
+      }
+    }
+  }
+  
+  // Forms
+  .form-control {
+    background-color: var(--color-background);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+    
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-focus);
+    }
+    
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+  
+  // Navigation
+  .nav-link {
+    color: var(--color-text-secondary);
+    
+    &:hover,
+    &:focus {
+      color: var(--color-text-primary);
+      background-color: var(--color-hover);
+    }
+    
+    &.active {
+      color: var(--color-primary);
+      background-color: var(--color-active);
+    }
+  }
+  
+  // Tables
+  .table {
+    background-color: var(--color-background);
+    
+    th {
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+    }
+    
+    td {
+      border-bottom-color: var(--color-border-light);
+    }
+    
+    tr:hover {
+      background-color: var(--color-hover);
+    }
+  }
+  
+  // Alerts
+  .alert {
+    &-success {
+      background-color: #{abstracts.color('success', 50)};
+      border-color: #{abstracts.color('success', 200)};
+      color: #{abstracts.color('success', 800)};
+    }
+    
+    &-warning {
+      background-color: #{abstracts.color('warning', 50)};
+      border-color: #{abstracts.color('warning', 200)};
+      color: #{abstracts.color('warning', 800)};
+    }
+    
+    &-error {
+      background-color: #{abstracts.color('error', 50)};
+      border-color: #{abstracts.color('error', 200)};
+      color: #{abstracts.color('error', 800)};
+    }
+    
+    &-info {
+      background-color: #{abstracts.color('primary', 50)};
+      border-color: #{abstracts.color('primary', 200)};
+      color: #{abstracts.color('primary', 800)};
+    }
+  }
+  
+  // Modals & Dialogs
+  .modal,
+  .dialog {
+    background-color: var(--color-background);
+    box-shadow: var(--shadow-xl);
+    
+    &-backdrop {
+      background-color: var(--color-backdrop);
+    }
+  }
+  
+  // Tooltips
+  .tooltip {
+    background-color: var(--color-text-primary);
+    color: var(--color-background);
+    
+    &::before {
+      border-top-color: var(--color-text-primary);
+    }
+  }
+  
+  // Progress bars
+  .progress {
+    background-color: var(--color-border-light);
+    
+    &-bar {
+      background-color: var(--color-primary);
+    }
+  }
+  
+  // Badges
+  .badge {
+    &-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+    
+    &-secondary {
+      background-color: var(--color-secondary);
+      color: var(--color-text-on-secondary);
+    }
+    
+    &-success {
+      background-color: var(--color-success);
+      color: white;
+    }
+    
+    &-warning {
+      background-color: var(--color-warning);
+      color: black;
+    }
+    
+    &-error {
+      background-color: var(--color-error);
+      color: white;
+    }
+  }
+  
+  // Avatars
+  .avatar {
+    background-color: var(--color-border-light);
+    color: var(--color-text-muted);
+  }
+  
+  // Dividers
+  .divider {
+    background-color: var(--color-border);
+  }
+  
+  // Skeleton
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-border-light) 25%,
+      var(--color-border) 50%,
+      var(--color-border-light) 75%
+    );
+  }
+}
+
+// =============================================================================
+// Override Material Design pour le thème clair
+// =============================================================================
+
+[data-theme="light"] {
+  // Override des composants Material
+  .mat-mdc-card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  
+  .mat-mdc-button {
+    &.mat-primary {
+      color: var(--color-primary);
+    }
+  }
+  
+  .mat-mdc-raised-button {
+    &.mat-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+  }
+  
+  .mat-mdc-form-field {
+    .mdc-text-field {
+      background-color: var(--color-background);
+    }
+    
+    .mdc-floating-label {
+      color: var(--color-text-muted);
+    }
+  }
+  
+  .mat-mdc-table {
+    background-color: var(--color-background);
+    
+    .mat-mdc-header-row {
+      background-color: var(--color-surface);
+    }
+    
+    .mat-mdc-row:hover {
+      background-color: var(--color-hover);
+    }
+  }
+}
+
+// =============================================================================
+// Utilitaires spécifiques au thème clair
+// =============================================================================
+
+.theme-light {
+  // Classes utilitaires pour forcer le thème clair
+  @extend [data-theme="light"];
+}
+
+// =============================================================================
+// Print styles pour le thème clair
+// =============================================================================
+
+@media print {
+  [data-theme="light"] {
+    // Assurer la lisibilité à l'impression
+    --color-background: white;
+    --color-text-primary: black;
+    --color-text-secondary: #333;
+    --color-border: #ccc;
+    
+    // Supprimer les ombres pour l'impression
+    --shadow-sm: none;
+    --shadow-base: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    
+    .card {
+      border: 1px solid var(--color-border);
+      box-shadow: none;
+    }
+    
+    .btn {
+      border: 1px solid var(--color-border);
+      background: none !important;
+      color: var(--color-text-primary) !important;
+    }
+  }
+}

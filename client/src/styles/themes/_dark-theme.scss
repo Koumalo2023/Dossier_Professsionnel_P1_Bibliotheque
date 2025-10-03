@@ -1,0 +1,358 @@
+// =============================================================================
+// Dark Theme - Bibliothèque
+// Thème sombre pour l'application
+// =============================================================================
+
+@use '../abstract' as abstracts;
+
+// =============================================================================
+// Variables du thème sombre
+// =============================================================================
+
+[data-theme="dark"] {
+  // Couleurs de base
+  --color-background: #{abstracts.color('secondary', 900)};
+  --color-surface: #{abstracts.color('secondary', 800)};
+  --color-primary: #{abstracts.color('primary', 400)};
+  --color-primary-dark: #{abstracts.color('primary', 600)};
+  --color-primary-light: #{abstracts.color('primary', 200)};
+  --color-secondary: #{abstracts.color('secondary', 400)};
+  --color-success: #{abstracts.color('success', 400)};
+  --color-warning: #{abstracts.color('warning', 400)};
+  --color-error: #{abstracts.color('error', 400)};
+  
+  // Couleurs de texte
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #{abstracts.color('secondary', 300)};
+  --color-text-muted: #{abstracts.color('secondary', 400)};
+  --color-text-on-primary: #{abstracts.color('secondary', 900)};
+  --color-text-on-secondary: #ffffff;
+  
+  // Couleurs de bordure
+  --color-border: #{abstracts.color('secondary', 700)};
+  --color-border-light: #{abstracts.color('secondary', 600)};
+  --color-border-dark: #{abstracts.color('secondary', 800)};
+  
+  // Couleurs d'état
+  --color-hover: #{abstracts.color('secondary', 700)};
+  --color-active: #{abstracts.color('primary', 800)};
+  --color-focus: #{abstracts.color('primary', 600)};
+  --color-disabled: #{abstracts.color('secondary', 600)};
+  
+  // Couleurs d'élévation
+  --color-elevation-1: #{abstracts.color('secondary', 800)};
+  --color-elevation-2: #{abstracts.color('secondary', 700)};
+  --color-elevation-3: #{abstracts.color('secondary', 600)};
+  
+  // Ombres
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  
+  // Overlay
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-backdrop: rgba(0, 0, 0, 0.3);
+}
+
+// =============================================================================
+// Styles spécifiques au thème sombre
+// =============================================================================
+
+[data-theme="dark"] {
+  // Backgrounds
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  
+  // Cards
+  .card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    box-shadow: var(--shadow-base);
+    
+    &-elevated {
+      background-color: var(--color-elevation-1);
+      box-shadow: var(--shadow-md);
+    }
+  }
+  
+  // Buttons
+  .btn {
+    &-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-primary-dark);
+      }
+    }
+    
+    &-secondary {
+      background-color: var(--color-secondary);
+      color: var(--color-text-on-secondary);
+      border-color: var(--color-border);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-hover);
+      }
+    }
+    
+    &-outline {
+      background-color: transparent;
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      
+      &:hover:not(:disabled) {
+        background-color: var(--color-primary);
+        color: var(--color-text-on-primary);
+      }
+    }
+  }
+  
+  // Forms
+  .form-control {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+    
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-focus);
+    }
+    
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+  
+  // Navigation
+  .nav-link {
+    color: var(--color-text-secondary);
+    
+    &:hover,
+    &:focus {
+      color: var(--color-text-primary);
+      background-color: var(--color-hover);
+    }
+    
+    &.active {
+      color: var(--color-primary);
+      background-color: var(--color-active);
+    }
+  }
+  
+  // Tables
+  .table {
+    background-color: var(--color-surface);
+    
+    th {
+      background-color: var(--color-elevation-1);
+      color: var(--color-text-primary);
+    }
+    
+    td {
+      border-bottom-color: var(--color-border-light);
+      color: var(--color-text-secondary);
+    }
+    
+    tr:hover {
+      background-color: var(--color-hover);
+    }
+  }
+  
+  // Alerts
+  .alert {
+    &-success {
+      background-color: #{abstracts.color('success', 900)};
+      border-color: #{abstracts.color('success', 700)};
+      color: #{abstracts.color('success', 200)};
+    }
+    
+    &-warning {
+      background-color: #{abstracts.color('warning', 900)};
+      border-color: #{abstracts.color('warning', 700)};
+      color: #{abstracts.color('warning', 200)};
+    }
+    
+    &-error {
+      background-color: #{abstracts.color('error', 900)};
+      border-color: #{abstracts.color('error', 700)};
+      color: #{abstracts.color('error', 200)};
+    }
+    
+    &-info {
+      background-color: #{abstracts.color('primary', 900)};
+      border-color: #{abstracts.color('primary', 700)};
+      color: #{abstracts.color('primary', 200)};
+    }
+  }
+  
+  // Modals & Dialogs
+  .modal,
+  .dialog {
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-xl);
+    
+    &-backdrop {
+      background-color: var(--color-backdrop);
+    }
+  }
+  
+  // Tooltips
+  .tooltip {
+    background-color: var(--color-text-primary);
+    color: var(--color-background);
+    
+    &::before {
+      border-top-color: var(--color-text-primary);
+    }
+  }
+  
+  // Progress bars
+  .progress {
+    background-color: var(--color-border-light);
+    
+    &-bar {
+      background-color: var(--color-primary);
+    }
+  }
+  
+  // Badges
+  .badge {
+    &-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+    
+    &-secondary {
+      background-color: var(--color-secondary);
+      color: var(--color-text-on-secondary);
+    }
+    
+    &-success {
+      background-color: var(--color-success);
+      color: white;
+    }
+    
+    &-warning {
+      background-color: var(--color-warning);
+      color: black;
+    }
+    
+    &-error {
+      background-color: var(--color-error);
+      color: white;
+    }
+  }
+  
+  // Avatars
+  .avatar {
+    background-color: var(--color-border-light);
+    color: var(--color-text-muted);
+  }
+  
+  // Dividers
+  .divider {
+    background-color: var(--color-border);
+  }
+  
+  // Skeleton
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-border-light) 25%,
+      var(--color-border) 50%,
+      var(--color-border-light) 75%
+    );
+  }
+}
+
+// =============================================================================
+// Override Material Design pour le thème sombre
+// =============================================================================
+
+[data-theme="dark"] {
+  // Override des composants Material
+  .mat-mdc-card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+  }
+  
+  .mat-mdc-button {
+    &.mat-primary {
+      color: var(--color-primary);
+    }
+  }
+  
+  .mat-mdc-raised-button {
+    &.mat-primary {
+      background-color: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+  }
+  
+  .mat-mdc-form-field {
+    .mdc-text-field {
+      background-color: var(--color-surface);
+    }
+    
+    .mdc-floating-label {
+      color: var(--color-text-muted);
+    }
+  }
+  
+  .mat-mdc-table {
+    background-color: var(--color-surface);
+    
+    .mat-mdc-header-row {
+      background-color: var(--color-elevation-1);
+    }
+    
+    .mat-mdc-row:hover {
+      background-color: var(--color-hover);
+    }
+  }
+}
+
+// =============================================================================
+// Utilitaires spécifiques au thème sombre
+// =============================================================================
+
+.theme-dark {
+  // Classes utilitaires pour forcer le thème sombre
+  @extend [data-theme="dark"];
+}
+
+// =============================================================================
+// Print styles pour le thème sombre
+// =============================================================================
+
+@media print {
+  [data-theme="dark"] {
+    // Forcer les styles d'impression pour la lisibilité
+    --color-background: white;
+    --color-surface: #f8f9fa;
+    --color-text-primary: black;
+    --color-text-secondary: #333;
+    --color-border: #ccc;
+    
+    // Supprimer les ombres pour l'impression
+    --shadow-sm: none;
+    --shadow-base: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+    
+    .card {
+      border: 1px solid var(--color-border);
+      box-shadow: none;
+    }
+    
+    .btn {
+      border: 1px solid var(--color-border);
+      background: none !important;
+      color: var(--color-text-primary) !important;
+    }
+  }
+}

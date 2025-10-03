@@ -1,0 +1,330 @@
+// =============================================================================
+// Display Utilities - Bibliothèque
+// Classes utilitaires pour les propriétés d'affichage et de visibilité
+// =============================================================================
+
+@use '../abstract' as abstracts;
+
+// =============================================================================
+// Display Properties
+// =============================================================================
+
+.d-none { display: none !important; }
+.d-inline { display: inline !important; }
+.d-inline-block { display: inline-block !important; }
+.d-block { display: block !important; }
+.d-grid { display: grid !important; }
+.d-table { display: table !important; }
+.d-table-row { display: table-row !important; }
+.d-table-cell { display: table-cell !important; }
+.d-flex { display: flex !important; }
+.d-inline-flex { display: inline-flex !important; }
+
+// =============================================================================
+// Visibility
+// =============================================================================
+
+.visible { visibility: visible !important; }
+.invisible { visibility: hidden !important; }
+.collapse { visibility: collapse !important; }
+
+// =============================================================================
+// Overflow
+// =============================================================================
+
+.overflow-visible { overflow: visible !important; }
+.overflow-hidden { overflow: hidden !important; }
+.overflow-clip { overflow: clip !important; }
+.overflow-scroll { overflow: scroll !important; }
+.overflow-auto { overflow: auto !important; }
+
+.overflow-x-visible { overflow-x: visible !important; }
+.overflow-x-hidden { overflow-x: hidden !important; }
+.overflow-x-clip { overflow-x: clip !important; }
+.overflow-x-scroll { overflow-x: scroll !important; }
+.overflow-x-auto { overflow-x: auto !important; }
+
+.overflow-y-visible { overflow-y: visible !important; }
+.overflow-y-hidden { overflow-y: hidden !important; }
+.overflow-y-clip { overflow-y: clip !important; }
+.overflow-y-scroll { overflow-y: scroll !important; }
+.overflow-y-auto { overflow-y: auto !important; }
+
+// =============================================================================
+// Position
+// =============================================================================
+
+.position-static { position: static !important; }
+.position-relative { position: relative !important; }
+.position-absolute { position: absolute !important; }
+.position-fixed { position: fixed !important; }
+.position-sticky { position: sticky !important; }
+
+// =============================================================================
+// Z-index
+// =============================================================================
+
+.z-0 { z-index: 0 !important; }
+.z-10 { z-index: 10 !important; }
+.z-20 { z-index: 20 !important; }
+.z-30 { z-index: 30 !important; }
+.z-40 { z-index: 40 !important; }
+.z-50 { z-index: 50 !important; }
+.z-auto { z-index: auto !important; }
+
+// Z-index sémantiques
+.z-dropdown { z-index: abstracts.z-index('dropdown') !important; }
+.z-sticky { z-index: abstracts.z-index('sticky') !important; }
+.z-fixed { z-index: abstracts.z-index('fixed') !important; }
+.z-modal-backdrop { z-index: abstracts.z-index('modal-backdrop') !important; }
+.z-modal { z-index: abstracts.z-index('modal') !important; }
+.z-popover { z-index: abstracts.z-index('popover') !important; }
+.z-tooltip { z-index: abstracts.z-index('tooltip') !important; }
+
+// =============================================================================
+// Top / Right / Bottom / Left
+// =============================================================================
+
+.inset-0 { top: 0 !important; right: 0 !important; bottom: 0 !important; left: 0 !important; }
+.inset-auto { top: auto !important; right: auto !important; bottom: auto !important; left: auto !important; }
+.inset-x-0 { left: 0 !important; right: 0 !important; }
+.inset-x-auto { left: auto !important; right: auto !important; }
+.inset-y-0 { top: 0 !important; bottom: 0 !important; }
+.inset-y-auto { top: auto !important; bottom: auto !important; }
+
+.top-0 { top: 0 !important; }
+.top-auto { top: auto !important; }
+.top-50 { top: 50% !important; }
+.top-100 { top: 100% !important; }
+
+.right-0 { right: 0 !important; }
+.right-auto { right: auto !important; }
+.right-50 { right: 50% !important; }
+.right-100 { right: 100% !important; }
+
+.bottom-0 { bottom: 0 !important; }
+.bottom-auto { bottom: auto !important; }
+.bottom-50 { bottom: 50% !important; }
+.bottom-100 { bottom: 100% !important; }
+
+.left-0 { left: 0 !important; }
+.left-auto { left: auto !important; }
+.left-50 { left: 50% !important; }
+.left-100 { left: 100% !important; }
+
+// =============================================================================
+// Float
+// =============================================================================
+
+.float-start { float: left !important; }
+.float-end { float: right !important; }
+.float-none { float: none !important; }
+
+// =============================================================================
+// Clear
+// =============================================================================
+
+.clear-start { clear: left !important; }
+.clear-end { clear: right !important; }
+.clear-both { clear: both !important; }
+.clear-none { clear: none !important; }
+
+// =============================================================================
+// Object Fit
+// =============================================================================
+
+.object-contain { object-fit: contain !important; }
+.object-cover { object-fit: cover !important; }
+.object-fill { object-fit: fill !important; }
+.object-none { object-fit: none !important; }
+.object-scale-down { object-fit: scale-down !important; }
+
+// =============================================================================
+// Object Position
+// =============================================================================
+
+.object-center { object-position: center !important; }
+.object-top { object-position: top !important; }
+.object-bottom { object-position: bottom !important; }
+.object-left { object-position: left !important; }
+.object-right { object-position: right !important; }
+.object-top-left { object-position: top left !important; }
+.object-top-right { object-position: top right !important; }
+.object-bottom-left { object-position: bottom left !important; }
+.object-bottom-right { object-position: bottom right !important; }
+
+// =============================================================================
+// Responsive Display Utilities
+// =============================================================================
+
+// Generate responsive display classes for each breakpoint
+@each $breakpoint, $value in abstracts.$breakpoints {
+  @if $breakpoint != 'xs' {
+    @include abstracts.respond-to($breakpoint) {
+      .#{$breakpoint}\:d-none { display: none !important; }
+      .#{$breakpoint}\:d-inline { display: inline !important; }
+      .#{$breakpoint}\:d-inline-block { display: inline-block !important; }
+      .#{$breakpoint}\:d-block { display: block !important; }
+      .#{$breakpoint}\:d-grid { display: grid !important; }
+      .#{$breakpoint}\:d-table { display: table !important; }
+      .#{$breakpoint}\:d-flex { display: flex !important; }
+      .#{$breakpoint}\:d-inline-flex { display: inline-flex !important; }
+
+      .#{$breakpoint}\:visible { visibility: visible !important; }
+      .#{$breakpoint}\:invisible { visibility: hidden !important; }
+
+      .#{$breakpoint}\:overflow-visible { overflow: visible !important; }
+      .#{$breakpoint}\:overflow-hidden { overflow: hidden !important; }
+      .#{$breakpoint}\:overflow-auto { overflow: auto !important; }
+
+      .#{$breakpoint}\:position-static { position: static !important; }
+      .#{$breakpoint}\:position-relative { position: relative !important; }
+      .#{$breakpoint}\:position-absolute { position: absolute !important; }
+      .#{$breakpoint}\:position-fixed { position: fixed !important; }
+      .#{$breakpoint}\:position-sticky { position: sticky !important; }
+    }
+  }
+}
+
+// =============================================================================
+// Display Utilities spécifiques
+// =============================================================================
+
+// Screen Reader Only
+.sr-only {
+  @include abstracts.sr-only;
+}
+
+// Not Screen Reader Only
+.not-sr-only {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+// Focus Ring
+.focus-ring {
+  @include abstracts.focus-visible;
+}
+
+// =============================================================================
+// Display pour l'impression
+// =============================================================================
+
+@media print {
+  .print-hidden {
+    display: none !important;
+  }
+  
+  .print-block {
+    display: block !important;
+  }
+  
+  .print-inline {
+    display: inline !important;
+  }
+  
+  .print-inline-block {
+    display: inline-block !important;
+  }
+  
+  .print-flex {
+    display: flex !important;
+  }
+  
+  .print-grid {
+    display: grid !important;
+  }
+}
+
+// =============================================================================
+// Display pour les états de débogage
+// =============================================================================
+
+.debug {
+  &-outline {
+    outline: 2px solid red !important;
+  }
+  
+  &-outline-2 {
+    outline: 2px solid blue !important;
+  }
+  
+  &-outline-3 {
+    outline: 2px solid green !important;
+  }
+}
+
+// =============================================================================
+// Display pour les états de chargement
+// =============================================================================
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid abstracts.color('secondary', 300);
+    border-top: 2px solid abstracts.color('primary', 600);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// =============================================================================
+// Display pour les transitions
+// =============================================================================
+
+.fade {
+  opacity: 0;
+  transition: opacity abstracts.transition-duration('normal') abstracts.transition-timing('ease');
+  
+  &.show {
+    opacity: 1;
+  }
+}
+
+.collapsing {
+  height: 0;
+  overflow: hidden;
+  transition: height abstracts.transition-duration('normal') abstracts.transition-timing('ease');
+}
+
+// =============================================================================
+// Display pour les utilitaires de débogage
+// =============================================================================
+
+// Afficher les bordures pour le débogage
+.debug-border * {
+  border: 1px solid red !important;
+}
+
+// Afficher les dimensions
+.debug-dimensions::before {
+  content: attr(data-dimensions);
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 4px;
+  font-size: 10px;
+  z-index: abstracts.z-index('tooltip');
+}

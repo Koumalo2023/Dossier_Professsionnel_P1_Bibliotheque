@@ -1,0 +1,454 @@
+// =============================================================================
+// Spacing Utilities - Bibliothèque
+// Classes utilitaires pour les espacements (margins et paddings)
+// =============================================================================
+
+@use '../abstract' as abstracts;
+
+// =============================================================================
+// Margin Utilities
+// =============================================================================
+
+// Margin all sides
+@each $key, $value in abstracts.$spacing {
+  .m-#{$key} {
+    margin: $value !important;
+  }
+}
+
+// Margin top
+@each $key, $value in abstracts.$spacing {
+  .mt-#{$key} {
+    margin-top: $value !important;
+  }
+}
+
+// Margin right
+@each $key, $value in abstracts.$spacing {
+  .mr-#{$key} {
+    margin-right: $value !important;
+  }
+}
+
+// Margin bottom
+@each $key, $value in abstracts.$spacing {
+  .mb-#{$key} {
+    margin-bottom: $value !important;
+  }
+}
+
+// Margin left
+@each $key, $value in abstracts.$spacing {
+  .ml-#{$key} {
+    margin-left: $value !important;
+  }
+}
+
+// Margin horizontal (left and right)
+@each $key, $value in abstracts.$spacing {
+  .mx-#{$key} {
+    margin-left: $value !important;
+    margin-right: $value !important;
+  }
+}
+
+// Margin vertical (top and bottom)
+@each $key, $value in abstracts.$spacing {
+  .my-#{$key} {
+    margin-top: $value !important;
+    margin-bottom: $value !important;
+  }
+}
+
+// Auto margins
+.m-auto {
+  margin: auto !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.mr-auto {
+  margin-right: auto !important;
+}
+
+.mb-auto {
+  margin-bottom: auto !important;
+}
+
+.ml-auto {
+  margin-left: auto !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.my-auto {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+// =============================================================================
+// Padding Utilities
+// =============================================================================
+
+// Padding all sides
+@each $key, $value in abstracts.$spacing {
+  .p-#{$key} {
+    padding: $value !important;
+  }
+}
+
+// Padding top
+@each $key, $value in abstracts.$spacing {
+  .pt-#{$key} {
+    padding-top: $value !important;
+  }
+}
+
+// Padding right
+@each $key, $value in abstracts.$spacing {
+  .pr-#{$key} {
+    padding-right: $value !important;
+  }
+}
+
+// Padding bottom
+@each $key, $value in abstracts.$spacing {
+  .pb-#{$key} {
+    padding-bottom: $value !important;
+  }
+}
+
+// Padding left
+@each $key, $value in abstracts.$spacing {
+  .pl-#{$key} {
+    padding-left: $value !important;
+  }
+}
+
+// Padding horizontal (left and right)
+@each $key, $value in abstracts.$spacing {
+  .px-#{$key} {
+    padding-left: $value !important;
+    padding-right: $value !important;
+  }
+}
+
+// Padding vertical (top and bottom)
+@each $key, $value in abstracts.$spacing {
+  .py-#{$key} {
+    padding-top: $value !important;
+    padding-bottom: $value !important;
+  }
+}
+
+// =============================================================================
+// Gap Utilities (for flex and grid)
+// =============================================================================
+
+@each $key, $value in abstracts.$spacing {
+  .gap-#{$key} {
+    gap: $value !important;
+  }
+}
+
+@each $key, $value in abstracts.$spacing {
+  .gap-x-#{$key} {
+    column-gap: $value !important;
+  }
+}
+
+@each $key, $value in abstracts.$spacing {
+  .gap-y-#{$key} {
+    row-gap: $value !important;
+  }
+}
+
+// =============================================================================
+// Responsive Spacing Utilities
+// =============================================================================
+
+// Generate responsive spacing classes for each breakpoint
+@each $breakpoint, $value in abstracts.$breakpoints {
+  @if $breakpoint != 'xs' {
+    @include abstracts.respond-to($breakpoint) {
+      // Margin responsive
+      @each $key, $spacing-value in abstracts.$spacing {
+        .#{$breakpoint}\:m-#{$key} {
+          margin: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:mt-#{$key} {
+          margin-top: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:mr-#{$key} {
+          margin-right: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:mb-#{$key} {
+          margin-bottom: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:ml-#{$key} {
+          margin-left: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:mx-#{$key} {
+          margin-left: $spacing-value !important;
+          margin-right: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:my-#{$key} {
+          margin-top: $spacing-value !important;
+          margin-bottom: $spacing-value !important;
+        }
+      }
+      
+      // Padding responsive
+      @each $key, $spacing-value in abstracts.$spacing {
+        .#{$breakpoint}\:p-#{$key} {
+          padding: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:pt-#{$key} {
+          padding-top: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:pr-#{$key} {
+          padding-right: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:pb-#{$key} {
+          padding-bottom: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:pl-#{$key} {
+          padding-left: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:px-#{$key} {
+          padding-left: $spacing-value !important;
+          padding-right: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:py-#{$key} {
+          padding-top: $spacing-value !important;
+          padding-bottom: $spacing-value !important;
+        }
+      }
+      
+      // Gap responsive
+      @each $key, $spacing-value in abstracts.$spacing {
+        .#{$breakpoint}\:gap-#{$key} {
+          gap: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:gap-x-#{$key} {
+          column-gap: $spacing-value !important;
+        }
+        
+        .#{$breakpoint}\:gap-y-#{$key} {
+          row-gap: $spacing-value !important;
+        }
+      }
+      
+      // Auto margins responsive
+      .#{$breakpoint}\:m-auto {
+        margin: auto !important;
+      }
+      
+      .#{$breakpoint}\:mt-auto {
+        margin-top: auto !important;
+      }
+      
+      .#{$breakpoint}\:mr-auto {
+        margin-right: auto !important;
+      }
+      
+      .#{$breakpoint}\:mb-auto {
+        margin-bottom: auto !important;
+      }
+      
+      .#{$breakpoint}\:ml-auto {
+        margin-left: auto !important;
+      }
+      
+      .#{$breakpoint}\:mx-auto {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      
+      .#{$breakpoint}\:my-auto {
+        margin-top: auto !important;
+        margin-bottom: auto !important;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Negative Margin Utilities
+// =============================================================================
+
+@each $key, $value in abstracts.$spacing {
+  @if $key != 0 {
+    .-m-#{$key} {
+      margin: -$value !important;
+    }
+    
+    .-mt-#{$key} {
+      margin-top: -$value !important;
+    }
+    
+    .-mr-#{$key} {
+      margin-right: -$value !important;
+    }
+    
+    .-mb-#{$key} {
+      margin-bottom: -$value !important;
+    }
+    
+    .-ml-#{$key} {
+      margin-left: -$value !important;
+    }
+    
+    .-mx-#{$key} {
+      margin-left: -$value !important;
+      margin-right: -$value !important;
+    }
+    
+    .-my-#{$key} {
+      margin-top: -$value !important;
+      margin-bottom: -$value !important;
+    }
+  }
+}
+
+// =============================================================================
+// Space Between Utilities (for flex children)
+// =============================================================================
+
+.space-x-0 > * + * {
+  margin-left: 0 !important;
+}
+
+@each $key, $value in abstracts.$spacing {
+  .space-x-#{$key} > * + * {
+    margin-left: $value !important;
+  }
+}
+
+.space-y-0 > * + * {
+  margin-top: 0 !important;
+}
+
+@each $key, $value in abstracts.$spacing {
+  .space-y-#{$key} > * + * {
+    margin-top: $value !important;
+  }
+}
+
+// =============================================================================
+// Responsive Space Between Utilities
+// =============================================================================
+
+@each $breakpoint, $value in abstracts.$breakpoints {
+  @if $breakpoint != 'xs' {
+    @include abstracts.respond-to($breakpoint) {
+      .#{$breakpoint}\:space-x-0 > * + * {
+        margin-left: 0 !important;
+      }
+      
+      @each $key, $spacing-value in abstracts.$spacing {
+        .#{$breakpoint}\:space-x-#{$key} > * + * {
+          margin-left: $spacing-value !important;
+        }
+      }
+      
+      .#{$breakpoint}\:space-y-0 > * + * {
+        margin-top: 0 !important;
+      }
+      
+      @each $key, $spacing-value in abstracts.$spacing {
+        .#{$breakpoint}\:space-y-#{$key} > * + * {
+          margin-top: $spacing-value !important;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// Special Spacing Utilities
+// =============================================================================
+
+// Remove all spacing
+.no-spacing {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+// Full width/height
+.w-full {
+  width: 100% !important;
+}
+
+.h-full {
+  height: 100% !important;
+}
+
+// Viewport width/height
+.w-screen {
+  width: 100vw !important;
+}
+
+.h-screen {
+  height: 100vh !important;
+}
+
+// Min/Max dimensions
+.min-w-0 {
+  min-width: 0 !important;
+}
+
+.min-h-0 {
+  min-height: 0 !important;
+}
+
+.max-w-full {
+  max-width: 100% !important;
+}
+
+.max-h-full {
+  max-height: 100% !important;
+}
+
+// =============================================================================
+// Print Adjustments
+// =============================================================================
+
+@media print {
+  // Remove excessive spacing for print
+  .no-print-spacing {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  // Ensure proper page breaks
+  .print-break-before {
+    page-break-before: always !important;
+  }
+  
+  .print-break-after {
+    page-break-after: always !important;
+  }
+  
+  .print-break-inside-avoid {
+    break-inside: avoid !important;
+  }
+}

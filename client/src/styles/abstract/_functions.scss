@@ -1,0 +1,282 @@
+// =============================================================================
+// Functions SCSS - Bibliothèque
+// =============================================================================
+
+@use 'sass:math';
+@use 'sass:map';
+@use 'variables' as vars;
+
+// =============================================================================
+// Fonctions de Couleurs
+// =============================================================================
+
+/// Fonction pour obtenir une couleur de la palette
+/// @param {String} $color-name - Nom de la couleur (primary, secondary, etc.)
+/// @param {Number} $shade - Nuance (50, 100, 200, ..., 900)
+/// @return {Color} Couleur correspondante
+@function color($color-name, $shade: 500) {
+  $color-map: map.get(vars.$color-#{$color-name}, $shade);
+  
+  @if $color-map {
+    @return $color-map;
+  } @else {
+    @error "Couleur `#{$color-name}-#{$shade}` n'existe pas dans la palette.";
+  }
+}
+
+/// Fonction pour assombrir une couleur
+/// @param {Color} $color - Couleur à assombrir
+/// @param {Number} $amount - Pourcentage d'assombrissement
+/// @return {Color} Couleur assombrie
+@function darken($color, $amount) {
+  @return adjust-color($color, $lightness: -$amount);
+}
+
+/// Fonction pour éclaircir une couleur
+/// @param {Color} $color - Couleur à éclaircir
+/// @param {Number} $amount - Pourcentage d'éclaircissement
+/// @return {Color} Couleur éclaircie
+@function lighten($color, $amount) {
+  @return adjust-color($color, $lightness: $amount);
+}
+
+/// Fonction pour ajuster la transparence
+/// @param {Color} $color - Couleur de base
+/// @param {Number} $alpha - Niveau d'opacité (0-1)
+/// @return {Color} Couleur avec transparence
+@function alpha($color, $alpha) {
+  @return rgba($color, $alpha);
+}
+
+// =============================================================================
+// Fonctions d'Espacement
+// =============================================================================
+
+/// Fonction pour obtenir un espacement
+/// @param {Number} $size - Taille de l'espacement (0-8)
+/// @return {Length} Valeur d'espacement
+@function spacing($size) {
+  $spacing-value: map.get(vars.$spacing, $size);
+  
+  @if $spacing-value {
+    @return $spacing-value;
+  } @else {
+    @error "Taille d'espacement `#{$size}` n'existe pas dans `$spacing`.";
+  }
+}
+
+/// Fonction pour convertir px en rem
+/// @param {Number} $px - Valeur en pixels
+/// @param {Number} $base-font-size - Taille de police de base (16px par défaut)
+/// @return {Length} Valeur en rem
+@function rem($px, $base-font-size: 16px) {
+  @return math.div($px, $base-font-size) * 1rem;
+}
+
+/// Fonction pour convertir px en em
+/// @param {Number} $px - Valeur en pixels
+/// @param {Number} $context - Contexte de taille de police
+/// @return {Length} Valeur en em
+@function em($px, $context: 16px) {
+  @return math.div($px, $context) * 1em;
+}
+
+// =============================================================================
+// Fonctions de Typographie
+// =============================================================================
+
+/// Fonction pour obtenir une taille de police
+/// @param {String} $size - Taille de police (xs, sm, base, lg, xl, etc.)
+/// @return {Length} Taille de police
+@function font-size($size) {
+  $size-value: map.get(vars.$font-sizes, $size);
+  
+  @if $size-value {
+    @return $size-value;
+  } @else {
+    @error "Taille de police `#{$size}` n'existe pas dans `$font-sizes`.";
+  }
+}
+
+/// Fonction pour obtenir un poids de police
+/// @param {String} $weight - Poids de police (light, normal, medium, etc.)
+/// @return {Number} Poids de police
+@function font-weight($weight) {
+  $weight-value: map.get(vars.$font-weights, $weight);
+  
+  @if $weight-value {
+    @return $weight-value;
+  } @else {
+    @error "Poids de police `#{$weight}` n'existe pas dans `$font-weights`.";
+  }
+}
+
+/// Fonction pour obtenir une hauteur de ligne
+/// @param {String} $height - Hauteur de ligne (tight, normal, relaxed)
+/// @return {Number} Hauteur de ligne
+@function line-height($height) {
+  $height-value: map.get(vars.$line-heights, $height);
+  
+  @if $height-value {
+    @return $height-value;
+  } @else {
+    @error "Hauteur de ligne `#{$height}` n'existe pas dans `$line-heights`.";
+  }
+}
+
+// =============================================================================
+// Fonctions de Breakpoints
+// =============================================================================
+
+/// Fonction pour obtenir un breakpoint
+/// @param {String} $breakpoint - Nom du breakpoint (xs, sm, md, lg, xl, xxl)
+/// @return {Length} Valeur du breakpoint
+@function breakpoint($breakpoint) {
+  $breakpoint-value: map.get(vars.$breakpoints, $breakpoint);
+  
+  @if $breakpoint-value {
+    @return $breakpoint-value;
+  } @else {
+    @error "Breakpoint `#{$breakpoint}` n'existe pas dans `$breakpoints`.";
+  }
+}
+
+// =============================================================================
+// Fonctions de Bordures et Ombres
+// =============================================================================
+
+/// Fonction pour obtenir un border-radius
+/// @param {String} $radius - Taille du radius (none, sm, base, md, lg, xl, 2xl, full)
+/// @return {Length} Valeur du border-radius
+@function border-radius($radius) {
+  $radius-value: map.get(vars.$border-radius, $radius);
+  
+  @if $radius-value {
+    @return $radius-value;
+  } @else {
+    @error "Border-radius `#{$radius}` n'existe pas dans `$border-radius`.";
+  }
+}
+
+/// Fonction pour obtenir une ombre
+/// @param {String} $shadow - Type d'ombre (none, sm, base, md, lg, xl)
+/// @return {Shadow} Valeur de l'ombre
+@function shadow($shadow) {
+  $shadow-value: map.get(vars.$box-shadow, $shadow);
+  
+  @if $shadow-value {
+    @return $shadow-value;
+  } @else {
+    @error "Ombre `#{$shadow}` n'existe pas dans `$box-shadow`.";
+  }
+}
+
+// =============================================================================
+// Fonctions de Z-index
+// =============================================================================
+
+/// Fonction pour obtenir un z-index
+/// @param {String} $layer - Couche (dropdown, sticky, fixed, modal-backdrop, modal, popover, tooltip)
+/// @return {Number} Valeur du z-index
+@function z-index($layer) {
+  $z-index-value: map.get(vars.$z-index, $layer);
+  
+  @if $z-index-value {
+    @return $z-index-value;
+  } @else {
+    @error "Z-index `#{$layer}` n'existe pas dans `$z-index`.";
+  }
+}
+
+// =============================================================================
+// Fonctions de Transitions
+// =============================================================================
+
+/// Fonction pour obtenir une durée de transition
+/// @param {String} $duration - Durée (fast, normal, slow)
+/// @return {Time} Durée de transition
+@function transition-duration($duration) {
+  $duration-value: map.get(vars.$transition-duration, $duration);
+  
+  @if $duration-value {
+    @return $duration-value;
+  } @else {
+    @error "Durée de transition `#{$duration}` n'existe pas dans `$transition-duration`.";
+  }
+}
+
+/// Fonction pour obtenir une fonction de timing
+/// @param {String} $timing - Fonction de timing (ease, ease-in, ease-out, ease-in-out)
+/// @return {Function} Fonction de timing
+@function transition-timing($timing) {
+  $timing-value: map.get(vars.$transition-timing, $timing);
+  
+  @if $timing-value {
+    @return $timing-value;
+  } @else {
+    @error "Fonction de timing `#{$timing}` n'existe pas dans `$transition-timing`.";
+  }
+}
+
+// =============================================================================
+// Fonctions Mathématiques Utilitaires
+// =============================================================================
+
+/// Fonction pour calculer un pourcentage
+/// @param {Number} $value - Valeur
+/// @param {Number} $total - Total
+/// @return {Number} Pourcentage
+@function percentage($value, $total) {
+  @return math.percentage(math.div($value, $total));
+}
+
+/// Fonction pour limiter une valeur entre un min et un max
+/// @param {Number} $value - Valeur à limiter
+/// @param {Number} $min - Valeur minimale
+/// @param {Number} $max - Valeur maximale
+/// @return {Number} Valeur limitée
+@function clamp-value($value, $min, $max) {
+  @return math.min(math.max($value, $min), $max);
+}
+
+/// Fonction pour calculer l'inverse d'une valeur
+/// @param {Number} $value - Valeur à inverser
+/// @return {Number} Inverse de la valeur
+@function inverse($value) {
+  @return 1 / $value;
+}
+
+// =============================================================================
+// Fonctions de Contraste
+// =============================================================================
+
+/// Fonction pour calculer la luminosité d'une couleur
+/// @param {Color} $color - Couleur à analyser
+/// @return {Number} Luminosité (0-255)
+@function luminance($color) {
+  $red: red($color) / 255;
+  $green: green($color) / 255;
+  $blue: blue($color) / 255;
+  
+  $red: if($red <= 0.03928, $red / 12.92, math.pow(($red + 0.055) / 1.055, 2.4));
+  $green: if($green <= 0.03928, $green / 12.92, math.pow(($green + 0.055) / 1.055, 2.4));
+  $blue: if($blue <= 0.03928, $blue / 12.92, math.pow(($blue + 0.055) / 1.055, 2.4));
+  
+  @return 0.2126 * $red + 0.7152 * $green + 0.0722 * $blue;
+}
+
+/// Fonction pour déterminer si une couleur est claire ou sombre
+/// @param {Color} $color - Couleur à analyser
+/// @return {Boolean} true si la couleur est claire, false si elle est sombre
+@function is-light($color) {
+  @return luminance($color) > 0.5;
+}
+
+/// Fonction pour obtenir une couleur de texte contrastée
+/// @param {Color} $background - Couleur de fond
+/// @param {Color} $light-color - Couleur pour fond sombre
+/// @param {Color} $dark-color - Couleur pour fond clair
+/// @return {Color} Couleur de texte contrastée
+@function contrast-color($background, $light-color: #ffffff, $dark-color: #000000) {
+  @return if(is-light($background), $dark-color, $light-color);
+}
