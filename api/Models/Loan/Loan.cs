@@ -24,7 +24,7 @@ namespace api.Models
         /// <summary>
         /// Utilisateur associé à l'emprunt.
         /// </summary>
-        public ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; } = null!; // Fully qualified to avoid namespace conflict
 
         /// <summary>
         /// Identifiant du livre emprunté.
@@ -35,7 +35,7 @@ namespace api.Models
         /// <summary>
         /// Livre associé à l'emprunt.
         /// </summary>
-        public Book Book { get; set; }
+        public Book Book { get; set; } = null!;
 
         /// <summary>
         /// Date de l'emprunt.
@@ -56,6 +56,7 @@ namespace api.Models
         /// Statut de l'emprunt (BORROWED, RETURNED, LATE).
         /// </summary>
         [Required(ErrorMessage = "Le statut est obligatoire.")]
-        public string Status { get; set; }
+        public string Status { get; set; } = "BORROWED";
     }
+
 }

@@ -1,5 +1,5 @@
-﻿using api.Models;
-using Microsoft.EntityFrameworkCore;
+﻿
+using api.Data;
 
 namespace api.Repositories
 {

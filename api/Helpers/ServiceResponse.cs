@@ -1,4 +1,4 @@
-﻿using api.DTOs.ApplicationUser;
+﻿using api.Models;
 
 namespace api.Helpers
 {

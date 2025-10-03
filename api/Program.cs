@@ -1,15 +1,15 @@
 using api.MappingProfiles;
-using api.Models;
-using api;
+using api.Models; 
+using api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens; 
 using Serilog;
 using System.Text;
-using api.Services;
-using api.Repositories;
+using api.Configurations;
+using api.Middleware;
+using api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ builder.Host.UseSerilog((context, config) =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>()
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -27,45 +27,30 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IAuthService, AuthService>();
+// Configuration centralisÃ©e de l'injection de dÃ©pendances
+builder.Services.ConfigureDependencies();
 
 builder.Services.AddHttpContextAccessor();
 
-// Configuration de Swagger
-builder.Services.AddSwaggerGen(c =>
+// Configuration Swagger centralisÃ©e
+var swaggerConfig = SwaggerConfig.LoadFromConfiguration(builder.Configuration);
+var swaggerValidation = swaggerConfig.Validate();
+if (!swaggerValidation.IsValid)
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library Management API", Version = "v1" });
+    throw new InvalidOperationException($"Configuration Swagger invalide : {swaggerValidation.ErrorMessage}");
+}
 
-    // Ajouter la prise en charge de l'authentification Bearer
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    // Appliquer l'authentification Bearer globalement
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+builder.Services.AddSingleton(swaggerConfig);
+builder.Services.AddSwaggerGen(options =>
+{
+    swaggerConfig.ConfigureSwaggerGen(options);
 });
 
-// Configurer JWT
-// Configuration JWT seule (supprimez .AddCookie)
+// Configuration JWT centralisÃ©e
+var jwtConfig = JwtConfig.LoadFromConfiguration(builder.Configuration);
+builder.Services.AddSingleton(jwtConfig);
+
+// Configurer l'authentification JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -80,9 +65,25 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidIssuer = jwtConfig.Issuer,
+        ValidAudience = jwtConfig.Audience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
+        ClockSkew = TimeSpan.Zero // Pas de tolÃ©rance pour l'expiration
+    };
+
+    // Gestion des Ã©vÃ©nements JWT
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token validated successfully");
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -96,19 +97,60 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 
 builder.Services.AddAuthorization();
 
-var corsPolicyName = "AngularClient";
+// Configuration CORS professionnelle
+var corsConfig = CorsConfig.LoadFromConfiguration(builder.Configuration);
+var validationResult = corsConfig.Validate();
+if (!validationResult.IsValid)
+{
+    throw new InvalidOperationException($"Configuration CORS invalide : {validationResult.ErrorMessage}");
+}
 
+builder.Services.AddSingleton(corsConfig);
+
+// Configurer les politiques CORS pour dÃ©veloppement et production
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: corsPolicyName,
+    // Politique pour le dÃ©veloppement
+    options.AddPolicy(CorsConfig.DevelopmentPolicy,
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200") // URL de votre app Angular
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
+            policy.WithOrigins(corsConfig.DevelopmentOrigins.ToArray())
+                  .WithMethods(corsConfig.AllowedMethods.ToArray())
+                  .WithHeaders(corsConfig.AllowedHeaders.ToArray())
+                  .WithExposedHeaders(corsConfig.ExposedHeaders.ToArray())
+                  .AllowCredentials()
+                  .SetPreflightMaxAge(TimeSpan.FromSeconds(corsConfig.PreflightCacheDuration));
+        });
+
+    // Politique pour la production
+    options.AddPolicy(CorsConfig.ProductionPolicy,
+        policy =>
+        {
+            policy.WithOrigins(corsConfig.ProductionOrigins.ToArray())
+                  .WithMethods(corsConfig.AllowedMethods.ToArray())
+                  .WithHeaders(corsConfig.AllowedHeaders.ToArray())
+                  .WithExposedHeaders(corsConfig.ExposedHeaders.ToArray())
+                  .AllowCredentials()
+                  .SetPreflightMaxAge(TimeSpan.FromSeconds(corsConfig.PreflightCacheDuration));
         });
 });
+
+// Enregistrer le filtre d'exception global
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiExceptionFilter>();
+});
+
+// Configuration SeedUser centralisÃ©e
+var seedConfig = SeedUserConfig.LoadFromConfiguration(builder.Configuration);
+var seedValidation = seedConfig.Validate();
+if (!seedValidation.IsValid)
+{
+    throw new InvalidOperationException($"Configuration SeedUser invalide : {seedValidation.ErrorMessage}");
+}
+
+builder.Services.AddSingleton(seedConfig);
+builder.Services.AddScoped<SeedUserService>();
 
 var app = builder.Build();
 
@@ -122,64 +164,31 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Initialisation des rôles et de l'admin
+// Initialisation des donnÃ©es de seed
 using (var scope = app.Services.CreateScope())
 {
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-
-    // Liste des rôles à créer
-    var roles = new[] { "Admin", "User", "Manager" };
-
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
-            Console.WriteLine($"Rôle {role} créé avec succès.");
-        }
-    }
-
-    // Création d'un utilisateur admin par défaut (optionnel)
-    var adminEmail = configuration["AdminCredentials:Email"] ?? "admin@example.com";
-    var adminPassword = configuration["AdminCredentials:Password"] ?? "Admin123!";
-
-    if (await userManager.FindByEmailAsync(adminEmail) == null)
-    {
-        var adminUser = new ApplicationUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            Name = "Administrateur",
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(adminUser, adminPassword);
-
-        if (result.Succeeded)
-        {
-            await userManager.AddToRoleAsync(adminUser, "Admin");
-            Console.WriteLine("Utilisateur admin créé avec succès.");
-        }
-        else
-        {
-            Console.WriteLine("Erreur lors de la création de l'admin:");
-            foreach (var error in result.Errors)
-            {
-                Console.WriteLine($"- {error.Description}");
-            }
-        }
-    }
+    var seedService = scope.ServiceProvider.GetRequiredService<SeedUserService>();
+    await seedService.InitializeAsync();
 }
 
-app.UseCors(corsPolicyName);
+// Appliquer la politique CORS appropriÃ©e selon l'environnement
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(CorsConfig.DevelopmentPolicy);
+}
+else
+{
+    app.UseCors(CorsConfig.ProductionPolicy);
+}
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+// Ajouter le middleware de gestion des exceptions
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 

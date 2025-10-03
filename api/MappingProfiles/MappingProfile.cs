@@ -1,9 +1,4 @@
-﻿using api.DTOs;
-using api.DTOs.ApplicationUser;
-using api.DTOs.Book;
-using api.DTOs.Loan;
-using api.DTOs.Notification;
-using api.Models;
+﻿using api.Models;  
 using AutoMapper;
 
 namespace api.MappingProfiles
@@ -17,12 +12,12 @@ namespace api.MappingProfiles
         {
             // Mappings pour ApplicationUser
             CreateMap<ApplicationUser, UserDto>();
-            CreateMap<RegisterDto, ApplicationUser>() 
+            CreateMap<RegisterDto, ApplicationUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
-            CreateMap<UpdateUserDto, ApplicationUser>(); 
+            CreateMap<UpdateUserDto, ApplicationUser>();
 
             // Mappings pour Book
-            CreateMap<Book, BookDto>(); 
+            CreateMap<Book, BookDto>();
             CreateMap<CreateBookDto, Book>();
             CreateMap<UpdateBookDto, Book>();
 
@@ -33,7 +28,7 @@ namespace api.MappingProfiles
 
             // Mappings pour Notification
             CreateMap<Notification, NotificationDto>();
-            CreateMap<CreateNotificationDto, Notification>(); 
+            CreateMap<CreateNotificationDto, Notification>();
         }
     }
 }

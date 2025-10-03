@@ -19,25 +19,26 @@ namespace api.Models
         /// Titre du livre.
         /// </summary>
         [Required(ErrorMessage = "Le titre est obligatoire.")]
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
 
         /// <summary>
         /// Auteur du livre.
         /// </summary>
         [Required(ErrorMessage = "L'auteur est obligatoire.")]
-        public string Author { get; set; }
+        public string Author { get; set; } = null!;
 
         /// <summary>
         /// Catégorie du livre.
         /// </summary>
         [Required(ErrorMessage = "La catégorie est obligatoire.")]
-        public string Category { get; set; }
+        public Guid CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
 
         /// <summary>
         /// ISBN unique du livre.
         /// </summary>
         [Required(ErrorMessage = "L'ISBN est obligatoire.")]
-        public string Isbn { get; set; }
+        public string Isbn { get; set; } = null!;
 
         /// <summary>
         /// Date de publication du livre (optionnelle).
@@ -47,7 +48,7 @@ namespace api.Models
         /// <summary>
         /// URL de l'image de couverture (optionnelle).
         /// </summary>
-        public string CoverUrl { get; set; }
+        public string? CoverUrl { get; set; }
 
         /// <summary>
         /// Nombre de copies disponibles.
@@ -73,6 +74,12 @@ namespace api.Models
         /// <summary>
         /// Emprunts associés à ce livre.
         /// </summary>
-        public ICollection<Loan> Loans { get; set; }
+        public ICollection<Loan> Loans { get; set; } = new HashSet<Loan>();
+
+        /// <summary>
+        /// Réservations associées à ce livre.
+        /// </summary>
+        public ICollection<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
     }
+
 }

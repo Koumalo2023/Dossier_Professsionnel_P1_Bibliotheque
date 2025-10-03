@@ -1,10 +1,7 @@
-﻿using api.DTOs;
+﻿using api.Models;
 using api.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Mvc; 
 
 namespace api.Controllers
 {

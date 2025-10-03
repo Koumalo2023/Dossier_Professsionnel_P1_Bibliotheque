@@ -1,14 +1,8 @@
-﻿using api.DTOs;
-using api.DTOs.ApplicationUser;
+﻿using api.Configurations;
 using api.Helpers;
 using api.Models;
-using api.Repositories;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using Microsoft.EntityFrameworkCore; 
 
 namespace api.Services
 {
@@ -45,18 +39,22 @@ namespace api.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IConfiguration _configuration;
+        private readonly JwtConfig _jwtConfig;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        private readonly IUserRepository _userRepository;
-
-       public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
+        public AuthService(
+            UserManager<ApplicationUser> userManager,
+            RoleManager<ApplicationRole> roleManager,
+            SignInManager<ApplicationUser> signInManager,
+            JwtConfig jwtConfig,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
-            _configuration = configuration;
-            _userRepository = userRepository;
+            _jwtConfig = jwtConfig;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -79,7 +77,19 @@ namespace api.Services
                 };
             }
 
-            await _userManager.AddToRoleAsync(user, "User");
+            // Add user to default 'User' role using UserManager
+            var roleResult = await _userManager.AddToRoleAsync(user, "User");
+            if (!roleResult.Succeeded)
+            {
+                // If role assignment fails, delete the user to maintain consistency
+                await _userManager.DeleteAsync(user);
+                return new ServiceResponse<string>
+                {
+                    Success = false,
+                    Errors = roleResult.Errors.Select(e => e.Description).ToList()
+                };
+            }
+
             return new ServiceResponse<string>
             {
                 Success = true,
@@ -105,7 +115,7 @@ namespace api.Services
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Roles = (await _userManager.GetRolesAsync(user)).ToList()
+                    Roles = await GetUserRolesAsync(user.Id)
                 }
             };
         }
@@ -124,76 +134,85 @@ namespace api.Services
                 Id = user.Id,
                 Name = user.Name,
                 Email = user.Email,
-                Roles = (await _userManager.GetRolesAsync(user)).ToList()
+                Roles = await GetUserRolesAsync(user.Id)
             };
         }
 
-        public async Task<ServiceResponse<string>> AddRoleAsync(string userId, string role)
+        public async Task<ServiceResponse<string>> AddRoleAsync(string userId, string roleName)
         {
-            Guid parsedUserId;
-            if (!Guid.TryParse(userId, out parsedUserId))
-            {
-                return new ServiceResponse<string>
-                {
-                    Success = false,
-                    Errors = new List<string> { "Invalid user ID format" }
-                };
-            }
-
-            var user = await _userManager.FindByIdAsync(parsedUserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { "User not found" } };
+            }
+
+            // Vérifier si le rôle existe
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { $"Role '{roleName}' not found" } };
+            }
+
+            // Vérifier si l'utilisateur a déjà le rôle
+            if (await _userManager.IsInRoleAsync(user, roleName))
+            {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { $"User already has role '{roleName}'" } };
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
                 return new ServiceResponse<string>
                 {
                     Success = false,
-                    Errors = new List<string> { "User not found" }
+                    Errors = result.Errors.Select(e => e.Description).ToList()
                 };
             }
 
-            var result = await _userManager.AddToRoleAsync(user, role);
-            return result.Succeeded
-                ? new ServiceResponse<string> { Success = true, Message = $"Role '{role}' added successfully" }
-                : new ServiceResponse<string> { Success = false, Errors = result.Errors.Select(e => e.Description).ToList() };
+            return new ServiceResponse<string> { Success = true, Message = $"Role '{roleName}' added successfully" };
         }
 
-        public async Task<bool> HasRoleAsync(string userId, string role)
+        public async Task<bool> HasRoleAsync(string userId, string roleName)
         {
-            Guid parsedUserId;
-            if (!Guid.TryParse(userId, out parsedUserId))
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
                 return false;
             }
 
-            var user = await _userManager.FindByIdAsync(parsedUserId.ToString());
-            return user != null && await _userManager.IsInRoleAsync(user, role);
+            return await _userManager.IsInRoleAsync(user, roleName);
         }
 
-        public async Task<ServiceResponse<string>> RemoveRoleAsync(string userId, string role)
+        public async Task<ServiceResponse<string>> RemoveRoleAsync(string userId, string roleName)
         {
-            Guid parsedUserId;
-            if (!Guid.TryParse(userId, out parsedUserId))
-            {
-                return new ServiceResponse<string>
-                {
-                    Success = false,
-                    Errors = new List<string> { "Invalid user ID format" }
-                };
-            }
-
-            var user = await _userManager.FindByIdAsync(parsedUserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { "User not found" } };
+            }
+
+            // Vérifier si le rôle existe
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { $"Role '{roleName}' not found" } };
+            }
+
+            // Vérifier si l'utilisateur a le rôle
+            if (!await _userManager.IsInRoleAsync(user, roleName))
+            {
+                return new ServiceResponse<string> { Success = false, Errors = new List<string> { $"User does not have role '{roleName}'" } };
+            }
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+            if (!result.Succeeded)
+            {
                 return new ServiceResponse<string>
                 {
                     Success = false,
-                    Errors = new List<string> { "User not found" }
+                    Errors = result.Errors.Select(e => e.Description).ToList()
                 };
             }
 
-            var result = await _userManager.RemoveFromRoleAsync(user, role);
-            return result.Succeeded
-                ? new ServiceResponse<string> { Success = true, Message = $"Role '{role}' removed successfully" }
-                : new ServiceResponse<string> { Success = false, Errors = result.Errors.Select(e => e.Description).ToList() };
+            return new ServiceResponse<string> { Success = true, Message = $"Role '{roleName}' removed successfully" };
         }
 
 
@@ -201,19 +220,32 @@ namespace api.Services
         public async Task<ServiceResponse<List<UserDto>>> GetAllUsersAsync()
         {
             var users = await _userManager.Users.ToListAsync();
-            var userDtos = users.Select(user => new UserDto
+            var userDtos = new List<UserDto>();
+            
+            foreach (var user in users)
             {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Roles = _userManager.GetRolesAsync(user).Result.ToList()
-            }).ToList();
+                userDtos.Add(new UserDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Roles = await GetUserRolesAsync(user.Id)
+                });
+            }
 
-            return new ServiceResponse<List<UserDto>>
+            return new ServiceResponse<List<UserDto>> { Success = true, Data = userDtos };
+        }
+        
+        private async Task<List<string>> GetUserRolesAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
             {
-                Success = true,
-                Data = userDtos
-            };
+                return new List<string>();
+            }
+            
+            var roles = await _userManager.GetRolesAsync(user);
+            return roles.ToList();
         }
 
        
@@ -277,34 +309,10 @@ namespace api.Services
         }
         
 
-        // Nouvelle version corrigée
-        private async Task<string> GenerateJwtToken(ApplicationUser user) // Ajout de async et Task<string>
+        private async Task<string> GenerateJwtToken(ApplicationUser user)
         {
-            var claims = new List<Claim>
-    {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-    };
-
-            var roles = await _userManager.GetRolesAsync(user); 
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var roles = await GetUserRolesAsync(user.Id);
+            return JwtHelper.GenerateToken(user, roles, _jwtConfig);
         }
     }
 }

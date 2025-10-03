@@ -24,19 +24,19 @@ namespace api.Models
         /// <summary>
         /// Utilisateur qui a reçu la notification.
         /// </summary>
-        public ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; } = null!; // Fully qualified to avoid namespace conflict
 
         /// <summary>
         /// Message de la notification.
         /// </summary>
         [Required(ErrorMessage = "Le message est obligatoire.")]
-        public string Message { get; set; }
+        public string Message { get; set; } = null!;
 
         /// <summary>
         /// Type de notification (REMINDER, INFO, WARNING).
         /// </summary>
         [Required(ErrorMessage = "Le type est obligatoire.")]
-        public string Type { get; set; }
+        public string Type { get; set; } = "INFO";
 
         /// <summary>
         /// Indique si la notification a été lue.
@@ -48,4 +48,5 @@ namespace api.Models
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
+
 }

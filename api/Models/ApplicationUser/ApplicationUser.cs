@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
+using System.ComponentModel.DataAnnotations; 
 
 namespace api.Models
 {
@@ -13,12 +12,7 @@ namespace api.Models
         /// Nom complet de l'utilisateur.
         /// </summary>
         [Required(ErrorMessage = "Le nom est obligatoire.")]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// Rôle de l'utilisateur (USER ou ADMIN).
-        /// </summary>
-        public string Roles { get; set; } = "User";
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Date de création de l'utilisateur.
@@ -30,21 +24,25 @@ namespace api.Models
         /// </summary>
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        // Méthode helper pour les rôles
-        public List<string> GetRolesList() =>
-            Roles.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-
-        public void SetRolesList(IEnumerable<string> roles) =>
-            Roles = string.Join(",", roles.Distinct());
+        /// <summary>
+        /// Rôles de l'utilisateur.
+        /// </summary>
+        public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } = new List<ApplicationUserRole>();
 
         /// <summary>
         /// Emprunts effectués par l'utilisateur.
         /// </summary>
-        public ICollection<Loan> Loans { get; set; }
+        public ICollection<Loan> Loans { get; set; } = new List<Loan>();
+
+        /// <summary>
+        /// Réservations effectuées par l'utilisateur.
+        /// </summary>
+        public ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
         /// <summary>
         /// Notifications reçues par l'utilisateur.
         /// </summary>
-        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
     }
+
 }
