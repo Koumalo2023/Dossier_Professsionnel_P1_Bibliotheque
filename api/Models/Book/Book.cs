@@ -51,6 +51,21 @@ namespace api.Models
         public string? CoverUrl { get; set; }
 
         /// <summary>
+        /// Description du livre (optionnelle).
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Nombre de pages du livre (optionnel).
+        /// </summary>
+        public int? PageCount { get; set; }
+
+        /// <summary>
+        /// Éditeur du livre (optionnel).
+        /// </summary>
+        public string? Publisher { get; set; }
+
+        /// <summary>
         /// Nombre de copies disponibles.
         /// </summary>
         public int AvailableCopies { get; set; } = 1;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api.Data;
 
@@ -11,9 +12,11 @@ using api.Data;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251003110348_AddBookDescriptionPageCountPublisher")]
+    partial class AddBookDescriptionPageCountPublisher
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -496,220 +499,6 @@ namespace api.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("api.Models.UserCategoryPreference", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("InteractionCount")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LastInteracted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PreferenceScore")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("UserProfileId", "CategoryId")
-                        .IsUnique();
-
-                    b.ToTable("UserCategoryPreferences");
-                });
-
-            modelBuilder.Entity("api.Models.UserProfile", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("AverageReadingTime")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Bio")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("EmailNotifications")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FavoriteAuthor")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("FavoriteGenre")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int>("ItemsPerPage")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("NewBookAlerts")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("PushNotifications")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ReadingLevel")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ReturnReminders")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("ReviewReminders")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Theme")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TotalBooksRead")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TotalPagesRead")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserProfiles");
-                });
-
-            modelBuilder.Entity("api.Models.UserReadingGoal", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CurrentProgress")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("TargetBooks")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserProfileId", "Title")
-                        .IsUnique();
-
-                    b.ToTable("UserReadingGoals");
-                });
-
-            modelBuilder.Entity("api.Models.UserReadingHistory", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BookId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FinishedReading")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsFavorite")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("LoanId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReadingTimeMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Review")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("StartedReading")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserProfileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("LoanId");
-
-                    b.HasIndex("StartedReading");
-
-                    b.HasIndex("UserProfileId", "BookId", "LoanId")
-                        .IsUnique();
-
-                    b.ToTable("UserReadingHistories");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("api.Models.ApplicationRole", null)
@@ -832,74 +621,6 @@ namespace api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("api.Models.UserCategoryPreference", b =>
-                {
-                    b.HasOne("api.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.UserProfile", "UserProfile")
-                        .WithMany("CategoryPreferences")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("UserProfile");
-                });
-
-            modelBuilder.Entity("api.Models.UserProfile", b =>
-                {
-                    b.HasOne("api.Models.ApplicationUser", "User")
-                        .WithOne()
-                        .HasForeignKey("api.Models.UserProfile", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("api.Models.UserReadingGoal", b =>
-                {
-                    b.HasOne("api.Models.UserProfile", "UserProfile")
-                        .WithMany("ReadingGoals")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserProfile");
-                });
-
-            modelBuilder.Entity("api.Models.UserReadingHistory", b =>
-                {
-                    b.HasOne("api.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.Loan", "Loan")
-                        .WithMany()
-                        .HasForeignKey("LoanId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("api.Models.UserProfile", "UserProfile")
-                        .WithMany("ReadingHistory")
-                        .HasForeignKey("UserProfileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Loan");
-
-                    b.Navigation("UserProfile");
-                });
-
             modelBuilder.Entity("api.Models.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -926,15 +647,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.Category", b =>
                 {
                     b.Navigation("Books");
-                });
-
-            modelBuilder.Entity("api.Models.UserProfile", b =>
-                {
-                    b.Navigation("CategoryPreferences");
-
-                    b.Navigation("ReadingGoals");
-
-                    b.Navigation("ReadingHistory");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,6 +29,15 @@ namespace api.Models
         [MaxLength(500, ErrorMessage = "L'URL de la couverture ne peut pas dépasser 500 caractères.")]
         public string CoverUrl { get; set; } = string.Empty;
 
+        [MaxLength(2000, ErrorMessage = "La description ne peut pas dépasser 2000 caractères.")]
+        public string Description { get; set; } = string.Empty;
+
+        [Range(1, 10000, ErrorMessage = "Le nombre de pages doit être compris entre 1 et 10000.")]
+        public int? PageCount { get; set; } = null;
+
+        [MaxLength(200, ErrorMessage = "Le nom de l'éditeur ne peut pas dépasser 200 caractères.")]
+        public string Publisher { get; set; } = string.Empty;
+
         [Range(1, 1000, ErrorMessage = "Le nombre total de copies doit être compris entre 1 et 1000.")]
         public int TotalCopies { get; set; } = 1;
     }

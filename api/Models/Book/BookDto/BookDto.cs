@@ -14,6 +14,9 @@
         public string CoverUrl { get; set; }
         public int AvailableCopies { get; set; }
         public int TotalCopies { get; set; }
+        public string Description { get; set; }
+        public int? PageCount { get; set; }
+        public string Publisher { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
     }

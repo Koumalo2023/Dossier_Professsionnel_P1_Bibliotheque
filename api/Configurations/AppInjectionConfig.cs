@@ -1,6 +1,5 @@
 using api.Repositories;
-using api.Services;
-using Microsoft.Extensions.DependencyInjection;
+using api.Services; 
 
 namespace api.Configurations
 {
@@ -13,7 +12,7 @@ namespace api.Configurations
         /// Configure l'injection de dépendances pour tous les Services et Repository de l'application
         /// </summary>
         /// <param name="services">Collection des services</param>
-        public static void ConfigureDependencies(this IServiceCollection services)
+        public static void ConfigureAppDependencies(this IServiceCollection services)
         {
             // Enregistrement des Repository
             ConfigureRepositories(services);

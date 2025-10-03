@@ -229,10 +229,21 @@ namespace api.Services
                     category = await _bookRepository.CreateCategoryAsync(newCategory);
                 }
 
-                var book = _mapper.Map<Book>(createBookDto);
-                book.CategoryId = category.Id;
-                book.Category = category;
-                book.AvailableCopies = createBookDto.TotalCopies;
+                // Créer le livre manuellement pour éviter les problèmes de mapping AutoMapper
+                var book = new Book
+                {
+                    Title = createBookDto.Title,
+                    Author = createBookDto.Author,
+                    Isbn = createBookDto.Isbn.Replace("-", "").Replace(" ", ""), // Normalisation ISBN
+                    PublicationDate = createBookDto.PublicationDate,
+                    CoverUrl = string.IsNullOrEmpty(createBookDto.CoverUrl) ? null : createBookDto.CoverUrl,
+                    TotalCopies = createBookDto.TotalCopies,
+                    AvailableCopies = createBookDto.TotalCopies,
+                    CategoryId = category.Id,
+                    Category = category,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
                 
                 var createdBook = await _bookRepository.AddAsync(book);
                 var bookDto = _mapper.Map<BookDto>(createdBook);

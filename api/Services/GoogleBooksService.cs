@@ -4,6 +4,7 @@ using api.Models;
 using api.Models.GoogleBooks;
 using api.Repositories;
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace api.Services
@@ -18,6 +19,7 @@ namespace api.Services
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<GoogleBooksService> _logger;
+        private readonly string _apiKey;
 
         private const string GoogleBooksApiBaseUrl = "https://www.googleapis.com/books/v1/volumes";
 
@@ -26,13 +28,15 @@ namespace api.Services
             IBookService bookService,
             IBookRepository bookRepository,
             IMapper mapper,
-            ILogger<GoogleBooksService> logger)
+            ILogger<GoogleBooksService> logger,
+            IConfiguration configuration)
         {
             _httpClient = httpClient;
             _bookService = bookService;
             _bookRepository = bookRepository;
             _mapper = mapper;
             _logger = logger;
+            _apiKey = configuration["GoogleBooks:ApiKey"];
         }
 
         public async Task<ServiceResponse<BookDto>> ImportBookFromGoogleAsync(ImportBookFromGoogleDto importDto)
@@ -103,7 +107,7 @@ namespace api.Services
         {
             try
             {
-                var url = $"{GoogleBooksApiBaseUrl}?q={Uri.EscapeDataString(query)}&maxResults={maxResults}";
+                var url = $"{GoogleBooksApiBaseUrl}?q={Uri.EscapeDataString(query)}&maxResults={maxResults}&key={_apiKey}";
                 var response = await _httpClient.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
@@ -155,7 +159,7 @@ namespace api.Services
         {
             try
             {
-                var url = $"{GoogleBooksApiBaseUrl}?q=isbn:{isbn}";
+                var url = $"{GoogleBooksApiBaseUrl}?q=isbn:{isbn}&key={_apiKey}";
                 var response = await _httpClient.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
@@ -193,7 +197,10 @@ namespace api.Services
                 Isbn = isbn,
                 PublicationDate = ParsePublicationDate(googleBook.PublishedDate),
                 CoverUrl = coverUrl,
-                TotalCopies = importDto.TotalCopies
+                TotalCopies = importDto.TotalCopies,
+                Description = googleBook.Description ?? string.Empty,
+                PageCount = googleBook.PageCount,
+                Publisher = googleBook.Publisher ?? string.Empty
             };
         }
 

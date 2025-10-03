@@ -29,9 +29,15 @@ namespace api.Models
                     // Nettoyage des chaînes de caractères
                     dest.Title = dest.Title?.Trim();
                     dest.Author = dest.Author?.Trim();
+                    dest.Description = dest.Description?.Trim();
+                    dest.Publisher = dest.Publisher?.Trim();
                     dest.Isbn = dest.Isbn?.Replace("-", "").Replace(" ", ""); // Normalisation ISBN
                     if (string.IsNullOrEmpty(dest.CoverUrl))
                         dest.CoverUrl = null;
+                    if (string.IsNullOrEmpty(dest.Description))
+                        dest.Description = null;
+                    if (string.IsNullOrEmpty(dest.Publisher))
+                        dest.Publisher = null;
                 });
 
             // Mapping de UpdateBookDto vers Book
@@ -50,9 +56,15 @@ namespace api.Models
                     // Nettoyage des chaînes de caractères
                     dest.Title = dest.Title?.Trim();
                     dest.Author = dest.Author?.Trim();
+                    dest.Description = dest.Description?.Trim();
+                    dest.Publisher = dest.Publisher?.Trim();
                     dest.Isbn = dest.Isbn?.Replace("-", "").Replace(" ", ""); // Normalisation ISBN
                     if (string.IsNullOrEmpty(dest.CoverUrl))
                         dest.CoverUrl = null;
+                    if (string.IsNullOrEmpty(dest.Description))
+                        dest.Description = null;
+                    if (string.IsNullOrEmpty(dest.Publisher))
+                        dest.Publisher = null;
                 })
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 

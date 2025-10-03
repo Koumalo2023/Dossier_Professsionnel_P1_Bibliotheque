@@ -28,7 +28,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Configuration centralisée de l'injection de dépendances
-builder.Services.ConfigureDependencies();
+builder.Services.ConfigureAppDependencies();
 
 builder.Services.AddHttpContextAccessor();
 
