@@ -89,3 +89,7 @@ global.json
 
 #variables d'environnement
 .env
+
+# Documentation et fichiers markdown
+*.md
+!README.md
