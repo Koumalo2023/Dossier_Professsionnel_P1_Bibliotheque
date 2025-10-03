@@ -9,6 +9,7 @@ L'API de la bibliothèque expose des endpoints RESTful organisés autour des fon
 - **Réservations** : Système de réservation
 - **Notifications** : Communication avec les utilisateurs
 - **Analytiques** : Statistiques et rapports
+- **Profil Utilisateur** : Gestion du profil, préférences et historique de lecture
 
 ---
 
@@ -88,6 +89,31 @@ L'API de la bibliothèque expose des endpoints RESTful organisés autour des fon
 | `PUT` | `/api/notifications/mark-all-read` | Authentifié | Tout marquer comme lu |
 | `POST` | `/api/notifications` | Manager, Admin | Création d'une notification |
 | `GET` | `/api/notifications/unread-count` | Authentifié | Nombre de notifications non lues |
+
+### 👤 Profil Utilisateur (`/api/userprofile`)
+
+| Méthode | Endpoint | Rôles | Description |
+|---------|----------|-------|-------------|
+| `GET` | `/api/userprofile` | Authentifié | Récupérer le profil de l'utilisateur connecté |
+| `POST` | `/api/userprofile` | Authentifié | Créer un profil utilisateur |
+| `PUT` | `/api/userprofile` | Authentifié | Mettre à jour le profil utilisateur |
+| `DELETE` | `/api/userprofile` | Authentifié | Supprimer le profil utilisateur |
+| `POST` | `/api/userprofile/initialize` | Authentifié | Initialiser le profil avec valeurs par défaut |
+| `GET` | `/api/userprofile/preferences/categories` | Authentifié | Préférences de catégorie de l'utilisateur |
+| `POST` | `/api/userprofile/preferences/categories` | Authentifié | Ajouter/mettre à jour une préférence de catégorie |
+| `DELETE` | `/api/userprofile/preferences/categories/{categoryId}` | Authentifié | Supprimer une préférence de catégorie |
+| `GET` | `/api/userprofile/goals` | Authentifié | Objectifs de lecture de l'utilisateur |
+| `POST` | `/api/userprofile/goals` | Authentifié | Créer un objectif de lecture |
+| `GET` | `/api/userprofile/goals/{goalId}` | Authentifié | Détails d'un objectif de lecture |
+| `PUT` | `/api/userprofile/goals/{goalId}` | Authentifié | Mettre à jour un objectif de lecture |
+| `DELETE` | `/api/userprofile/goals/{goalId}` | Authentifié | Supprimer un objectif de lecture |
+| `PUT` | `/api/userprofile/goals/{goalId}/progress` | Authentifié | Mettre à jour la progression d'un objectif |
+| `GET` | `/api/userprofile/history` | Authentifié | Historique de lecture de l'utilisateur |
+| `GET` | `/api/userprofile/history/loan/{loanId}` | Authentifié | Historique de lecture par emprunt |
+| `POST` | `/api/userprofile/history` | Authentifié | Créer un historique de lecture |
+| `PUT` | `/api/userprofile/history/{historyId}` | Authentifié | Mettre à jour un historique de lecture |
+| `DELETE` | `/api/userprofile/history/{historyId}` | Authentifié | Supprimer un historique de lecture |
+| `GET` | `/api/userprofile/stats` | Authentifié | Statistiques de lecture de l'utilisateur |
 
 ### 📊 Analytiques (`/api/analytics`)
 
@@ -397,6 +423,159 @@ export interface LoanSearchFilters {
   page?: number;
   pageSize?: number;
 }
+
+export interface UserProfile {
+  id: string;
+  userId: string;
+  bio?: string;
+  favoriteAuthor?: string;
+  favoriteGenre?: string;
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  newBookAlerts: boolean;
+  returnReminders: boolean;
+  reviewReminders: boolean;
+  theme: string;
+  itemsPerPage: number;
+  language: string;
+  totalBooksRead: number;
+  totalPagesRead: number;
+  averageReadingTime: number;
+  readingLevel?: string;
+  createdAt: string;
+  updatedAt: string;
+  categoryPreferences: UserCategoryPreference[];
+  readingGoals: UserReadingGoal[];
+  readingHistory: UserReadingHistory[];
+}
+
+export interface CreateUserProfileRequest {
+  bio?: string;
+  favoriteAuthor?: string;
+  favoriteGenre?: string;
+  emailNotifications?: boolean;
+  pushNotifications?: boolean;
+  newBookAlerts?: boolean;
+  returnReminders?: boolean;
+  reviewReminders?: boolean;
+  theme?: string;
+  itemsPerPage?: number;
+  language?: string;
+}
+
+export interface UpdateUserProfileRequest {
+  bio?: string;
+  favoriteAuthor?: string;
+  favoriteGenre?: string;
+  emailNotifications?: boolean;
+  pushNotifications?: boolean;
+  newBookAlerts?: boolean;
+  returnReminders?: boolean;
+  reviewReminders?: boolean;
+  theme?: string;
+  itemsPerPage?: number;
+  language?: string;
+}
+
+export interface UserCategoryPreference {
+  id: string;
+  categoryId: string;
+  categoryName: string;
+  preferenceScore: number;
+  lastInteracted: string;
+  interactionCount: number;
+}
+
+export interface CreateUserCategoryPreferenceRequest {
+  categoryId: string;
+  preferenceScore: number;
+}
+
+export interface UserReadingGoal {
+  id: string;
+  title: string;
+  description?: string;
+  targetBooks: number;
+  currentProgress: number;
+  progressPercentage: number;
+  startDate: string;
+  endDate: string;
+  isCompleted: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateUserReadingGoalRequest {
+  title: string;
+  description?: string;
+  targetBooks: number;
+  startDate: string;
+  endDate: string;
+}
+
+export interface UpdateUserReadingGoalRequest {
+  title?: string;
+  description?: string;
+  targetBooks?: number;
+  startDate?: string;
+  endDate?: string;
+  isActive?: boolean;
+}
+
+export interface UpdateReadingGoalProgressRequest {
+  booksRead: number;
+}
+
+export interface UserReadingHistory {
+  id: string;
+  bookId: string;
+  loanId: string;
+  bookTitle: string;
+  bookAuthor: string;
+  bookCoverUrl?: string;
+  startedReading: string;
+  finishedReading?: string;
+  readingTimeMinutes?: number;
+  rating?: number;
+  review?: string;
+  isFavorite: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateUserReadingHistoryRequest {
+  bookId: string;
+  loanId: string;
+  startedReading: string;
+  finishedReading?: string;
+  readingTimeMinutes?: number;
+  rating?: number;
+  review?: string;
+  isFavorite?: boolean;
+}
+
+export interface UpdateUserReadingHistoryRequest {
+  finishedReading?: string;
+  readingTimeMinutes?: number;
+  rating?: number;
+  review?: string;
+  isFavorite?: boolean;
+}
+
+export interface UserReadingStats {
+  totalBooksRead: number;
+  totalPagesRead: number;
+  averageReadingTime: number;
+  activeGoals: number;
+  completedGoals: number;
+  favoriteCategory?: string;
+  favoriteAuthor?: string;
+  totalReadingTimeMinutes: number;
+  booksPerMonth: number;
+  booksByCategory: { [key: string]: number };
+  ratingDistribution: { [key: number]: number };
+}
 ```
 
 ---
@@ -440,6 +619,27 @@ export enum AnalyticsPeriod {
   WEEK = 'WEEK',
   MONTH = 'MONTH',
   YEAR = 'YEAR'
+}
+
+// Types de thème pour le profil utilisateur
+export enum ThemeType {
+  LIGHT = 'light',
+  DARK = 'dark',
+  AUTO = 'auto'
+}
+
+// Niveaux de lecture
+export enum ReadingLevel {
+  BEGINNER = 'beginner',
+  INTERMEDIATE = 'intermediate',
+  ADVANCED = 'advanced'
+}
+
+// Fréquences de lecture
+export enum ReadingPace {
+  SLOW = 'slow',
+  MODERATE = 'moderate',
+  FAST = 'fast'
 }
 ```
 
@@ -487,8 +687,94 @@ export class AuthInterceptor implements HttpInterceptor {
     }
     
     return next.handle(req);
+    }
   }
-}
+  
+  // Exemple de service Angular pour le profil utilisateur
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UserProfileService {
+    constructor(private http: HttpClient) {}
+  
+    getUserProfile(): Observable<UserProfile> {
+      return this.http.get<UserProfile>('/api/userprofile');
+    }
+  
+    createUserProfile(profile: CreateUserProfileRequest): Observable<UserProfile> {
+      return this.http.post<UserProfile>('/api/userprofile', profile);
+    }
+  
+    updateUserProfile(profile: UpdateUserProfileRequest): Observable<UserProfile> {
+      return this.http.put<UserProfile>('/api/userprofile', profile);
+    }
+  
+    deleteUserProfile(): Observable<void> {
+      return this.http.delete<void>('/api/userprofile');
+    }
+  
+    initializeUserProfile(): Observable<void> {
+      return this.http.post<void>('/api/userprofile/initialize', {});
+    }
+  
+    getCategoryPreferences(): Observable<UserCategoryPreference[]> {
+      return this.http.get<UserCategoryPreference[]>('/api/userprofile/preferences/categories');
+    }
+  
+    addOrUpdateCategoryPreference(preference: CreateUserCategoryPreferenceRequest): Observable<UserCategoryPreference> {
+      return this.http.post<UserCategoryPreference>('/api/userprofile/preferences/categories', preference);
+    }
+  
+    removeCategoryPreference(categoryId: string): Observable<void> {
+      return this.http.delete<void>(`/api/userprofile/preferences/categories/${categoryId}`);
+    }
+  
+    getReadingGoals(activeOnly?: boolean): Observable<UserReadingGoal[]> {
+      const params = activeOnly !== undefined ? { activeOnly: activeOnly.toString() } : {};
+      return this.http.get<UserReadingGoal[]>('/api/userprofile/goals', { params });
+    }
+  
+    createReadingGoal(goal: CreateUserReadingGoalRequest): Observable<UserReadingGoal> {
+      return this.http.post<UserReadingGoal>('/api/userprofile/goals', goal);
+    }
+  
+    updateReadingGoal(goalId: string, goal: UpdateUserReadingGoalRequest): Observable<UserReadingGoal> {
+      return this.http.put<UserReadingGoal>(`/api/userprofile/goals/${goalId}`, goal);
+    }
+  
+    updateReadingGoalProgress(goalId: string, progress: UpdateReadingGoalProgressRequest): Observable<UserReadingGoal> {
+      return this.http.put<UserReadingGoal>(`/api/userprofile/goals/${goalId}/progress`, progress);
+    }
+  
+    deleteReadingGoal(goalId: string): Observable<void> {
+      return this.http.delete<void>(`/api/userprofile/goals/${goalId}`);
+    }
+  
+    getReadingHistory(limit?: number): Observable<UserReadingHistory[]> {
+      const params = limit ? { limit: limit.toString() } : {};
+      return this.http.get<UserReadingHistory[]>('/api/userprofile/history', { params });
+    }
+  
+    getReadingHistoryByLoan(loanId: string): Observable<UserReadingHistory> {
+      return this.http.get<UserReadingHistory>(`/api/userprofile/history/loan/${loanId}`);
+    }
+  
+    createReadingHistory(history: CreateUserReadingHistoryRequest): Observable<UserReadingHistory> {
+      return this.http.post<UserReadingHistory>('/api/userprofile/history', history);
+    }
+  
+    updateReadingHistory(historyId: string, history: UpdateUserReadingHistoryRequest): Observable<UserReadingHistory> {
+      return this.http.put<UserReadingHistory>(`/api/userprofile/history/${historyId}`, history);
+    }
+  
+    deleteReadingHistory(historyId: string): Observable<void> {
+      return this.http.delete<void>(`/api/userprofile/history/${historyId}`);
+    }
+  
+    getReadingStats(): Observable<UserReadingStats> {
+      return this.http.get<UserReadingStats>('/api/userprofile/stats');
+    }
+  }
 ```
 
 Cette documentation fournit une base complète pour l'intégration frontend avec l'API de la bibliothèque.
