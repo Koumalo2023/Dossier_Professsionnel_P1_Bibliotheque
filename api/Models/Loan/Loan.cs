@@ -57,6 +57,11 @@ namespace api.Models
         /// </summary>
         [Required(ErrorMessage = "Le statut est obligatoire.")]
         public string Status { get; set; } = "BORROWED";
+
+        /// <summary>
+        /// Historique de lecture associé à cet emprunt.
+        /// </summary>
+        public virtual ICollection<UserReadingHistory> ReadingHistory { get; set; } = new List<UserReadingHistory>();
     }
 
 }
