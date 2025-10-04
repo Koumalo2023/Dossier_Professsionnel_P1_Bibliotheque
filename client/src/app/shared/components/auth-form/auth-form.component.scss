@@ -1,124 +1,206 @@
-@use 'variables' as *;
-@use 'mixins' as *;
-@use "sass:color";
+@use '../../../../styles/abstract' as abstracts;
 
+.auth-form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: abstracts.spacing(6);
+  background: var(--color-surface);
+  border-radius: abstracts.border-radius('xl');
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+
+  @include abstracts.respond-to('sm') {
+    padding: abstracts.spacing(8);
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: abstracts.spacing(6);
+
+  .auth-title {
+    @include abstracts.text-size('3xl');
+    @include abstracts.text-weight('bold');
+    color: var(--color-text-primary);
+    margin-bottom: abstracts.spacing(2);
+    font-family: abstracts.$font-family-heading;
+  }
+
+  .auth-subtitle {
+    @include abstracts.text-size('base');
+    color: var(--color-text-secondary);
+    line-height: abstracts.line-height('normal');
+  }
+}
 
 .auth-form {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: $secondary;
-    border-radius: $border-radius;
-    // box-shadow: $box-shadow;
-  
-    .form-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 1.5rem;
-      color: $primary;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(4);
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Styles pour les champs de formulaire Material
+.mat-mdc-form-field {
+  .mdc-text-field {
+    background-color: var(--color-background);
+    border-radius: abstracts.border-radius('lg');
+    
+    &:not(.mdc-text-field--disabled) .mdc-text-field__input {
+      color: var(--color-text-primary);
     }
-  
-    .alert-danger {
-      color: $danger;
-      background-color:  color.adjust($danger, $lightness: 40%);
-      border-color:  color.adjust($danger, $lightness: 30%);
-      padding: 0.75rem 1.25rem;
-      margin-bottom: 1rem;
-      border: 1px solid transparent;
-      border-radius: $border-radius;
+
+    .mdc-floating-label {
+      color: var(--color-text-muted);
     }
-  
-    .form-group {
-      margin-bottom: 1rem;
-  
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: $dark;
+
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--color-border);
+    }
+
+    &:hover .mdc-notched-outline {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--color-border-dark);
       }
-  
-      .form-control {
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: $dark;
-        background-color: $light;
-        background-clip: padding-box;
-        // border: 1px solid $gray-light;
-        border-radius: $border-radius;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  
-        &:focus {
-          color: $dark;
-          background-color: $light;
-          border-color:  color.adjust($primary, $lightness: 25%);
-          outline: 0;
-          box-shadow: 0 0 0 0.2rem rgba($primary, 0.25);
-        }
-  
-        &.is-invalid {
-          border-color: $danger;
-  
-          &:focus {
-            box-shadow: 0 0 0 0.2rem rgba($danger, 0.25);
-          }
+    }
+
+    &.mdc-text-field--focused {
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: var(--color-primary);
         }
       }
-  
-      .invalid-feedback {
-        display: none;
-        width: 100%;
-        margin-top: 0.25rem;
-        font-size: 80%;
-        color: $danger;
-      }
-  
-      .form-control.is-invalid ~ .invalid-feedback {
-        display: block;
-      }
-    }
-  
-    .form-check {
-      display: flex;
-      align-items: center;
-      margin-bottom: 1rem;
-  
-      .form-check-input {
-        margin-right: 0.5rem;
-      }
-  
-      .form-check-label {
-        margin-bottom: 0; // Override default label margin
-        color: $dark;
-      }
-    }
-  
-    .btn-primary {
-      @include button-variant($primary, $secondary);
-      width: 100%; // Make button full width
-      margin-top: 1rem;
-  
-      .spinner-border {
-        margin-right: 0.5rem;
-      }
-    }
-  
-    .form-links {
-      margin-top: 1.5rem;
-      text-align: center;
-  
-      a {
-        color: $primary;
-        text-decoration: none;
-        margin: 0 0.5rem;
-  
-        &:hover {
-          text-decoration: underline;
-        }
+
+      .mdc-floating-label {
+        color: var(--color-primary);
       }
     }
   }
+
+  .mat-mdc-form-field-error {
+    @include abstracts.text-size('sm');
+    color: var(--color-error);
+  }
+}
+
+// Bouton de soumission
+.submit-button {
+  height: 48px;
+  border-radius: abstracts.border-radius('lg');
+  @include abstracts.text-weight('medium');
+  font-size: abstracts.font-size('base');
+  margin-top: abstracts.spacing(2);
+
+  &:not(:disabled) {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-primary);
+    
+    &:hover {
+      background-color: var(--color-primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  &:disabled {
+    background-color: var(--color-disabled);
+    color: var(--color-text-muted);
+  }
+
+  .mat-mdc-progress-spinner {
+    margin-right: abstracts.spacing(2);
+  }
+}
+
+// Message d'erreur
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: abstracts.spacing(2);
+  padding: abstracts.spacing(3);
+  background-color: abstracts.color('error', 50);
+  border: 1px solid abstracts.color('error', 200);
+  border-radius: abstracts.border-radius('base');
+  color: abstracts.color('error', 800);
+  @include abstracts.text-size('sm');
+
+  .mat-icon {
+    color: abstracts.color('error', 600);
+    font-size: abstracts.font-size('lg');
+    width: abstracts.spacing(4);
+    height: abstracts.spacing(4);
+  }
+}
+
+// Pied de page
+.auth-footer {
+  text-align: center;
+  margin-top: abstracts.spacing(6);
+  padding-top: abstracts.spacing(4);
+  border-top: 1px solid var(--color-border-light);
+
+  .footer-text {
+    @include abstracts.text-size('sm');
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .footer-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: abstracts.font-weight('medium');
+    margin-left: abstracts.spacing(1);
+
+    &:hover {
+      color: var(--color-primary-dark);
+      text-decoration: underline;
+    }
+  }
+}
+
+// Responsive
+@include abstracts.respond-to('sm') {
+  .auth-form-container {
+    margin: abstracts.spacing(8) auto;
+  }
+}
+
+// Accessibilité
+@media (prefers-reduced-motion: reduce) {
+  .submit-button {
+    transition: none;
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .auth-form-container {
+    border: 2px solid var(--color-text-primary);
+  }
+
+  .mat-mdc-form-field .mdc-text-field {
+    border: 1px solid var(--color-text-primary);
+  }
+}
+
+// Dark theme support
+[data-theme="dark"] {
+  .auth-form-container {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+
+  .mat-mdc-form-field .mdc-text-field {
+    background-color: var(--color-surface);
+  }
+}

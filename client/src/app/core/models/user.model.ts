@@ -32,6 +32,16 @@ export interface LoginDto {
   password: string;
 }
 
+export interface LoginResponse {
+  token: string;
+  user: UserDto;
+  expiresIn?: number;
+}
+
+export interface RefreshTokenRequest {
+  token: string;
+}
+
 export interface CurrentUser {
   id: string;
   name: string;

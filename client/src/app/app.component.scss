@@ -1,7 +1,5 @@
-@use 'variables' as *;
-@use 'mixins' as *;
+@use '../styles/abstract/mixins' as *;
 @use "sass:color";
-
 
 :host {
     display: flex;

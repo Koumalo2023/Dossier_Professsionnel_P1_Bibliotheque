@@ -1,64 +1,159 @@
-@use 'variables' as *;
-@use 'mixins' as *;
-@use "sass:color";
-
+@use '../../../../styles/abstract' as abstracts;
 
 .register-page {
-    padding: 3rem 0;
-    min-height: calc(100vh - 150px); // Ajuster en fonction de la hauteur du header/footer
-    display: flex;
-    align-items: center;
-    background-color: $light; // Ou une autre couleur de fond
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-background) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: abstracts.spacing(4);
+
+  @include abstracts.respond-to('md') {
+    padding: abstracts.spacing(8);
   }
-  
-  .register-card {
-    background-color: $secondary;
-    padding: 2.5rem;
-    border-radius: $border-radius-lg;
-    box-shadow: 0 0.5rem 1.5rem rgba($dark, 0.1);
-  
-    &__title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: $dark;
-    }
-  
-    &__subtitle {
-      text-align: center;
-      color: $gray-medium;
-      margin-bottom: 2rem;
-    }
-  
-    app-auth-form {
-      // Pas de styles spécifiques ici, utilise les styles du composant
-    }
-  
-    &__footer {
-      margin-top: 1.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: $gray-medium;
-  
-      a {
-        color: $primary;
-        font-weight: 500;
-        text-decoration: none;
-  
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(8);
+}
+
+.page-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .page-title {
+    @include abstracts.text-size('4xl');
+    @include abstracts.text-weight('bold');
+    color: var(--color-text-primary);
+    margin-bottom: abstracts.spacing(4);
+    font-family: abstracts.$font-family-heading;
+    line-height: abstracts.line-height('tight');
+
+    @include abstracts.respond-to('md') {
+      @include abstracts.text-size('5xl');
     }
   }
-  
-  @include media-breakpoint-down(sm) {
-    .register-page {
-      padding: 1.5rem 0;
+
+  .page-subtitle {
+    @include abstracts.text-size('lg');
+    color: var(--color-text-secondary);
+    line-height: abstracts.line-height('normal');
+  }
+}
+
+.form-section {
+  display: flex;
+  justify-content: center;
+}
+
+.benefits-section {
+  margin-top: abstracts.spacing(8);
+
+  .benefits-title {
+    @include abstracts.text-size('2xl');
+    @include abstracts.text-weight('semibold');
+    color: var(--color-text-primary);
+    text-align: center;
+    margin-bottom: abstracts.spacing(6);
+    font-family: abstracts.$font-family-heading;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: abstracts.spacing(4);
+
+    @include abstracts.respond-to('sm') {
+      grid-template-columns: repeat(2, 1fr);
     }
-    .register-card {
-      padding: 1.5rem;
+
+    @include abstracts.respond-to('lg') {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
-  
+}
+
+.benefit-card {
+  background: var(--color-surface);
+  padding: abstracts.spacing(4);
+  border-radius: abstracts.border-radius('lg');
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: all abstracts.transition-duration('normal') abstracts.transition-timing('ease-out');
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+  }
+
+  .benefit-icon {
+    font-size: abstracts.font-size('3xl');
+    width: abstracts.spacing(8);
+    height: abstracts.spacing(8);
+    color: var(--color-primary);
+    margin-bottom: abstracts.spacing(3);
+  }
+
+  h3 {
+    @include abstracts.text-size('lg');
+    @include abstracts.text-weight('semibold');
+    color: var(--color-text-primary);
+    margin-bottom: abstracts.spacing(2);
+  }
+
+  p {
+    @include abstracts.text-size('sm');
+    color: var(--color-text-secondary);
+    line-height: abstracts.line-height('normal');
+    margin: 0;
+  }
+}
+
+// Dark theme support
+[data-theme="dark"] {
+  .register-page {
+    background: linear-gradient(135deg, abstracts.color('primary', 900) 0%, var(--color-background) 100%);
+  }
+
+  .benefit-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+}
+
+// Accessibilité
+@media (prefers-reduced-motion: reduce) {
+  .benefit-card {
+    transition: none;
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .register-page {
+    background: var(--color-background);
+  }
+
+  .benefit-card {
+    border: 2px solid var(--color-text-primary);
+  }
+}
+
+// Print styles
+@media print {
+  .register-page {
+    background: none;
+    min-height: auto;
+  }
+
+  .benefits-section {
+    display: none;
+  }
+}

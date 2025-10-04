@@ -1,25 +1,49 @@
 <div class="register-page">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-          <div class="register-card">
-            <h1 class="register-card__title">Créer un compte</h1>
-            <p class="register-card__subtitle">Rejoignez notre communauté de lecteurs</p>
-            
-            <!-- register.component.html -->
-            <app-auth-form
-            formType="register"
-            [loading]="loading"
-            [errorMessage]="errorMessage"
-            (formSubmit)="onRegister($event)"
-          ></app-auth-form>
-            
-            <div class="register-card__footer">
-              <p>Déjà un compte ? <a routerLink="/login">Connectez-vous</a></p>
-            </div>
-          </div>
+  <div class="page-container">
+    <!-- Header -->
+    <header class="page-header">
+      <h1 class="page-title">Rejoignez notre bibliothèque</h1>
+      <p class="page-subtitle">Créez votre compte pour découvrir notre collection</p>
+    </header>
+
+    <!-- Formulaire d'inscription -->
+    <div class="form-section">
+      <app-auth-form
+        formType="register"
+        [loading]="loading"
+        [errorMessage]="errorMessage"
+        (formSubmit)="onRegister($event)">
+      </app-auth-form>
+    </div>
+
+    <!-- Avantages de l'inscription -->
+    <div class="benefits-section">
+      <h2 class="benefits-title">Pourquoi créer un compte ?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <mat-icon class="benefit-icon">library_books</mat-icon>
+          <h3>Accès complet</h3>
+          <p>Explorez notre catalogue complet de livres</p>
+        </div>
+        
+        <div class="benefit-card">
+          <mat-icon class="benefit-icon">bookmark</mat-icon>
+          <h3>Réservations</h3>
+          <p>Réserervez vos livres favoris en quelques clics</p>
+        </div>
+        
+        <div class="benefit-card">
+          <mat-icon class="benefit-icon">history</mat-icon>
+          <h3>Historique</h3>
+          <p>Suivez votre historique de lecture et emprunts</p>
+        </div>
+        
+        <div class="benefit-card">
+          <mat-icon class="benefit-icon">notifications</mat-icon>
+          <h3>Alertes</h3>
+          <p>Recevez des notifications pour les retours et nouveautés</p>
         </div>
       </div>
     </div>
   </div>
-  
+</div>

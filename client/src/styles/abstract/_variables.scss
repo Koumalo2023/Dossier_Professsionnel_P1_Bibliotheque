@@ -2,6 +2,8 @@
 // Variables SCSS - Bibliothèque
 // =============================================================================
 
+@use 'sass:map';
+
 // =============================================================================
 // Breakpoints mobile-first
 // =============================================================================
@@ -27,7 +29,10 @@ $spacing: (
   5: $spacing-unit * 8,
   6: $spacing-unit * 12,
   7: $spacing-unit * 16,
-  8: $spacing-unit * 24
+  8: $spacing-unit * 24,
+  9: $spacing-unit * 32,
+  10: $spacing-unit * 40,
+  12: $spacing-unit * 48
 );
 
 // =============================================================================
@@ -133,12 +138,12 @@ $color-error: (
 // =============================================================================
 // Variables sémantiques
 // =============================================================================
-$color-text-primary: map-get($color-secondary, 900);
-$color-text-secondary: map-get($color-secondary, 600);
-$color-text-muted: map-get($color-secondary, 500);
+$color-text-primary: #212121;
+$color-text-secondary: #616161;
+$color-text-muted: #9e9e9e;
 $color-background: #ffffff;
 $color-surface: #f8f9fa;
-$color-border: map-get($color-secondary, 200);
+$color-border: #e0e0e0;
 
 // =============================================================================
 // Bordures et ombres

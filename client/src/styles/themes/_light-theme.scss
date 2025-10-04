@@ -9,7 +9,55 @@
 // Variables du thème clair
 // =============================================================================
 
-:root, [data-theme="light"] {
+:root {
+  // Thème clair par défaut
+  // Couleurs de base
+  --color-background: #{abstracts.$color-background};
+  --color-surface: #{abstracts.$color-surface};
+  --color-primary: #{abstracts.color('primary', 500)};
+  --color-primary-dark: #{abstracts.color('primary', 700)};
+  --color-primary-light: #{abstracts.color('primary', 100)};
+  --color-secondary: #{abstracts.color('secondary', 500)};
+  --color-success: #{abstracts.color('success', 500)};
+  --color-warning: #{abstracts.color('warning', 500)};
+  --color-error: #{abstracts.color('error', 500)};
+  
+  // Couleurs de texte
+  --color-text-primary: #{abstracts.$color-text-primary};
+  --color-text-secondary: #{abstracts.$color-text-secondary};
+  --color-text-muted: #{abstracts.$color-text-muted};
+  --color-text-on-primary: #ffffff;
+  --color-text-on-secondary: #{abstracts.$color-text-primary};
+  
+  // Couleurs de bordure
+  --color-border: #{abstracts.$color-border};
+  --color-border-light: #{abstracts.color('secondary', 100)};
+  --color-border-dark: #{abstracts.color('secondary', 300)};
+  
+  // Couleurs d'état
+  --color-hover: #{abstracts.color('secondary', 50)};
+  --color-active: #{abstracts.color('primary', 50)};
+  --color-focus: #{abstracts.color('primary', 200)};
+  --color-disabled: #{abstracts.color('secondary', 200)};
+  
+  // Couleurs d'élévation
+  --color-elevation-1: #{abstracts.$color-background};
+  --color-elevation-2: #{abstracts.color('secondary', 50)};
+  --color-elevation-3: #{abstracts.color('secondary', 100)};
+  
+  // Ombres
+  --shadow-sm: #{abstracts.shadow('sm')};
+  --shadow-base: #{abstracts.shadow('base')};
+  --shadow-md: #{abstracts.shadow('md')};
+  --shadow-lg: #{abstracts.shadow('lg')};
+  --shadow-xl: #{abstracts.shadow('xl')};
+  
+  // Overlay
+  --color-overlay: rgba(0, 0, 0, 0.5);
+  --color-backdrop: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] {
   // Couleurs de base
   --color-background: #{abstracts.$color-background};
   --color-surface: #{abstracts.$color-surface};

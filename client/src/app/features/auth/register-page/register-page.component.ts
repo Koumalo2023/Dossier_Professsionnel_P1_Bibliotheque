@@ -2,13 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthFormComponent, AuthFormData } from '../../../shared/components/auth-form/auth-form.component';
-import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { RegisterDto } from '../../../core/models/user.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-register-page',
-    imports: [CommonModule, RouterModule, AuthFormComponent],
+    imports: [CommonModule, RouterModule, AuthFormComponent, MatIconModule],
     templateUrl: './register-page.component.html',
     styleUrl: './register-page.component.scss'
 })

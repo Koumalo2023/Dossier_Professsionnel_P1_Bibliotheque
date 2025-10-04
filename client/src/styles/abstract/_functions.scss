@@ -15,12 +15,30 @@
 /// @param {Number} $shade - Nuance (50, 100, 200, ..., 900)
 /// @return {Color} Couleur correspondante
 @function color($color-name, $shade: 500) {
-  $color-map: map.get(vars.$color-#{$color-name}, $shade);
+  $color-variable: null;
   
-  @if $color-map {
-    @return $color-map;
+  @if $color-name == 'primary' {
+    $color-variable: vars.$color-primary;
+  } @else if $color-name == 'secondary' {
+    $color-variable: vars.$color-secondary;
+  } @else if $color-name == 'success' {
+    $color-variable: vars.$color-success;
+  } @else if $color-name == 'warning' {
+    $color-variable: vars.$color-warning;
+  } @else if $color-name == 'error' {
+    $color-variable: vars.$color-error;
+  }
+  
+  @if $color-variable {
+    $color-map: map.get($color-variable, $shade);
+    
+    @if $color-map {
+      @return $color-map;
+    } @else {
+      @error "Couleur `#{$color-name}-#{$shade}` n'existe pas dans la palette.";
+    }
   } @else {
-    @error "Couleur `#{$color-name}-#{$shade}` n'existe pas dans la palette.";
+    @error "Couleur `#{$color-name}` n'existe pas dans la palette.";
   }
 }
 

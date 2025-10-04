@@ -1,12 +1,12 @@
-@use 'variables' as *;
-@use 'mixins' as *;
-@use "sass:color";
+@use '../../../../styles/abstract/variables' as *;
+@use '../../../../styles/abstract/mixins' as *;
+@use '../../../../styles/abstract/functions' as func;
 
 .navbar {
-    background-color: $primary;
-    color: $secondary;
+    background-color: func.color('primary', 500);
+    color: func.color('secondary', 50);
     padding: 0.75rem 0;
-    box-shadow: 0 2px 4px rgba($dark, 0.1);
+    box-shadow: 0 2px 4px rgba(func.color('secondary', 900), 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -24,7 +24,7 @@
   
     &__logo {
       text-decoration: none;
-      color: $secondary;
+      color: func.color('secondary', 50);
       display: flex;
       align-items: center;
     }
@@ -39,7 +39,7 @@
       display: none; // Caché par défaut, affiché sur mobile
       background: none;
       border: none;
-      color: $secondary;
+      color: func.color('secondary', 50);
       font-size: 1.5rem;
       cursor: pointer;
       padding: 0.5rem;
@@ -49,7 +49,7 @@
         display: block;
         width: 24px;
         height: 2px;
-        background-color: $secondary;
+        background-color: func.color('secondary', 50);
         position: relative;
         transition: background-color 0.3s ease;
   
@@ -60,7 +60,7 @@
           left: 0;
           width: 100%;
           height: 2px;
-          background-color: $secondary;
+          background-color: func.color('secondary', 50);
           transition: transform 0.3s ease;
         }
   
@@ -99,11 +99,11 @@
         width: 80%;
         max-width: 300px;
         height: 100vh;
-        background-color:  color.adjust($primary, $lightness: 5%);
+        background-color: func.lighten(func.color('primary', 500), 5%);
         flex-direction: column;
         align-items: flex-start;
         padding: 4rem 1.5rem 1.5rem;
-        box-shadow: 2px 0 5px rgba($dark, 0.2);
+        box-shadow: 2px 0 5px rgba(func.color('secondary', 900), 0.2);
         transition: left 0.3s ease-in-out;
         z-index: 999;
   
@@ -145,7 +145,7 @@
     }
   
     &__link {
-      color: $secondary;
+      color: func.color('secondary', 50);
       text-decoration: none;
       padding: 0.5rem 0;
       position: relative;
@@ -158,13 +158,13 @@
         left: 0;
         width: 0;
         height: 2px;
-        background-color: $secondary;
+        background-color: func.color('secondary', 50);
         transition: width 0.3s ease;
       }
   
       &:hover,
       &.active {
-        color:  color.adjust($secondary, $lightness: 15%);
+        color: func.lighten(func.color('secondary', 50), 15%);
         &::after {
           width: 100%;
         }
@@ -181,8 +181,8 @@
   
         &.active {
           font-weight: 600;
-          background-color: rgba($secondary, 0.1);
-          border-radius: $border-radius-sm;
+          background-color: rgba(func.color('secondary', 50), 0.1);
+          border-radius: func.border-radius('sm');
           padding-left: 1rem;
           margin-left: -1rem;
         }
@@ -201,7 +201,7 @@
         margin-left: 0;
         margin-top: auto; // Pousse les boutons en bas
         padding-top: 1rem;
-        border-top: 1px solid rgba($secondary, 0.2);
+        border-top: 1px solid rgba(func.color('secondary', 50), 0.2);
       }
     }
   
@@ -217,18 +217,18 @@
     }
   
     &__btn {
-      color: $primary;
-      background-color: $secondary;
+      color: func.color('primary', 500);
+      background-color: func.color('secondary', 50);
       border: none;
       padding: 0.5rem 1rem;
-      border-radius: $border-radius;
+      border-radius: func.border-radius('base');
       text-decoration: none;
       cursor: pointer;
       transition: background-color 0.3s ease, color 0.3s ease;
       font-weight: 500;
   
       &:hover {
-        background-color:  color.adjust($secondary, $lightness: 10%);
+        background-color: func.lighten(func.color('secondary', 50), 10%);
       }
   
       &--login {
@@ -237,21 +237,21 @@
   
       &--register {
         background-color: transparent;
-        color: $secondary;
-        border: 1px solid $secondary;
+        color: func.color('secondary', 50);
+        border: 1px solid func.color('secondary', 50);
   
         &:hover {
-          background-color: $secondary;
-          color: $primary;
+          background-color: func.color('secondary', 50);
+          color: func.color('primary', 500);
         }
       }
   
       &--logout {
-        background-color: $danger;
-        color: $secondary;
+        background-color: func.color('error', 500);
+        color: func.color('secondary', 50);
   
         &:hover {
-          background-color:  color.adjust($danger, $lightness: 10%);
+          background-color: func.lighten(func.color('error', 500), 10%);
         }
       }
   
@@ -276,7 +276,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba($dark, 0.5);
+        background-color: rgba(func.color('secondary', 900), 0.5);
         z-index: 998; // Derrière le menu mais devant le contenu
       }
     }

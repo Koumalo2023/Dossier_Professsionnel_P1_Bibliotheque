@@ -1,71 +1,100 @@
-<form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form">
-    <div class="form-title">{{ formType === 'login' ? 'Connexion' : 'Inscription' }}</div>
-  
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
-  
-    <div class="form-group">
-      <label for="email">Email</label>
+<div class="auth-form-container">
+  <div class="auth-header">
+    <h1 class="auth-title">{{ title }}</h1>
+    <p class="auth-subtitle">{{ subtitle }}</p>
+  </div>
+
+  <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="auth-form">
+    <!-- Nom (uniquement pour l'inscription) -->
+    <mat-form-field appearance="outline" *ngIf="formType === 'register'" class="full-width">
+      <mat-label>Nom complet</mat-label>
+      <input matInput formControlName="name" placeholder="Votre nom complet" required>
+      <mat-icon matSuffix>person</mat-icon>
+      
+      <mat-error *ngIf="name?.hasError('required')">
+        Le nom est obligatoire
+      </mat-error>
+      <mat-error *ngIf="name?.hasError('minlength')">
+        Le nom doit contenir au moins 2 caractères
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" placeholder="votre@email.com" type="email" required>
+      <mat-icon matSuffix>email</mat-icon>
+      
+      <mat-error *ngIf="email?.hasError('required')">
+        L'email est obligatoire
+      </mat-error>
+      <mat-error *ngIf="email?.hasError('email')">
+        Veuillez saisir un email valide
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Mot de passe -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mot de passe</mat-label>
       <input 
-        type="email" 
-        id="email" 
-        formControlName="email" 
-        class="form-control" 
-        [ngClass]="{ 'is-invalid': email?.invalid && (email?.dirty || email?.touched) }"
-        required
-      >
-      <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="invalid-feedback">
-        <div *ngIf="email?.errors?.['required']">L'email est requis.</div>
-        <div *ngIf="email?.errors?.['email']">Veuillez entrer une adresse email valide.</div>
-      </div>
-    </div>
-  
-    <div *ngIf="formType === 'register'" class="form-group">
-      <label for="name">Nom d'utilisateur</label>
-      <input 
-        type="text" 
-        id="name" 
-        formControlName="name" 
-        class="form-control" 
-        [ngClass]="{ 'is-invalid': name?.invalid && (name?.dirty || name?.touched) }"
-        required
-      >
-      <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="invalid-feedback">
-        <div *ngIf="name?.errors?.['required']">Le nom d'utilisateur est requis.</div>
-      </div>
-    </div>
-  
-    <div class="form-group">
-      <label for="password">Mot de passe</label>
-      <input 
-        type="password" 
-        id="password" 
+        matInput 
         formControlName="password" 
-        class="form-control" 
-        [ngClass]="{ 'is-invalid': password?.invalid && (password?.dirty || password?.touched) }"
+        [type]="hidePassword ? 'password' : 'text'" 
+        placeholder="Votre mot de passe" 
         required
       >
-      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="invalid-feedback">
-        <div *ngIf="password?.errors?.['required']">Le mot de passe est requis.</div>
-        <div *ngIf="password?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères.</div>
-      </div>
+      <button 
+        mat-icon-button 
+        matSuffix 
+        type="button"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="hidePassword ? 'Afficher le mot de passe' : 'Masquer le mot de passe'"
+        [attr.aria-pressed]="!hidePassword"
+      >
+        <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+      </button>
+      
+      <mat-error *ngIf="password?.hasError('required')">
+        Le mot de passe est obligatoire
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('minlength')">
+        Le mot de passe doit contenir au moins 6 caractères
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Message d'erreur -->
+    <div *ngIf="errorMessage" class="error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
     </div>
-  
-    <!-- <div *ngIf="formType === 'login'" class="form-group form-check">
-      <input type="checkbox" id="rememberMe" formControlName="rememberMe" class="form-check-input">
-      <label for="rememberMe" class="form-check-label">Se souvenir de moi</label>
-    </div> -->
-  
-    <button type="submit" class="btn btn-primary btn-block" [disabled]="authForm.invalid || loading">
-      <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-      {{ loading ? 'Chargement...' : (formType === 'login' ? 'Se connecter' : 'S\"inscrire') }}
+
+    <!-- Bouton de soumission -->
+    <button 
+      mat-raised-button 
+      color="primary" 
+      type="submit" 
+      class="submit-button full-width"
+      [disabled]="!authForm.valid || loading"
+    >
+      <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+      <span *ngIf="!loading">{{ submitButtonText }}</span>
     </button>
-  
-    <div class="form-links">
-      <a *ngIf="formType === 'login'" routerLink="/register">Pas encore de compte ? S'inscrire</a>
-      <a *ngIf="formType === 'register'" routerLink="/login">Déjà un compte ? Se connecter</a>
-      <!-- Lien mot de passe oublié (optionnel) -->
-      <!-- <a *ngIf="formType === 'login'" routerLink="/forgot-password">Mot de passe oublié ?</a> -->
-    </div>
   </form>
+
+  <!-- Liens de navigation -->
+  <div class="auth-footer">
+    <ng-container *ngIf="formType === 'login'; else registerFooter">
+      <p class="footer-text">
+        Pas encore de compte ? 
+        <a routerLink="/register" class="footer-link">Créer un compte</a>
+      </p>
+    </ng-container>
+    
+    <ng-template #registerFooter>
+      <p class="footer-text">
+        Déjà un compte ? 
+        <a routerLink="/login" class="footer-link">Se connecter</a>
+      </p>
+    </ng-template>
+  </div>
+</div>

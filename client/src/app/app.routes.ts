@@ -18,9 +18,7 @@ import { UserLoansPageComponent } from './features/user/user-loans-page/user-loa
 // Composants administrateur
 import { AdminBookFormPageComponent } from './features/admin/admin-book-form-page/admin-book-form-page.component';
 import { AdminLoansPageComponent } from './features/admin/admin-loans-page/admin-loans-page.component';
-import { AdminStatisticsPageComponent } from './features/admin/admin-statistics-page/admin-statistics-page.component';
-import { authGuard } from './core/guards/auth.guard';
-import { adminGuard } from './core/guards/admin.guard';
+import { AdminStatisticsPageComponent } from './features/admin/admin-statistics-page/admin-statistics-page.component'; 
 import { roleGuard } from './core/guards/role.guard';
 // Composants utilisateur
 

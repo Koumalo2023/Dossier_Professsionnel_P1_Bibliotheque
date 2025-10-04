@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from "rxjs";
 import { environment } from "../../../environments/environment";
-import { CurrentUser, RegisterDto, UserDto, UserInfo } from "../models/user.model";
+import { CurrentUser, RegisterDto, UserDto, UserInfo, LoginResponse } from "../models/user.model";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -20,7 +20,7 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<CurrentUser> {
-    return this.http.post<{token: string, user: UserDto}>(`${this.apiUrl}/Auth/login`, { email, password }).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/Auth/login`, { email, password }).pipe(
       tap(response => this.handleAuthentication(response)),
       map(response => this.convertUserDto(response.user)),
       catchError(error => {
@@ -55,12 +55,37 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  refreshToken(): Observable<LoginResponse> {
+    const token = this.getAccessToken();
+    if (!token) {
+      return throwError(() => new Error('No token available'));
+    }
+    
+    return this.http.post<LoginResponse>(`${this.apiUrl}/Auth/refresh`, { token }).pipe(
+      tap(response => this.handleAuthentication(response)),
+      catchError(error => {
+        this.clearAuthState();
+        return throwError(() => error);
+      })
+    );
+  }
+
   getAccessToken(): string | null {
     return localStorage.getItem('token');
   }
 
   isAuthenticated(): boolean {
-    return !!this.getAccessToken();
+    const token = this.getAccessToken();
+    if (!token) return false;
+    
+    // Vérifier l'expiration du token
+    const tokenExpired = this.isTokenExpired(token);
+    if (tokenExpired) {
+      this.clearAuthState();
+      return false;
+    }
+    
+    return true;
   }
 
   getCurrentUser(): CurrentUser | null {
@@ -91,23 +116,35 @@ export class AuthService {
     
     if (userData && token) {
       try {
+        // Vérifier si le token est expiré
+        if (this.isTokenExpired(token)) {
+          this.clearAuthState();
+          return;
+        }
+
         const user = JSON.parse(userData) as CurrentUser;
         this.currentUserSubject.next({
           ...user,
           createdAt: new Date(user.createdAt),
           updatedAt: new Date(user.updatedAt)
         });
+
+        // Planifier le rafraîchissement automatique du token
+        this.scheduleTokenRefresh(token);
       } catch {
         this.clearAuthState();
       }
     }
   }
 
-  private handleAuthentication(response: {token: string, user: UserDto}): void {
+  private handleAuthentication(response: LoginResponse): void {
     localStorage.setItem('token', response.token);
     const user = this.convertUserDto(response.user);
     localStorage.setItem('currentUser', JSON.stringify(user));
     this.currentUserSubject.next(user);
+
+    // Planifier le rafraîchissement automatique du token
+    this.scheduleTokenRefresh(response.token);
   }
 
   private convertUserDto(userDto: UserDto): CurrentUser {
@@ -131,5 +168,40 @@ export class AuthService {
     }
     
     this.currentUserSubject.next(null);
+  }
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationTime = payload.exp * 1000; // Convertir en millisecondes
+      return Date.now() >= expirationTime;
+    } catch {
+      return true;
+    }
+  }
+
+  private scheduleTokenRefresh(token: string): void {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const expirationTime = payload.exp * 1000;
+      const currentTime = Date.now();
+      const timeUntilExpiry = expirationTime - currentTime;
+      
+      // Rafraîchir le token 5 minutes avant expiration
+      const refreshTime = Math.max(timeUntilExpiry - 5 * 60 * 1000, 0);
+      
+      if (this.tokenTimer) {
+        clearTimeout(this.tokenTimer);
+      }
+      
+      this.tokenTimer = setTimeout(() => {
+        this.refreshToken().subscribe({
+          error: () => this.logout()
+        });
+      }, refreshTime);
+    } catch {
+      // En cas d'erreur de parsing, déconnecter l'utilisateur
+      this.logout();
+    }
   }
 }

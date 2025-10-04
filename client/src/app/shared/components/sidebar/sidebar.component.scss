@@ -1,6 +1,6 @@
-@use 'variables' as *;
-@use 'mixins' as *;
-@use "sass:color";
+@use '../../../../styles/abstract/variables' as *;
+@use '../../../../styles/abstract/mixins' as *;
+@use '../../../../styles/abstract/functions' as func;
 
 .sidebar {
     position: fixed;
@@ -8,11 +8,11 @@
     left: -100%; // Caché par défaut
     width: 280px;
     height: 100vh;
-    background-color: $dark; // Fond sombre pour la sidebar
-    color: $light;
+    background-color: func.color('secondary', 900); // Fond sombre pour la sidebar
+    color: func.color('secondary', 50);
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 10px rgba($dark, 0.2);
+    box-shadow: 4px 0 10px rgba(func.color('secondary', 900), 0.2);
     transition: left 0.3s ease-in-out;
     z-index: 1050; // Au-dessus de la navbar overlay
   
@@ -25,20 +25,20 @@
       justify-content: space-between;
       align-items: center;
       padding: 1rem 1.5rem;
-      border-bottom: 1px solid rgba($light, 0.1);
+      border-bottom: 1px solid rgba(func.color('secondary', 50), 0.1);
     }
   
     &__title {
       font-size: 1.4rem;
       font-weight: 600;
-      color: $secondary;
+      color: func.color('secondary', 50);
       margin: 0;
     }
   
     &__close {
       background: none;
       border: none;
-      color: $light;
+      color: func.color('secondary', 50);
       font-size: 2rem;
       line-height: 1;
       cursor: pointer;
@@ -75,21 +75,21 @@
       display: flex;
       align-items: center;
       padding: 0.75rem 1.5rem;
-      color: $light;
+      color: func.color('secondary', 50);
       text-decoration: none;
       transition: background-color 0.3s ease, color 0.3s ease;
       border-left: 4px solid transparent; // Indicateur actif
   
       &:hover {
-        background-color: rgba($light, 0.1);
-        color: $secondary;
+        background-color: rgba(func.color('secondary', 50), 0.1);
+        color: func.color('secondary', 50);
       }
   
       &.active {
-        background-color: rgba($primary, 0.2);
-        color: $secondary;
+        background-color: rgba(func.color('primary', 500), 0.2);
+        color: func.color('secondary', 50);
         font-weight: 500;
-        border-left-color: $primary;
+        border-left-color: func.color('primary', 500);
       }
     }
   
@@ -104,16 +104,16 @@
       padding: 1rem 1.5rem 0.5rem;
       font-size: 0.8rem;
       text-transform: uppercase;
-      color: $gray-medium;
+      color: func.color('secondary', 400);
       font-weight: 600;
       margin-top: 1rem;
-      border-top: 1px solid rgba($light, 0.1);
+      border-top: 1px solid rgba(func.color('secondary', 50), 0.1);
     }
   
     &__footer {
       padding: 1.5rem;
-      border-top: 1px solid rgba($light, 0.1);
-      background-color:  color.adjust($dark, $lightness: 3%);
+      border-top: 1px solid rgba(func.color('secondary', 50), 0.1);
+      background-color: func.lighten(func.color('secondary', 900), 3%);
     }
   
     &__user {
@@ -123,7 +123,7 @@
   
     &__username {
       font-weight: 500;
-      color: $secondary;
+      color: func.color('secondary', 50);
       display: block;
     }
   
@@ -132,7 +132,7 @@
       width: 100%;
       text-align: center;
       padding: 0.75rem 1rem;
-      border-radius: $border-radius;
+      border-radius: func.border-radius('base');
       text-decoration: none;
       font-weight: 500;
       cursor: pointer;
@@ -140,30 +140,30 @@
       margin-bottom: 0.5rem;
   
       &--login {
-        background-color: $primary;
-        color: $secondary;
-        border: 1px solid $primary;
+        background-color: func.color('primary', 500);
+        color: func.color('secondary', 50);
+        border: 1px solid func.color('primary', 500);
         &:hover {
-          background-color:  color.adjust($primary, $lightness: 10%);
+          background-color: func.lighten(func.color('primary', 500), 10%);
         }
       }
   
       &--register {
         background-color: transparent;
-        color: $secondary;
-        border: 1px solid $secondary;
+        color: func.color('secondary', 50);
+        border: 1px solid func.color('secondary', 50);
         &:hover {
-          background-color: $secondary;
-          color: $dark;
+          background-color: func.color('secondary', 50);
+          color: func.color('secondary', 900);
         }
       }
   
       &--logout {
-        background-color: $danger;
-        color: $secondary;
-        border: 1px solid $danger;
+        background-color: func.color('error', 500);
+        color: func.color('secondary', 50);
+        border: 1px solid func.color('error', 500);
         &:hover {
-          background-color:  color.adjust($danger, $lightness: 10%);
+          background-color: func.lighten(func.color('error', 500), 10%);
         }
       }
   
@@ -178,7 +178,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba($dark, 0.6);
+      background-color: rgba(func.color('secondary', 900), 0.6);
       z-index: 1040; // Derrière la sidebar mais devant le contenu
       cursor: pointer;
     }

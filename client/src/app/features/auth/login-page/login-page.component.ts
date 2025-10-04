@@ -4,11 +4,11 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginDto } from '../../../core/models/user.model';
 import { AuthService } from '../../../core/services/auth.service';
-import { FormBuilder, Validators } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-login-page',
-    imports: [CommonModule, RouterModule, AuthFormComponent],
+    imports: [CommonModule, RouterModule, AuthFormComponent, MatIconModule],
     templateUrl: './login-page.component.html',
     styleUrl: './login-page.component.scss'
 })

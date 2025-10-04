@@ -12,8 +12,8 @@
 /// Mixin pour les media queries mobile-first
 /// @param {String} $breakpoint - Nom du breakpoint
 @mixin respond-to($breakpoint) {
-  @if map-has-key(vars.$breakpoints, $breakpoint) {
-    @media (min-width: map-get(vars.$breakpoints, $breakpoint)) {
+  @if map.has-key(vars.$breakpoints, $breakpoint) {
+    @media (min-width: map.get(vars.$breakpoints, $breakpoint)) {
       @content;
     }
   } @else {
@@ -23,7 +23,7 @@
 
 /// Mixin pour cibler uniquement les appareils mobiles
 @mixin mobile-only {
-  @media (max-width: #{map-get(vars.$breakpoints, 'md') - 1px}) {
+  @media (max-width: #{map.get(vars.$breakpoints, 'md') - 1px}) {
     @content;
   }
 }
@@ -39,6 +39,46 @@
 @mixin desktop-up {
   @include respond-to('lg') {
     @content;
+  }
+}
+
+// =============================================================================
+// Mixins de Breakpoints (compatibilité Bootstrap)
+// =============================================================================
+
+/// Mixin pour media query mobile-first (alias de respond-to)
+/// @param {String} $breakpoint - Nom du breakpoint
+@mixin media-breakpoint-up($breakpoint) {
+  @include respond-to($breakpoint) {
+    @content;
+  }
+}
+
+/// Mixin pour media query desktop-first
+/// @param {String} $breakpoint - Nom du breakpoint
+@mixin media-breakpoint-down($breakpoint) {
+  @if map.has-key(vars.$breakpoints, $breakpoint) {
+    $max-width: map.get(vars.$breakpoints, $breakpoint) - 0.02px;
+    @media (max-width: #{$max-width}) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` n'existe pas dans `$breakpoints`.";
+  }
+}
+
+/// Mixin pour media query entre deux breakpoints
+/// @param {String} $lower - Breakpoint inférieur
+/// @param {String} $upper - Breakpoint supérieur
+@mixin media-breakpoint-between($lower, $upper) {
+  @if map.has-key(vars.$breakpoints, $lower) and map.has-key(vars.$breakpoints, $upper) {
+    $min-width: map.get(vars.$breakpoints, $lower);
+    $max-width: map.get(vars.$breakpoints, $upper) - 0.02px;
+    @media (min-width: #{$min-width}) and (max-width: #{$max-width}) {
+      @content;
+    }
+  } @else {
+    @warn "Breakpoint `#{$lower}` ou `#{$upper}` n'existe pas dans `$breakpoints`.";
   }
 }
 
