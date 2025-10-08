@@ -1,40 +1,38 @@
-<div class="login-page">
-  <div class="page-container">
-    <!-- Header -->
-    <header class="page-header">
-      <h1 class="page-title">Bienvenue à la Bibliothèque</h1>
-      <p class="page-subtitle">Accédez à votre espace personnel</p>
-    </header>
+<div class="login-content">
+  <!-- Header -->
+  <header class="auth-header">
+    <h1 class="auth-title">Bienvenue à la Bibliothèque</h1>
+    <p class="auth-subtitle">Accédez à votre espace personnel</p>
+  </header>
 
-    <!-- Formulaire de connexion -->
-    <div class="form-section">
-      <app-auth-form
-        formType="login"
-        [loading]="loading"
-        [errorMessage]="errorMessage"
-        (formSubmit)="onLogin($event)">
-      </app-auth-form>
+  <!-- Formulaire de connexion -->
+  <div class="form-section">
+    <app-auth-form
+      formType="login"
+      [loading]="loading"
+      [errorMessage]="errorMessage"
+      (formSubmit)="onLogin($event)">
+    </app-auth-form>
+  </div>
+
+  <!-- Informations supplémentaires -->
+  <div class="info-section">
+    <div class="info-card">
+      <mat-icon class="info-icon">book</mat-icon>
+      <h3>Explorez notre catalogue</h3>
+      <p>Accédez à des milliers de livres dans tous les genres</p>
     </div>
-
-    <!-- Informations supplémentaires -->
-    <div class="info-section">
-      <div class="info-card">
-        <mat-icon class="info-icon">book</mat-icon>
-        <h3>Explorez notre catalogue</h3>
-        <p>Accédez à des milliers de livres dans tous les genres</p>
-      </div>
-      
-      <div class="info-card">
-        <mat-icon class="info-icon">schedule</mat-icon>
-        <h3>Gérez vos emprunts</h3>
-        <p>Suivez vos livres empruntés et leurs dates de retour</p>
-      </div>
-      
-      <div class="info-card">
-        <mat-icon class="info-icon">favorite</mat-icon>
-        <h3>Personnalisez votre expérience</h3>
-        <p>Créez votre liste de souhaits et recevez des recommandations</p>
-      </div>
+    
+    <div class="info-card">
+      <mat-icon class="info-icon">schedule</mat-icon>
+      <h3>Gérez vos emprunts</h3>
+      <p>Suivez vos livres empruntés et leurs dates de retour</p>
+    </div>
+    
+    <div class="info-card">
+      <mat-icon class="info-icon">favorite</mat-icon>
+      <h3>Personnalisez votre expérience</h3>
+      <p>Créez votre liste de souhaits et recevez des recommandations</p>
     </div>
   </div>
 </div>

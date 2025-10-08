@@ -10,6 +10,9 @@ import { AccessDeniedPageComponent } from './features/public/access-denied-page/
 import { LoginPageComponent } from './features/auth/login-page/login-page.component';
 import { RegisterPageComponent } from './features/auth/register-page/register-page.component';
 
+// Layouts
+import { AuthLayoutComponent } from './core/layouts/auth-layout/auth-layout.component';
+
 
 // Composants utilisateur
 import { ProfilePageComponent } from './features/user/profile-page/profile-page.component';
@@ -24,46 +27,54 @@ import { roleGuard } from './core/guards/role.guard';
 
 // Composants administrateur
 export const routes: Routes = [
-    // Routes publiques
+    // Routes d'authentification avec layout spécifique (sans header/footer)
+    // Ces routes utilisent AuthLayoutComponent comme layout racine
+    {
+      path: 'auth',
+      component: AuthLayoutComponent,
+      children: [
+        { path: 'login', component: LoginPageComponent },
+        { path: 'register', component: RegisterPageComponent },
+      ]
+    },
+    
+    // Routes publiques (avec header/footer)
+    // Ces routes utilisent le layout principal de AppComponent
     { path: '', component: LandingPageComponent },
     { path: 'books', component: BookListPageComponent },
     { path: 'books/:id', component: BookDetailPageComponent },
     { path: 'access-denied', component: AccessDeniedPageComponent },
     
-    // Routes d'authentification
-    { path: 'login', component: LoginPageComponent },
-    { path: 'register', component: RegisterPageComponent },
-    
     // Routes utilisateur (protégées par authGuard)
-    { 
-      path: 'profile', 
+    {
+      path: 'profile',
       component: ProfilePageComponent,
        canActivate: [roleGuard(['Manager', 'User', 'Admin'])],
     },
-    { 
-      path: 'profile/loans', 
+    {
+      path: 'profile/loans',
       component: UserLoansPageComponent,
       canActivate: [roleGuard(['Manager', 'User', 'Admin'])],
     },
     
     // Routes administrateur (protégées par adminGuard)
-    { 
-      path: 'admin/books/new', 
+    {
+      path: 'admin/books/new',
       component: AdminBookFormPageComponent,
       canActivate: [roleGuard(['Manager', 'Admin'])],
     },
-    { 
-      path: 'admin/books/:id/edit', 
+    {
+      path: 'admin/books/:id/edit',
       component: AdminBookFormPageComponent,
       canActivate: [roleGuard(['Manager', 'Admin'])],
     },
-    { 
-      path: 'admin/loans', 
+    {
+      path: 'admin/loans',
       component: AdminLoansPageComponent,
       canActivate: [roleGuard(['Manager', 'Admin'])],
     },
-    { 
-      path: 'admin/statistics', 
+    {
+      path: 'admin/statistics',
       component: AdminStatisticsPageComponent,
       canActivate: [roleGuard(['Manager', 'Admin'])],
     },

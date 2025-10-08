@@ -44,8 +44,8 @@
   
         <div class="navbar__auth">
           <ng-container *ngIf="!userInfo.isLoggedIn">
-            <a routerLink="/login" routerLinkActive="active" class="navbar__btn navbar__btn--login" (click)="closeMobileMenu()">Connexion</a>
-            <a routerLink="/register" routerLinkActive="active" class="navbar__btn navbar__btn--register" (click)="closeMobileMenu()">Inscription</a>
+            <a routerLink="/auth/login" routerLinkActive="active" class="navbar__btn navbar__btn--login" (click)="closeMobileMenu()">Connexion</a>
+            <a routerLink="/auth/register" routerLinkActive="active" class="navbar__btn navbar__btn--register" (click)="closeMobileMenu()">Inscription</a>
           </ng-container>
           <ng-container *ngIf="userInfo.isLoggedIn">
             <span class="navbar__username">{{ userInfo.username }}</span>

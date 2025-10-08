@@ -85,15 +85,15 @@
   <div class="auth-footer">
     <ng-container *ngIf="formType === 'login'; else registerFooter">
       <p class="footer-text">
-        Pas encore de compte ? 
-        <a routerLink="/register" class="footer-link">Créer un compte</a>
+        Pas encore de compte ?
+        <a routerLink="/auth/register" class="footer-link">Créer un compte</a>
       </p>
     </ng-container>
     
     <ng-template #registerFooter>
       <p class="footer-text">
-        Déjà un compte ? 
-        <a routerLink="/login" class="footer-link">Se connecter</a>
+        Déjà un compte ?
+        <a routerLink="/auth/login" class="footer-link">Se connecter</a>
       </p>
     </ng-template>
   </div>

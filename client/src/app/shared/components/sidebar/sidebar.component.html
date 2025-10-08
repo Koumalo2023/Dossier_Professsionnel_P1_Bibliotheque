@@ -67,8 +67,8 @@
   
     <div class="sidebar__footer">
       <ng-container *ngIf="!userInfo.isLoggedIn">
-        <a routerLink="/login" class="sidebar__btn sidebar__btn--login" (click)="onNavLinkClick()">Connexion</a>
-        <a routerLink="/register" class="sidebar__btn sidebar__btn--register" (click)="onNavLinkClick()">Inscription</a>
+        <a routerLink="/auth/login" class="sidebar__btn sidebar__btn--login" (click)="onNavLinkClick()">Connexion</a>
+        <a routerLink="/auth/register" class="sidebar__btn sidebar__btn--register" (click)="onNavLinkClick()">Inscription</a>
       </ng-container>
       <ng-container *ngIf="userInfo.isLoggedIn">
         <div class="sidebar__user">

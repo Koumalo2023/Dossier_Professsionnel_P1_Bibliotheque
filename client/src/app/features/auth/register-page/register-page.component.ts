@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthFormComponent, AuthFormData } from '../../../shared/components/auth-form/auth-form.component';
 import { AuthService } from '../../../core/services/auth.service';
-import { RegisterDto } from '../../../core/models/user.model';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({

@@ -4,6 +4,7 @@
 
 @use 'sass:math';
 @use 'sass:map';
+@use 'sass:color';
 @use 'variables' as vars;
 
 // =============================================================================
@@ -47,7 +48,7 @@
 /// @param {Number} $amount - Pourcentage d'assombrissement
 /// @return {Color} Couleur assombrie
 @function darken($color, $amount) {
-  @return adjust-color($color, $lightness: -$amount);
+  @return color.adjust($color, $lightness: -$amount);
 }
 
 /// Fonction pour éclaircir une couleur
@@ -55,7 +56,7 @@
 /// @param {Number} $amount - Pourcentage d'éclaircissement
 /// @return {Color} Couleur éclaircie
 @function lighten($color, $amount) {
-  @return adjust-color($color, $lightness: $amount);
+  @return color.adjust($color, $lightness: $amount);
 }
 
 /// Fonction pour ajuster la transparence
