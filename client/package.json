@@ -20,7 +20,7 @@
     "@angular/router": "^19.2.9",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "bootstrap": "^5.3.8",
-    "chart.js": "^4.4.9",
+    "chart.js": "^4.5.0",
     "library-management-client": "file:",
     "ng2-charts": "^8.0.0",
     "rxjs": "~7.8.0",
