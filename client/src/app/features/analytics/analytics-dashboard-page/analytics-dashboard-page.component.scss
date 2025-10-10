@@ -1,0 +1,24 @@
+.analytics-dashboard-page {
+  padding: 2rem;
+  
+  h1 {
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  .dashboard-content {
+    display: grid;
+    gap: 2rem;
+    
+    .kpi-section, .charts-section {
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      
+      h2 {
+        margin-bottom: 1rem;
+        color: #495057;
+      }
+    }
+  }
+}

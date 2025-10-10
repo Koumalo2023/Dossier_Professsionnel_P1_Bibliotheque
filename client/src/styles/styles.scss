@@ -3,18 +3,10 @@
 // Design System unifié et cohérent
 // =============================================================================
 
-// Import Angular Material theming
-@use '@angular/material' as mat;
-
 // =============================================================================
 // Abstracts (Variables, Mixins, Functions)
 // =============================================================================
 @use 'abstract' as abstracts;
-
-// =============================================================================
-// Base Styles (Reset, Typography, Global)
-// =============================================================================
-@use 'base' as base;
 
 // =============================================================================
 // Layouts (Grid, Header, Sidebar)
@@ -27,347 +19,136 @@
 @use 'themes' as themes;
 
 // =============================================================================
-// Utilities (Spacing, Display, Flexbox)
-// =============================================================================
-@use 'utilities' as utilities;
-
-// =============================================================================
 // Variables CSS globales
 // =============================================================================
-
-:root {
-  // Couleurs principales
-  --color-primary: #{abstracts.color('primary', 700)};
-  --color-primary-dark: #{abstracts.color('primary', 800)};
-  --color-primary-light: #{abstracts.color('primary', 400)};
-  --color-accent: #{abstracts.color('secondary', 800)};
-  --color-warn: #{abstracts.color('error', 500)};
-  --color-success: #{abstracts.color('success', 500)};
-  --color-warning: #{abstracts.color('warning', 500)};
-  
-  // Textes
-  --color-text-primary: #{abstracts.$color-text-primary};
-  --color-text-secondary: #{abstracts.$color-text-secondary};
-  --color-text-muted: #{abstracts.$color-text-muted};
-  
-  // Backgrounds
-  --color-background: #{abstracts.$color-background};
-  --color-surface: #{abstracts.$color-surface};
-  --color-border: #{abstracts.$color-border};
-  
-  // Espacement
-  --spacing-0: #{abstracts.spacing(0)};
-  --spacing-1: #{abstracts.spacing(1)};
-  --spacing-2: #{abstracts.spacing(2)};
-  --spacing-3: #{abstracts.spacing(3)};
-  --spacing-4: #{abstracts.spacing(4)};
-  --spacing-5: #{abstracts.spacing(5)};
-  --spacing-6: #{abstracts.spacing(6)};
-  --spacing-7: #{abstracts.spacing(7)};
-  --spacing-8: #{abstracts.spacing(8)};
-  
-  // Typographie
-  --font-family-base: #{abstracts.$font-family-base};
-  --font-family-heading: #{abstracts.$font-family-heading};
-  
-  // Bordures
-  --border-radius-none: #{abstracts.border-radius('none')};
-  --border-radius-sm: #{abstracts.border-radius('sm')};
-  --border-radius-base: #{abstracts.border-radius('base')};
-  --border-radius-md: #{abstracts.border-radius('md')};
-  --border-radius-lg: #{abstracts.border-radius('lg')};
-  --border-radius-xl: #{abstracts.border-radius('xl')};
-  --border-radius-2xl: #{abstracts.border-radius('2xl')};
-  --border-radius-full: #{abstracts.border-radius('full')};
-  
-  // Ombres
-  --shadow-sm: #{abstracts.shadow('sm')};
-  --shadow-base: #{abstracts.shadow('base')};
-  --shadow-md: #{abstracts.shadow('md')};
-  --shadow-lg: #{abstracts.shadow('lg')};
-  --shadow-xl: #{abstracts.shadow('xl')};
+// ──────────────────────────────────────
+// 🧱 RESET GLOBAL (léger, non destructif)
+// ──────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-// =============================================================================
-// Thème Angular Material
-// =============================================================================
+html {
+  scroll-behavior: smooth; // 🖱️ Scroll doux
+  font-size: 16px;
+}
 
-// Commenté temporairement - nécessite Angular Material correctement configuré
-// $bibliotheque-primary: mat.define-palette(mat.$indigo-palette);
-// $bibliotheque-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-// $bibliotheque-warn: mat.define-palette(mat.$red-palette);
-
-// $bibliotheque-theme: mat.define-light-theme((
-//   color: (
-//     primary: $bibliotheque-primary,
-//     accent: $bibliotheque-accent,
-//     warn: $bibliotheque-warn,
-//   ),
-//   typography: mat.define-typography-config(),
-//   density: 0,
-// ));
-
-// @include mat.core();
-// @include mat.all-component-themes($bibliotheque-theme);
-
-// =============================================================================
-// Styles globaux de l'application
-// =============================================================================
-
-// Application container
-.app-container {
+body {
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  background-color: get-config('background', 'colors');
+  color: get-config('text-primary', 'colors');
+  font-family: get-config('family-base', 'typography');
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-// Main content area
-.main-content {
-  flex: 1;
-  padding: abstracts.spacing(4) 0;
+// Supprime les styles par défaut gênants, sans casser Bootstrap
+h1, h2, h3, h4, h5, h6, p, ul, ol, blockquote {
+  margin-top: 0;
+  margin-bottom: get-config(4, 'spacing');
 }
 
-// Page transitions
-.page-enter {
-  opacity: 0;
-  transform: translateY(20px);
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.page-enter-active {
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+// ──────────────────────────────────────
+// 🌐 STYLE DE BASE
+// ──────────────────────────────────────
+
+// Typographie globale
+h1 { font-size: font-size('h1'); font-weight: 700; color: get-config('primary', 'colors'); }
+h2 { font-size: font-size('h2'); font-weight: 700; color: get-config('primary', 'colors'); }
+h3 { font-size: font-size('h3'); font-weight: 600; }
+h4 { font-size: font-size('h4'); font-weight: 600; }
+h5 { font-size: font-size('h5'); font-weight: 600; }
+h6 { font-size: font-size('h6'); font-weight: 600; }
+
+p, li, label, input, select, button {
+  font-size: font-size('body');
+}
+
+// Boutons par défaut (optionnel – les composants utiliseront les mixins)
+button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+// Placeholder pour les inputs
+::placeholder {
+  color: get-config('text-secondary', 'colors');
   opacity: 1;
-  transform: translateY(0);
-  transition: all abstracts.transition-duration('normal') abstracts.transition-timing('ease-out');
 }
 
-.page-exit {
-  opacity: 1;
-  transform: translateY(0);
+// Focus accessibilité
+*:focus-visible {
+  outline: 2px solid get-config('primary', 'colors');
+  outline-offset: 2px;
 }
 
-.page-exit-active {
-  opacity: 0;
-  transform: translateY(-20px);
-  transition: all abstracts.transition-duration('normal') abstracts.transition-timing('ease-in');
+// ──────────────────────────────────────
+// 📱 UTILITAIRES GLOBAUX (optionnels)
+// ──────────────────────────────────────
+
+// Classe utilitaire pour les cartes partout
+.card-style {
+  @include card-style;
 }
 
-// =============================================================================
-// Composants spécifiques à l'application
-// =============================================================================
+// Classe utilitaire pour les boutons primaires
+.btn-primary-style {
+  @include button-variant('primary');
+}
 
-// Loading states
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(abstracts.$color-background, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: abstracts.z-index('modal');
-  
-  .loading-spinner {
-    width: abstracts.spacing(8);
-    height: abstracts.spacing(8);
-    border: 4px solid abstracts.color('secondary', 200);
-    border-top: 4px solid abstracts.color('primary', 600);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+// Classe utilitaire pour les badges de statut
+.badge-available {
+  @include badge-style('success');
+}
+.badge-unavailable {
+  @include badge-style('danger');
+}
+
+// Animation fade-in globale
+.fade-in {
+  @include fade-in;
+}
+
+// ──────────────────────────────────────
+// 🧩 INTEGRATION AVEC BOOTSTRAP (optionnel)
+// On ne réinitialise PAS Bootstrap, mais on surcharge ses classes si nécessaire
+// Exemple : on remplace les boutons Bootstrap par notre style
+.btn {
+  &.btn-primary {
+    @include button-variant('primary');
   }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// Empty states
-.empty-state {
-  text-align: center;
-  padding: abstracts.spacing(8) abstracts.spacing(4);
-  color: abstracts.$color-text-muted;
-  
-  &-icon {
-    font-size: abstracts.font-size('5xl');
-    margin-bottom: abstracts.spacing(4);
-    opacity: 0.5;
+  &.btn-outline-primary {
+    @include button-outline('primary');
   }
-  
-  &-title {
-    @include abstracts.text-size('xl');
-    @include abstracts.text-weight('semibold');
-    margin-bottom: abstracts.spacing(2);
+  &.btn-secondary {
+    @include button-variant('secondary');
   }
-  
-  &-description {
-    @include abstracts.text-size('base');
-    margin-bottom: abstracts.spacing(4);
+  &.btn-success {
+    @include button-variant('success');
+  }
+  &.btn-danger {
+    @include button-variant('danger');
   }
 }
 
-// Error states
-.error-state {
-  text-align: center;
-  padding: abstracts.spacing(8) abstracts.spacing(4);
-  color: abstracts.color('error', 600);
-  
-  &-icon {
-    font-size: abstracts.font-size('5xl');
-    margin-bottom: abstracts.spacing(4);
-  }
-  
-  &-title {
-    @include abstracts.text-size('xl');
-    @include abstracts.text-weight('semibold');
-    margin-bottom: abstracts.spacing(2);
-  }
-  
-  &-description {
-    @include abstracts.text-size('base');
-    margin-bottom: abstracts.spacing(4);
-    color: abstracts.$color-text-secondary;
-  }
-}
-
-// =============================================================================
-// Responsive utilities supplémentaires
-// =============================================================================
-
-// Container responsive amélioré
-.container {
-  @include abstracts.container;
-  
-  &-narrow {
-    @include abstracts.container;
-    max-width: 800px;
-  }
-  
-  &-wide {
-    @include abstracts.container;
-    max-width: 1400px;
-  }
-}
-
-// =============================================================================
-// Accessibilité améliorée
-// =============================================================================
-
-// Focus management amélioré
-.focus-visible {
-  @include abstracts.focus-visible;
-}
-
-// Skip link amélioré
-.skip-link {
-  @include abstracts.sr-only;
-  
-  &:focus {
-    position: fixed;
-    top: abstracts.spacing(2);
-    left: abstracts.spacing(2);
-    z-index: abstracts.z-index('dropdown');
-    background: abstracts.$color-background;
-    padding: abstracts.spacing(2) abstracts.spacing(3);
-    @include abstracts.shadow('lg');
-    border: 2px solid abstracts.color('primary', 600);
-  }
-}
-
-// =============================================================================
-// Support pour les préférences utilisateur
-// =============================================================================
-
-// Mode contraste élevé
-@media (prefers-contrast: high) {
-  :root {
-    --color-border: #{abstracts.$color-text-primary};
-  }
-  
-  .card {
-    border-width: 2px;
-  }
-  
-  .btn {
-    border-width: 2px;
-  }
-  
-  .nav-link {
-    border: 1px solid transparent;
-    
-    &:hover,
-    &:focus {
-      border-color: abstracts.$color-text-primary;
-    }
-  }
-}
-
-// Mode mouvement réduit
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  
-  .loading-spinner {
-    animation: none;
-    border: 4px solid abstracts.color('secondary', 200);
-  }
-}
-
-// =============================================================================
-// Styles d'impression
-// =============================================================================
-
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  .print-break {
-    page-break-before: always;
-  }
-  
-  .card {
-    border: 1px solid #000;
-    box-shadow: none;
-  }
-  
-  .btn {
-    border: 1px solid #000;
-    background: none !important;
-    color: #000 !important;
-  }
-  
-  // Améliorer la lisibilité à l'impression
-  * {
-    color: #000 !important;
-    background: white !important;
-  }
-}
-
-// =============================================================================
-// Styles de débogage (à supprimer en production)
-// =============================================================================
-
-.debug {
-  &-border {
-    border: 1px solid red !important;
-  }
-  
-  &-border-2 {
-    border: 2px solid blue !important;
-  }
-  
-  &-border-3 {
-    border: 3px solid green !important;
-  }
-  
-  &-grid * {
-    border: 1px dashed rgba(255, 0, 0, 0.3) !important;
-  }
+// Surcharge légère des cards Bootstrap
+.card {
+  @include card-style;
+  border: none;
 }

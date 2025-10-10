@@ -1,0 +1,21 @@
+<div class="toast-container">
+  @for (toast of toasts | async; track toast.id) {
+    <div class="toast toast--{{ toast.type }}" [@slideIn]>
+      <div class="toast__icon">
+        @if (toast.type === 'success') {
+          <app-icon name="fa-check-circle" color="success" size="lg"></app-icon>
+        } @else if (toast.type === 'error') {
+          <app-icon name="fa-exclamation-circle" color="danger" size="lg"></app-icon>
+        } @else if (toast.type === 'warning') {
+          <app-icon name="fa-exclamation-triangle" color="accent" size="lg"></app-icon>
+        } @else {
+          <app-icon name="fa-info-circle" color="primary" size="lg"></app-icon>
+        }
+      </div>
+      <div class="toast__message">{{ toast.message }}</div>
+      <button class="toast__close" (click)="toastService.removeToast(toast.id)">
+        <app-icon name="fa-times" size="sm" color="text-secondary"></app-icon>
+      </button>
+    </div>
+  }
+</div>

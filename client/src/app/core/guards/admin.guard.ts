@@ -14,7 +14,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
     
     // Ensuite vérifier le rôle admin
     if (!authService.isAdmin()) {
-      router.navigate(['/unauthorized']);
+      router.navigate(['/access-denied']);
       return false;
     }
     

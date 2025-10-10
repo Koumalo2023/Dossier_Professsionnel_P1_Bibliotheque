@@ -1,358 +1,321 @@
-// =============================================================================
-// Dark Theme - Bibliothèque
-// Thème sombre pour l'application
-// =============================================================================
+// ┌──────────────────────────────────────┐
+// │ 🌙 THÈME SOMBRE - Bibliothèque       │
+// └──────────────────────────────────────┘
 
-@use '../abstract' as abstracts;
+@use '../abstract/variables' as *;
+@use '../abstract/mixins' as *;
+@use '../abstract/functions' as *;
 
-// =============================================================================
-// Variables du thème sombre
-// =============================================================================
-
-[data-theme="dark"] {
-  // Couleurs de base
-  --color-background: #{abstracts.color('secondary', 900)};
-  --color-surface: #{abstracts.color('secondary', 800)};
-  --color-primary: #{abstracts.color('primary', 400)};
-  --color-primary-dark: #{abstracts.color('primary', 600)};
-  --color-primary-light: #{abstracts.color('primary', 200)};
-  --color-secondary: #{abstracts.color('secondary', 400)};
-  --color-success: #{abstracts.color('success', 400)};
-  --color-warning: #{abstracts.color('warning', 400)};
-  --color-error: #{abstracts.color('error', 400)};
+// Variables spécifiques au thème sombre
+:root.dark-theme, .dark-theme {
+  // 🌈 COULEURS PRIMAIRE (légèrement ajustées pour le contraste)
+  --color-primary: #{color-variant('primary', 'light')};
+  --color-primary-light: #{color-variant('primary-light', 'light')};
+  --color-secondary: #{color-variant('secondary', 'light')};
+  --color-accent: #{get-config('accent', 'colors')};
   
-  // Couleurs de texte
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #{abstracts.color('secondary', 300)};
-  --color-text-muted: #{abstracts.color('secondary', 400)};
-  --color-text-on-primary: #{abstracts.color('secondary', 900)};
-  --color-text-on-secondary: #ffffff;
+  // 🎨 COULEURS FONCTIONNELLES
+  --color-success: #{color-variant('success', 'light')};
+  --color-danger: #{color-variant('danger', 'light')};
+  --color-warning: #{color-variant('warning', 'light')};
+  --color-info: #{color-variant('info', 'light')};
   
-  // Couleurs de bordure
-  --color-border: #{abstracts.color('secondary', 700)};
-  --color-border-light: #{abstracts.color('secondary', 600)};
-  --color-border-dark: #{abstracts.color('secondary', 800)};
+  // 🌫️ COULEURS NEUTRES (inversées pour le dark mode)
+  --color-background: #0f172a;
+  --color-light-bg: #1e293b;
+  --color-border: #334155;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-dark: #020617;
   
-  // Couleurs d'état
-  --color-hover: #{abstracts.color('secondary', 700)};
-  --color-active: #{abstracts.color('primary', 800)};
-  --color-focus: #{abstracts.color('primary', 600)};
-  --color-disabled: #{abstracts.color('secondary', 600)};
-  
-  // Couleurs d'élévation
-  --color-elevation-1: #{abstracts.color('secondary', 800)};
-  --color-elevation-2: #{abstracts.color('secondary', 700)};
-  --color-elevation-3: #{abstracts.color('secondary', 600)};
-  
-  // Ombres
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-  
-  // Overlay
+  // 🎭 COULEURS SPÉCIALES
+  --color-card-bg: #1e293b;
+  --color-navbar-bg: rgba(15, 23, 42, 0.95);
+  --color-sidebar-bg: #1e293b;
+  --color-footer-bg: #0f172a;
   --color-overlay: rgba(0, 0, 0, 0.7);
-  --color-backdrop: rgba(0, 0, 0, 0.3);
+  
+  // 📐 OMBRES (plus prononcées en dark mode)
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 8px 25px rgba(0, 0, 0, 0.4);
+  --shadow-navbar: 0 2px 20px rgba(0, 0, 0, 0.4);
+  --shadow-sidebar: 2px 0 20px rgba(0, 0, 0, 0.3);
 }
 
-// =============================================================================
-// Styles spécifiques au thème sombre
-// =============================================================================
-
-[data-theme="dark"] {
-  // Backgrounds
+// Styles globaux pour le thème sombre
+.dark-theme {
   background-color: var(--color-background);
   color: var(--color-text-primary);
   
-  // Cards
-  .card {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-    box-shadow: var(--shadow-base);
+  // 🏷️ BADGES DE STATUT
+  .status-badge {
+    &--available {
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+    }
     
-    &-elevated {
-      background-color: var(--color-elevation-1);
-      box-shadow: var(--shadow-md);
+    &--borrowed {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+    
+    &--reserved {
+      background: rgba(14, 165, 233, 0.2);
+      color: #38bdf8;
+    }
+    
+    &--maintenance {
+      background: rgba(220, 38, 38, 0.2);
+      color: #f87171;
     }
   }
   
-  // Buttons
-  .btn {
-    &-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-primary-dark);
-      }
+  // 📚 CARTES DE LIVRE
+  .book-card {
+    @include card-style;
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    
+    &__cover {
+      border-radius: get-config('base', 'border-radius');
+      box-shadow: get-config('sm', 'shadows');
     }
     
-    &-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-text-on-secondary);
-      border-color: var(--color-border);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-hover);
-      }
+    &__title {
+      color: var(--color-text-primary);
+      font-weight: get-config('weight-semibold', 'typography');
     }
     
-    &-outline {
-      background-color: transparent;
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-primary);
-        color: var(--color-text-on-primary);
-      }
+    &__author {
+      color: var(--color-text-secondary);
+    }
+    
+    &__actions {
+      border-top: 1px solid var(--color-border);
+      background: rgba(255, 255, 255, 0.05);
     }
   }
   
-  // Forms
-  .form-control {
-    background-color: var(--color-surface);
+  // 🔍 BARRE DE RECHERCHE
+  .search-bar {
+    @include search-bar-style;
+    background: var(--color-light-bg);
     border-color: var(--color-border);
     color: var(--color-text-primary);
     
+    &::placeholder {
+      color: var(--color-text-secondary);
+    }
+    
     &:focus {
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-focus);
-    }
-    
-    &::placeholder {
-      color: var(--color-text-muted);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
     }
   }
   
-  // Navigation
-  .nav-link {
-    color: var(--color-text-secondary);
-    
-    &:hover,
-    &:focus {
-      color: var(--color-text-primary);
-      background-color: var(--color-hover);
-    }
-    
-    &.active {
-      color: var(--color-primary);
-      background-color: var(--color-active);
-    }
-  }
-  
-  // Tables
-  .table {
-    background-color: var(--color-surface);
+  // 📊 TABLEAUX
+  .data-table {
+    background: var(--color-card-bg);
+    border-radius: get-config('lg', 'border-radius');
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
     
     th {
-      background-color: var(--color-elevation-1);
+      background: var(--color-light-bg);
       color: var(--color-text-primary);
+      font-weight: get-config('weight-semibold', 'typography');
+      border-bottom: 1px solid var(--color-border);
     }
     
     td {
-      border-bottom-color: var(--color-border-light);
+      border-bottom: 1px solid var(--color-border);
       color: var(--color-text-secondary);
     }
     
     tr:hover {
-      background-color: var(--color-hover);
+      background: rgba(255, 255, 255, 0.05);
     }
   }
   
-  // Alerts
-  .alert {
-    &-success {
-      background-color: #{abstracts.color('success', 900)};
-      border-color: #{abstracts.color('success', 700)};
-      color: #{abstracts.color('success', 200)};
-    }
+  // 📱 NAVIGATION
+  .navbar {
+    background: var(--color-navbar-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-navbar);
+    border-bottom: 1px solid var(--color-border);
     
-    &-warning {
-      background-color: #{abstracts.color('warning', 900)};
-      border-color: #{abstracts.color('warning', 700)};
-      color: #{abstracts.color('warning', 200)};
-    }
-    
-    &-error {
-      background-color: #{abstracts.color('error', 900)};
-      border-color: #{abstracts.color('error', 700)};
-      color: #{abstracts.color('error', 200)};
-    }
-    
-    &-info {
-      background-color: #{abstracts.color('primary', 900)};
-      border-color: #{abstracts.color('primary', 700)};
-      color: #{abstracts.color('primary', 200)};
-    }
-  }
-  
-  // Modals & Dialogs
-  .modal,
-  .dialog {
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-xl);
-    
-    &-backdrop {
-      background-color: var(--color-backdrop);
-    }
-  }
-  
-  // Tooltips
-  .tooltip {
-    background-color: var(--color-text-primary);
-    color: var(--color-background);
-    
-    &::before {
-      border-top-color: var(--color-text-primary);
-    }
-  }
-  
-  // Progress bars
-  .progress {
-    background-color: var(--color-border-light);
-    
-    &-bar {
-      background-color: var(--color-primary);
-    }
-  }
-  
-  // Badges
-  .badge {
-    &-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
-    }
-    
-    &-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-text-on-secondary);
-    }
-    
-    &-success {
-      background-color: var(--color-success);
-      color: white;
-    }
-    
-    &-warning {
-      background-color: var(--color-warning);
-      color: black;
-    }
-    
-    &-error {
-      background-color: var(--color-error);
-      color: white;
-    }
-  }
-  
-  // Avatars
-  .avatar {
-    background-color: var(--color-border-light);
-    color: var(--color-text-muted);
-  }
-  
-  // Dividers
-  .divider {
-    background-color: var(--color-border);
-  }
-  
-  // Skeleton
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--color-border-light) 25%,
-      var(--color-border) 50%,
-      var(--color-border-light) 75%
-    );
-  }
-}
-
-// =============================================================================
-// Override Material Design pour le thème sombre
-// =============================================================================
-
-[data-theme="dark"] {
-  // Override des composants Material
-  .mat-mdc-card {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-  }
-  
-  .mat-mdc-button {
-    &.mat-primary {
+    &__brand {
       color: var(--color-primary);
+      font-weight: get-config('weight-bold', 'typography');
+    }
+    
+    &__link {
+      color: var(--color-text-secondary);
+      
+      &:hover, &.active {
+        color: var(--color-primary);
+        background: rgba(59, 130, 246, 0.1);
+      }
     }
   }
   
-  .mat-mdc-raised-button {
-    &.mat-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
+  .sidebar {
+    background: var(--color-sidebar-bg);
+    box-shadow: var(--shadow-sidebar);
+    border-right: 1px solid var(--color-border);
+    
+    &__link {
+      color: var(--color-text-secondary);
+      
+      &:hover, &.active {
+        background: var(--color-primary);
+        color: white;
+      }
     }
   }
   
-  .mat-mdc-form-field {
-    .mdc-text-field {
-      background-color: var(--color-surface);
-    }
+  // 🦶 PIED DE PAGE
+  .footer {
+    background: var(--color-footer-bg);
+    color: var(--color-text-secondary);
+    border-top: 1px solid var(--color-border);
     
-    .mdc-floating-label {
-      color: var(--color-text-muted);
+    a {
+      color: var(--color-text-secondary);
+      
+      &:hover {
+        color: var(--color-primary);
+      }
     }
   }
   
-  .mat-mdc-table {
-    background-color: var(--color-surface);
+  // 📝 FORMULAIRES
+  .form-control {
+    @include form-control-style;
+    background: var(--color-light-bg);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
     
-    .mat-mdc-header-row {
-      background-color: var(--color-elevation-1);
+    &::placeholder {
+      color: var(--color-text-secondary);
     }
     
-    .mat-mdc-row:hover {
-      background-color: var(--color-hover);
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
     }
   }
-}
-
-// =============================================================================
-// Utilitaires spécifiques au thème sombre
-// =============================================================================
-
-.theme-dark {
-  // Classes utilitaires pour forcer le thème sombre
-  @extend [data-theme="dark"];
-}
-
-// =============================================================================
-// Print styles pour le thème sombre
-// =============================================================================
-
-@media print {
-  [data-theme="dark"] {
-    // Forcer les styles d'impression pour la lisibilité
-    --color-background: white;
-    --color-surface: #f8f9fa;
-    --color-text-primary: black;
-    --color-text-secondary: #333;
-    --color-border: #ccc;
+  
+  // 🎯 BOUTONS
+  .btn {
+    &--primary {
+      @include button-variant('primary');
+    }
     
-    // Supprimer les ombres pour l'impression
-    --shadow-sm: none;
-    --shadow-base: none;
-    --shadow-md: none;
-    --shadow-lg: none;
-    --shadow-xl: none;
+    &--secondary {
+      @include button-variant('secondary');
+    }
     
-    .card {
+    &--outline {
+      background: transparent;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      
+      &:hover {
+        background: var(--color-primary);
+        color: white;
+      }
+    }
+    
+    &--danger {
+      @include button-variant('danger');
+    }
+  }
+  
+  // 📈 GRAPHIQUES
+  .chart-container {
+    background: var(--color-card-bg);
+    border-radius: get-config('lg', 'border-radius');
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
+  }
+  
+  // 🔔 NOTIFICATIONS
+  .notification {
+    background: var(--color-card-bg);
+    border-left: 4px solid var(--color-primary);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border);
+    
+    &--success {
+      border-left-color: var(--color-success);
+    }
+    
+    &--warning {
+      border-left-color: var(--color-warning);
+    }
+    
+    &--error {
+      border-left-color: var(--color-danger);
+    }
+  }
+  
+  // 🎪 MODAUX
+  .modal {
+    &__overlay {
+      background: var(--color-overlay);
+    }
+    
+    &__content {
+      background: var(--color-card-bg);
+      border-radius: get-config('lg', 'border-radius');
+      box-shadow: get-config('xl', 'shadows');
       border: 1px solid var(--color-border);
-      box-shadow: none;
     }
+  }
+  
+  // 🎨 ÉLÉMENTS SPÉCIAUX
+  .card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
     
-    .btn {
-      border: 1px solid var(--color-border);
-      background: none !important;
-      color: var(--color-text-primary) !important;
+    &:hover {
+      box-shadow: var(--shadow-card-hover);
     }
+  }
+  
+  .dropdown {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    
+    &__item {
+      color: var(--color-text-primary);
+      
+      &:hover {
+        background: var(--color-primary);
+        color: white;
+      }
+    }
+  }
+  
+  // 📱 RESPONSIVE
+  @include media-breakpoint-down(md) {
+    .sidebar {
+      transform: translateX(-100%);
+      background: var(--color-background);
+      
+      &.open {
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  // 🌙 TRANSITIONS DOUCES POUR LE CHANGEMENT DE THÈME
+  transition: all 0.3s ease-in-out;
+  
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
   }
 }
