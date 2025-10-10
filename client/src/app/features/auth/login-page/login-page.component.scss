@@ -1,64 +1,163 @@
-@use 'variables' as *;
-@use 'mixins' as *;
-@use "sass:color";
+@use '../../../../styles/abstract' as abstracts;
 
 .login-page {
-    padding: 3rem 0;
-    min-height: calc(100vh - 150px); // Ajuster en fonction de la hauteur du header/footer
-    display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-background) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: abstracts.spacing(4);
+
+  @include abstracts.respond-to('md') {
+    padding: abstracts.spacing(8);
+  }
+}
+
+.page-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(8);
+
+  @include abstracts.respond-to('lg') {
+    flex-direction: row;
     align-items: center;
-    background-color: $light; // Ou une autre couleur de fond
+    gap: abstracts.spacing(12);
   }
-  
-  .login-card {
-    background-color: $secondary;
-    padding: 2.5rem;
-    border-radius: $border-radius-lg;
-    box-shadow: 0 0.5rem 1.5rem rgba($dark, 0.1);
-  
-    &__title {
-      text-align: center;
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: $dark;
-    }
-  
-    &__subtitle {
-      text-align: center;
-      color: $gray-medium;
-      margin-bottom: 2rem;
-    }
-  
-    // Le composant app-auth-form a déjà ses propres styles
-    // On peut ajouter des ajustements si nécessaire ici
-    app-auth-form {
-      // Exemple: margin-bottom: 1.5rem;
-    }
-  
-    &__footer {
-      margin-top: 1.5rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: $gray-medium;
-  
-      a {
-        color: $primary;
-        font-weight: 500;
-        text-decoration: none;
-  
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+}
+
+.page-header {
+  text-align: center;
+  flex: 1;
+
+  @include abstracts.respond-to('lg') {
+    text-align: left;
+    max-width: 400px;
+  }
+
+  .page-title {
+    @include abstracts.text-size('4xl');
+    @include abstracts.text-weight('bold');
+    color: var(--color-text-primary);
+    margin-bottom: abstracts.spacing(4);
+    font-family: abstracts.$font-family-heading;
+    line-height: abstracts.line-height('tight');
+
+    @include abstracts.respond-to('md') {
+      @include abstracts.text-size('5xl');
     }
   }
-  
-  @include media-breakpoint-down(sm) {
-    .login-page {
-      padding: 1.5rem 0;
-    }
-    .login-card {
-      padding: 1.5rem;
-    }
+
+  .page-subtitle {
+    @include abstracts.text-size('lg');
+    color: var(--color-text-secondary);
+    line-height: abstracts.line-height('normal');
   }
+}
+
+.form-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  @include abstracts.respond-to('lg') {
+    justify-content: flex-end;
+  }
+}
+
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: abstracts.spacing(4);
+  margin-top: abstracts.spacing(8);
+
+  @include abstracts.respond-to('sm') {
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: abstracts.spacing(12);
+  }
+
+  @include abstracts.respond-to('lg') {
+    display: none;
+  }
+}
+
+.info-card {
+  background: var(--color-surface);
+  padding: abstracts.spacing(4);
+  border-radius: abstracts.border-radius('lg');
+  border: 1px solid var(--color-border);
+  text-align: center;
+  transition: all abstracts.transition-duration('normal') abstracts.transition-timing('ease-out');
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+  }
+
+  .info-icon {
+    font-size: abstracts.font-size('3xl');
+    width: abstracts.spacing(8);
+    height: abstracts.spacing(8);
+    color: var(--color-primary);
+    margin-bottom: abstracts.spacing(3);
+  }
+
+  h3 {
+    @include abstracts.text-size('lg');
+    @include abstracts.text-weight('semibold');
+    color: var(--color-text-primary);
+    margin-bottom: abstracts.spacing(2);
+  }
+
+  p {
+    @include abstracts.text-size('sm');
+    color: var(--color-text-secondary);
+    line-height: abstracts.line-height('normal');
+    margin: 0;
+  }
+}
+
+// Dark theme support
+[data-theme="dark"] {
+  .login-page {
+    background: linear-gradient(135deg, abstracts.color('primary', 900) 0%, var(--color-background) 100%);
+  }
+
+  .info-card {
+    background: var(--color-surface);
+    border-color: var(--color-border);
+  }
+}
+
+// Accessibilité
+@media (prefers-reduced-motion: reduce) {
+  .info-card {
+    transition: none;
+    transform: none;
+  }
+}
+
+// High contrast mode
+@media (prefers-contrast: high) {
+  .login-page {
+    background: var(--color-background);
+  }
+
+  .info-card {
+    border: 2px solid var(--color-text-primary);
+  }
+}
+
+// Print styles
+@media print {
+  .login-page {
+    background: none;
+    min-height: auto;
+  }
+
+  .info-section {
+    display: none;
+  }
+}

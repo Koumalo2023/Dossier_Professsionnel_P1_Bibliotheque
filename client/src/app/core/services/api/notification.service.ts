@@ -1,0 +1,47 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { 
+  Notification, 
+  CreateNotificationRequest,
+  UnreadNotificationsResponse 
+} from '../../models/notifications/notification.model';
+import { PaginatedResponse } from '../../models/shared/shared.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class NotificationService {
+  private apiUrl = '/api/notifications';
+
+  constructor(private http: HttpClient) {}
+
+  // Gestion des notifications
+  getNotifications(filters?: any): Observable<PaginatedResponse<Notification>> {
+    let params = new HttpParams();
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null) {
+          params = params.set(key, filters[key].toString());
+        }
+      });
+    }
+    return this.http.get<PaginatedResponse<Notification>>(this.apiUrl, { params });
+  }
+
+  markAsRead(id: string): Observable<Notification> {
+    return this.http.put<Notification>(`${this.apiUrl}/${id}/read`, {});
+  }
+
+  markAllAsRead(): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/mark-all-read`, {});
+  }
+
+  createNotification(notification: CreateNotificationRequest): Observable<Notification> {
+    return this.http.post<Notification>(this.apiUrl, notification);
+  }
+
+  getUnreadCount(): Observable<UnreadNotificationsResponse> {
+    return this.http.get<UnreadNotificationsResponse>(`${this.apiUrl}/unread-count`);
+  }
+}

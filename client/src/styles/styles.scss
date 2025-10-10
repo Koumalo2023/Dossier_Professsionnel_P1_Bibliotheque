@@ -1,293 +1,154 @@
 // =============================================================================
 // Styles principaux - Bibliothèque Angular 19
+// Design System unifié et cohérent
 // =============================================================================
 
-// Import Angular Material theming
-@use '@angular/material' as mat;
-
-// Import des abstracts avec @use
-@use 'abstract/index' as abstracts;
-
-// Import des styles de base
-@use 'base/reset';
-@use 'base/typography';
-@use 'base/global';
-
-// Import des composants
-@use 'components/atoms/index' as atoms;
-@use 'components/molecules/index' as molecules;
-@use 'components/organisms/index' as organisms;
-
-// Import des layouts
-@use 'layouts/grid';
-@use 'layouts/header';
-@use 'layouts/sidebar';
-
-// Import des utilitaires
-@use 'utilities/spacing';
-@use 'utilities/display';
-@use 'utilities/flexbox';
+// =============================================================================
+// Abstracts (Variables, Mixins, Functions)
+// =============================================================================
+@use 'abstract' as abstracts;
 
 // =============================================================================
-// Thème Angular Material personnalisé
+// Layouts (Grid, Header, Sidebar)
 // =============================================================================
-
-// Définition de la palette de couleurs
-$bibliotheque-primary: mat.define-palette(abstracts.$color-primary);
-$bibliotheque-accent: mat.define-palette(abstracts.$color-secondary, A200, A100, A400);
-$bibliotheque-warn: mat.define-palette(abstracts.$color-error);
-
-// Définition du thème
-$bibliotheque-theme: mat.define-light-theme((
-  color: (
-    primary: $bibliotheque-primary,
-    accent: $bibliotheque-accent,
-    warn: $bibliotheque-warn,
-  ),
-  typography: mat.define-typography-config(
-    $font-family: abstracts.$font-family-base,
-    $headline-1: mat.define-typography-level(3rem, 1.1, 700, abstracts.$font-family-heading),
-    $headline-2: mat.define-typography-level(2.25rem, 1.2, 700, abstracts.$font-family-heading),
-    $headline-3: mat.define-typography-level(1.875rem, 1.3, 600, abstracts.$font-family-heading),
-    $headline-4: mat.define-typography-level(1.5rem, 1.4, 600, abstracts.$font-family-heading),
-    $headline-5: mat.define-typography-level(1.25rem, 1.5, 500),
-    $headline-6: mat.define-typography-level(1.125rem, 1.6, 500),
-    $subtitle-1: mat.define-typography-level(1rem, 1.75, 400),
-    $body-1: mat.define-typography-level(1rem, 1.5, 400),
-    $body-2: mat.define-typography-level(0.875rem, 1.57, 400),
-    $caption: mat.define-typography-level(0.75rem, 1.66, 400),
-  ),
-  density: 0,
-));
-
-// Application du thème
-@include mat.core();
-@include mat.all-component-themes($bibliotheque-theme);
+@use 'layouts' as layouts;
 
 // =============================================================================
-// Styles globaux personnalisés
+// Themes (Light, Dark)
 // =============================================================================
+@use 'themes' as themes;
 
-// Variables CSS personnalisées
-:root {
-  // Couleurs
-  --color-primary: #{mat.get-color-from-palette($bibliotheque-primary, 500)};
-  --color-primary-dark: #{mat.get-color-from-palette($bibliotheque-primary, 700)};
-  --color-primary-light: #{mat.get-color-from-palette($bibliotheque-primary, 100)};
-  --color-accent: #{mat.get-color-from-palette($bibliotheque-accent, 500)};
-  --color-warn: #{mat.get-color-from-palette($bibliotheque-warn, 500)};
-  
-  // Textes
-  --color-text-primary: #{abstracts.$color-text-primary};
-  --color-text-secondary: #{abstracts.$color-text-secondary};
-  --color-text-muted: #{abstracts.$color-text-muted};
-  
-  // Backgrounds
-  --color-background: #{abstracts.$color-background};
-  --color-surface: #{abstracts.$color-surface};
-  --color-border: #{abstracts.$color-border};
-  
-  // Espacement
-  @each $key, $value in abstracts.$spacing {
-    --spacing-#{$key}: #{$value};
-  }
-  
-  // Typographie
-  --font-family-base: #{abstracts.$font-family-base};
-  --font-family-heading: #{abstracts.$font-family-heading};
-  
-  // Bordures
-  @each $key, $value in abstracts.$border-radius {
-    --border-radius-#{$key}: #{$value};
-  }
-  
-  // Ombres
-  @each $key, $value in abstracts.$box-shadow {
-    --shadow-#{$key}: #{$value};
-  }
+// =============================================================================
+// Variables CSS globales
+// =============================================================================
+// ──────────────────────────────────────
+// 🧱 RESET GLOBAL (léger, non destructif)
+// ──────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-// =============================================================================
-// Override des styles Material Design
-// =============================================================================
-
-// Cards personnalisées
-.mat-mdc-card {
-  @include abstracts.shadow('base');
-  border-radius: var(--border-radius-lg);
-  border: 1px solid var(--color-border);
+html {
+  scroll-behavior: smooth; // 🖱️ Scroll doux
+  font-size: 16px;
 }
 
-// Boutons personnalisés
-.mat-mdc-raised-button {
-  border-radius: var(--border-radius-lg);
-  font-weight: 600;
-  
-  &.mat-primary {
-    @include abstracts.shadow('md');
-  }
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background-color: get-config('background', 'colors');
+  color: get-config('text-primary', 'colors');
+  font-family: get-config('family-base', 'typography');
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-// Form fields personnalisés
-.mat-mdc-form-field {
-  width: 100%;
-  
-  .mdc-text-field {
-    border-radius: var(--border-radius-base);
-  }
+// Supprime les styles par défaut gênants, sans casser Bootstrap
+h1, h2, h3, h4, h5, h6, p, ul, ol, blockquote {
+  margin-top: 0;
+  margin-bottom: get-config(4, 'spacing');
 }
 
-// Table personnalisée
-.mat-mdc-table {
-  border-radius: var(--border-radius-lg);
-  overflow: hidden;
-  
-  .mat-mdc-header-row {
-    background-color: var(--color-surface);
-  }
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-// Snackbar personnalisée
-.mat-mdc-snack-bar-container {
-  &.success {
-    --mdc-snackbar-container-color: #{abstracts.$color-success};
-  }
-  
-  &.error {
-    --mdc-snackbar-container-color: #{abstracts.$color-error};
-  }
-  
-  &.warning {
-    --mdc-snackbar-container-color: #{abstracts.$color-warning};
-  }
+img {
+  max-width: 100%;
+  height: auto;
 }
 
-// =============================================================================
-// Classes utilitaires globales
-// =============================================================================
+// ──────────────────────────────────────
+// 🌐 STYLE DE BASE
+// ──────────────────────────────────────
 
-// Container responsive
-.container {
-  @include abstracts.container;
+// Typographie globale
+h1 { font-size: font-size('h1'); font-weight: 700; color: get-config('primary', 'colors'); }
+h2 { font-size: font-size('h2'); font-weight: 700; color: get-config('primary', 'colors'); }
+h3 { font-size: font-size('h3'); font-weight: 600; }
+h4 { font-size: font-size('h4'); font-weight: 600; }
+h5 { font-size: font-size('h5'); font-weight: 600; }
+h6 { font-size: font-size('h6'); font-weight: 600; }
+
+p, li, label, input, select, button {
+  font-size: font-size('body');
 }
 
-// Text utilities
-.text-primary { color: var(--color-primary) !important; }
-.text-accent { color: var(--color-accent) !important; }
-.text-warn { color: var(--color-warn) !important; }
-.text-muted { color: var(--color-text-muted) !important; }
-
-// Background utilities
-.bg-primary { background-color: var(--color-primary) !important; }
-.bg-accent { background-color: var(--color-accent) !important; }
-.bg-surface { background-color: var(--color-surface) !important; }
-
-// Border utilities
-.border { border: 1px solid var(--color-border) !important; }
-.border-top { border-top: 1px solid var(--color-border) !important; }
-.border-bottom { border-bottom: 1px solid var(--color-border) !important; }
-
-// Shadow utilities
-.shadow-sm { box-shadow: var(--shadow-sm) !important; }
-.shadow-base { box-shadow: var(--shadow-base) !important; }
-.shadow-md { box-shadow: var(--shadow-md) !important; }
-.shadow-lg { box-shadow: var(--shadow-lg) !important; }
-
-// =============================================================================
-// Responsive helpers
-// =============================================================================
-
-// Mobile-first responsive utilities
-.mobile-only {
-  @include abstracts.desktop-up {
-    display: none !important;
-  }
+// Boutons par défaut (optionnel – les composants utiliseront les mixins)
+button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
 }
 
-.desktop-only {
-  @include abstracts.mobile-only {
-    display: none !important;
-  }
+// Placeholder pour les inputs
+::placeholder {
+  color: get-config('text-secondary', 'colors');
+  opacity: 1;
 }
 
-// =============================================================================
-// Animations globales
-// =============================================================================
+// Focus accessibilité
+*:focus-visible {
+  outline: 2px solid get-config('primary', 'colors');
+  outline-offset: 2px;
+}
 
-// Fade in animation
+// ──────────────────────────────────────
+// 📱 UTILITAIRES GLOBAUX (optionnels)
+// ──────────────────────────────────────
+
+// Classe utilitaire pour les cartes partout
+.card-style {
+  @include card-style;
+}
+
+// Classe utilitaire pour les boutons primaires
+.btn-primary-style {
+  @include button-variant('primary');
+}
+
+// Classe utilitaire pour les badges de statut
+.badge-available {
+  @include badge-style('success');
+}
+.badge-unavailable {
+  @include badge-style('danger');
+}
+
+// Animation fade-in globale
 .fade-in {
-  @include abstracts.fade-in;
+  @include fade-in;
 }
 
-// Slide animations
-.slide-in-left {
-  animation: slideInLeft abstracts.$transition-duration-normal abstracts.$transition-timing-ease-out;
-}
-
-.slide-in-right {
-  animation: slideInRight abstracts.$transition-duration-normal abstracts.$transition-timing-ease-out;
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
+// ──────────────────────────────────────
+// 🧩 INTEGRATION AVEC BOOTSTRAP (optionnel)
+// On ne réinitialise PAS Bootstrap, mais on surcharge ses classes si nécessaire
+// Exemple : on remplace les boutons Bootstrap par notre style
+.btn {
+  &.btn-primary {
+    @include button-variant('primary');
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  &.btn-outline-primary {
+    @include button-outline('primary');
   }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
+  &.btn-secondary {
+    @include button-variant('secondary');
   }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  &.btn-success {
+    @include button-variant('success');
+  }
+  &.btn-danger {
+    @include button-variant('danger');
   }
 }
 
-// =============================================================================
-// Print styles
-// =============================================================================
-
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  
-  .print-break {
-    page-break-before: always;
-  }
-}
-
-// =============================================================================
-// High contrast mode support
-// =============================================================================
-
-@media (prefers-contrast: high) {
-  :root {
-    --color-border: #{abstracts.$color-text-primary};
-  }
-  
-  .mat-mdc-card {
-    border: 2px solid var(--color-border);
-  }
-}
-
-// =============================================================================
-// Reduced motion support
-// =============================================================================
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+// Surcharge légère des cards Bootstrap
+.card {
+  @include card-style;
+  border: none;
 }

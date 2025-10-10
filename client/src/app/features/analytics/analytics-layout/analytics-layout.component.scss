@@ -1,0 +1,19 @@
+/* Styles pour le layout des analytiques */
+.analytics-layout {
+  min-height: 100vh;
+  
+  header {
+    background-color: #d1ecf1;
+    padding: 1rem;
+    border-bottom: 1px solid #bee5eb;
+    
+    h1 {
+      margin: 0;
+      color: #0c5460;
+    }
+  }
+  
+  main {
+    padding: 2rem;
+  }
+}

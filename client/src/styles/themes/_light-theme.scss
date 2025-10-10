@@ -1,356 +1,251 @@
-// =============================================================================
-// Light Theme - Bibliothèque
-// Thème clair par défaut pour l'application
-// =============================================================================
+// ┌──────────────────────────────────────┐
+// │ 🌞 THÈME CLAIR - Bibliothèque        │
+// └──────────────────────────────────────┘
 
-@use '../abstract' as abstracts;
+@use '../abstract/variables' as *;
+@use '../abstract/mixins' as *;
+@use '../abstract/functions' as *;
 
-// =============================================================================
-// Variables du thème clair
-// =============================================================================
-
-:root, [data-theme="light"] {
-  // Couleurs de base
-  --color-background: #{abstracts.$color-background};
-  --color-surface: #{abstracts.$color-surface};
-  --color-primary: #{abstracts.color('primary', 500)};
-  --color-primary-dark: #{abstracts.color('primary', 700)};
-  --color-primary-light: #{abstracts.color('primary', 100)};
-  --color-secondary: #{abstracts.color('secondary', 500)};
-  --color-success: #{abstracts.color('success', 500)};
-  --color-warning: #{abstracts.color('warning', 500)};
-  --color-error: #{abstracts.color('error', 500)};
+// Variables spécifiques au thème clair
+:root, .light-theme {
+  // 🌈 COULEURS PRIMAIRE
+  --color-primary: #{get-config('primary', 'colors')};
+  --color-primary-light: #{get-config('primary-light', 'colors')};
+  --color-secondary: #{get-config('secondary', 'colors')};
+  --color-accent: #{get-config('accent', 'colors')};
   
-  // Couleurs de texte
-  --color-text-primary: #{abstracts.$color-text-primary};
-  --color-text-secondary: #{abstracts.$color-text-secondary};
-  --color-text-muted: #{abstracts.$color-text-muted};
-  --color-text-on-primary: #ffffff;
-  --color-text-on-secondary: #{abstracts.$color-text-primary};
+  // 🎨 COULEURS FONCTIONNELLES
+  --color-success: #{get-config('success', 'colors')};
+  --color-danger: #{get-config('danger', 'colors')};
+  --color-warning: #{get-config('warning', 'colors')};
+  --color-info: #{get-config('info', 'colors')};
   
-  // Couleurs de bordure
-  --color-border: #{abstracts.$color-border};
-  --color-border-light: #{abstracts.color('secondary', 100)};
-  --color-border-dark: #{abstracts.color('secondary', 300)};
+  // 🌫️ COULEURS NEUTRES
+  --color-background: #{get-config('background', 'colors')};
+  --color-light-bg: #{get-config('light-bg', 'colors')};
+  --color-border: #{get-config('border', 'colors')};
+  --color-text-primary: #{get-config('text-primary', 'colors')};
+  --color-text-secondary: #{get-config('text-secondary', 'colors')};
+  --color-dark: #{get-config('dark', 'colors')};
   
-  // Couleurs d'état
-  --color-hover: #{abstracts.color('secondary', 50)};
-  --color-active: #{abstracts.color('primary', 50)};
-  --color-focus: #{abstracts.color('primary', 200)};
-  --color-disabled: #{abstracts.color('secondary', 200)};
-  
-  // Couleurs d'élévation
-  --color-elevation-1: #{abstracts.$color-background};
-  --color-elevation-2: #{abstracts.color('secondary', 50)};
-  --color-elevation-3: #{abstracts.color('secondary', 100)};
-  
-  // Ombres
-  --shadow-sm: #{abstracts.shadow('sm')};
-  --shadow-base: #{abstracts.shadow('base')};
-  --shadow-md: #{abstracts.shadow('md')};
-  --shadow-lg: #{abstracts.shadow('lg')};
-  --shadow-xl: #{abstracts.shadow('xl')};
-  
-  // Overlay
+  // 🎭 COULEURS SPÉCIALES
+  --color-card-bg: white;
+  --color-navbar-bg: rgba(255, 255, 255, 0.95);
+  --color-sidebar-bg: #{get-config('light', 'colors')};
+  --color-footer-bg: #{get-config('text-primary', 'colors')};
   --color-overlay: rgba(0, 0, 0, 0.5);
-  --color-backdrop: rgba(0, 0, 0, 0.1);
+  
+  // 📐 OMBRES
+  --shadow-card: #{get-config('base', 'shadows')};
+  --shadow-card-hover: #{get-config('md', 'shadows')};
+  --shadow-navbar: 0 2px 20px rgba(0, 0, 0, 0.08);
+  --shadow-sidebar: 2px 0 20px rgba(0, 0, 0, 0.06);
 }
 
-// =============================================================================
-// Styles spécifiques au thème clair
-// =============================================================================
-
-[data-theme="light"] {
-  // Backgrounds
+// Styles globaux pour le thème clair
+.light-theme {
   background-color: var(--color-background);
   color: var(--color-text-primary);
   
-  // Cards
-  .card {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-    box-shadow: var(--shadow-base);
+  // 🏷️ BADGES DE STATUT
+  .status-badge {
+    &--available {
+      @include badge-style('success');
+    }
     
-    &-elevated {
-      background-color: var(--color-elevation-1);
-      box-shadow: var(--shadow-md);
+    &--borrowed {
+      @include badge-style('warning');
+    }
+    
+    &--reserved {
+      @include badge-style('info');
+    }
+    
+    &--maintenance {
+      @include badge-style('danger');
     }
   }
   
-  // Buttons
-  .btn {
-    &-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-primary-dark);
-      }
+  // 📚 CARTES DE LIVRE
+  .book-card {
+    @include card-style;
+    background: var(--color-card-bg);
+    
+    &__cover {
+      border-radius: get-config('base', 'border-radius');
+      box-shadow: get-config('sm', 'shadows');
     }
     
-    &-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-text-on-secondary);
-      border-color: var(--color-border);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-hover);
-      }
+    &__title {
+      color: var(--color-text-primary);
+      font-weight: get-config('weight-semibold', 'typography');
     }
     
-    &-outline {
-      background-color: transparent;
-      color: var(--color-primary);
-      border-color: var(--color-primary);
-      
-      &:hover:not(:disabled) {
-        background-color: var(--color-primary);
-        color: var(--color-text-on-primary);
-      }
+    &__author {
+      color: var(--color-text-secondary);
+    }
+    
+    &__actions {
+      border-top: 1px solid var(--color-border);
     }
   }
   
-  // Forms
-  .form-control {
-    background-color: var(--color-background);
-    border-color: var(--color-border);
-    color: var(--color-text-primary);
-    
-    &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-focus);
-    }
+  // 🔍 BARRE DE RECHERCHE
+  .search-bar {
+    @include search-bar-style;
+    background: white;
     
     &::placeholder {
-      color: var(--color-text-muted);
+      color: get-config('text-secondary', 'colors');
     }
   }
   
-  // Navigation
-  .nav-link {
-    color: var(--color-text-secondary);
-    
-    &:hover,
-    &:focus {
-      color: var(--color-text-primary);
-      background-color: var(--color-hover);
-    }
-    
-    &.active {
-      color: var(--color-primary);
-      background-color: var(--color-active);
-    }
-  }
-  
-  // Tables
-  .table {
-    background-color: var(--color-background);
+  // 📊 TABLEAUX
+  .data-table {
+    background: white;
+    border-radius: get-config('lg', 'border-radius');
+    box-shadow: get-config('base', 'shadows');
     
     th {
-      background-color: var(--color-surface);
+      background: get-config('light-bg', 'colors');
       color: var(--color-text-primary);
+      font-weight: get-config('weight-semibold', 'typography');
     }
     
     td {
-      border-bottom-color: var(--color-border-light);
+      border-bottom: 1px solid var(--color-border);
     }
     
     tr:hover {
-      background-color: var(--color-hover);
+      background: get-config('light-bg', 'colors');
     }
   }
   
-  // Alerts
-  .alert {
-    &-success {
-      background-color: #{abstracts.color('success', 50)};
-      border-color: #{abstracts.color('success', 200)};
-      color: #{abstracts.color('success', 800)};
-    }
+  // 📱 NAVIGATION
+  .navbar {
+    background: var(--color-navbar-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-navbar);
     
-    &-warning {
-      background-color: #{abstracts.color('warning', 50)};
-      border-color: #{abstracts.color('warning', 200)};
-      color: #{abstracts.color('warning', 800)};
-    }
-    
-    &-error {
-      background-color: #{abstracts.color('error', 50)};
-      border-color: #{abstracts.color('error', 200)};
-      color: #{abstracts.color('error', 800)};
-    }
-    
-    &-info {
-      background-color: #{abstracts.color('primary', 50)};
-      border-color: #{abstracts.color('primary', 200)};
-      color: #{abstracts.color('primary', 800)};
-    }
-  }
-  
-  // Modals & Dialogs
-  .modal,
-  .dialog {
-    background-color: var(--color-background);
-    box-shadow: var(--shadow-xl);
-    
-    &-backdrop {
-      background-color: var(--color-backdrop);
-    }
-  }
-  
-  // Tooltips
-  .tooltip {
-    background-color: var(--color-text-primary);
-    color: var(--color-background);
-    
-    &::before {
-      border-top-color: var(--color-text-primary);
-    }
-  }
-  
-  // Progress bars
-  .progress {
-    background-color: var(--color-border-light);
-    
-    &-bar {
-      background-color: var(--color-primary);
-    }
-  }
-  
-  // Badges
-  .badge {
-    &-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
-    }
-    
-    &-secondary {
-      background-color: var(--color-secondary);
-      color: var(--color-text-on-secondary);
-    }
-    
-    &-success {
-      background-color: var(--color-success);
-      color: white;
-    }
-    
-    &-warning {
-      background-color: var(--color-warning);
-      color: black;
-    }
-    
-    &-error {
-      background-color: var(--color-error);
-      color: white;
-    }
-  }
-  
-  // Avatars
-  .avatar {
-    background-color: var(--color-border-light);
-    color: var(--color-text-muted);
-  }
-  
-  // Dividers
-  .divider {
-    background-color: var(--color-border);
-  }
-  
-  // Skeleton
-  .skeleton {
-    background: linear-gradient(
-      90deg,
-      var(--color-border-light) 25%,
-      var(--color-border) 50%,
-      var(--color-border-light) 75%
-    );
-  }
-}
-
-// =============================================================================
-// Override Material Design pour le thème clair
-// =============================================================================
-
-[data-theme="light"] {
-  // Override des composants Material
-  .mat-mdc-card {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-  }
-  
-  .mat-mdc-button {
-    &.mat-primary {
+    &__brand {
       color: var(--color-primary);
+      font-weight: get-config('weight-bold', 'typography');
+    }
+    
+    &__link {
+      color: var(--color-text-secondary);
+      
+      &:hover, &.active {
+        color: var(--color-primary);
+      }
     }
   }
   
-  .mat-mdc-raised-button {
-    &.mat-primary {
-      background-color: var(--color-primary);
-      color: var(--color-text-on-primary);
+  .sidebar {
+    background: var(--color-sidebar-bg);
+    box-shadow: var(--shadow-sidebar);
+    
+    &__link {
+      color: var(--color-text-secondary);
+      
+      &:hover, &.active {
+        background: var(--color-primary-light);
+        color: white;
+      }
     }
   }
   
-  .mat-mdc-form-field {
-    .mdc-text-field {
-      background-color: var(--color-background);
-    }
+  // 🦶 PIED DE PAGE
+  .footer {
+    background: var(--color-footer-bg);
+    color: white;
     
-    .mdc-floating-label {
-      color: var(--color-text-muted);
+    a {
+      color: rgba(255, 255, 255, 0.8);
+      
+      &:hover {
+        color: white;
+      }
     }
   }
   
-  .mat-mdc-table {
-    background-color: var(--color-background);
+  // 📝 FORMULAIRES
+  .form-control {
+    @include form-control-style;
+    background: white;
+    color: var(--color-text-primary);
     
-    .mat-mdc-header-row {
-      background-color: var(--color-surface);
-    }
-    
-    .mat-mdc-row:hover {
-      background-color: var(--color-hover);
+    &::placeholder {
+      color: get-config('text-secondary', 'colors');
     }
   }
-}
-
-// =============================================================================
-// Utilitaires spécifiques au thème clair
-// =============================================================================
-
-.theme-light {
-  // Classes utilitaires pour forcer le thème clair
-  @extend [data-theme="light"];
-}
-
-// =============================================================================
-// Print styles pour le thème clair
-// =============================================================================
-
-@media print {
-  [data-theme="light"] {
-    // Assurer la lisibilité à l'impression
-    --color-background: white;
-    --color-text-primary: black;
-    --color-text-secondary: #333;
-    --color-border: #ccc;
-    
-    // Supprimer les ombres pour l'impression
-    --shadow-sm: none;
-    --shadow-base: none;
-    --shadow-md: none;
-    --shadow-lg: none;
-    --shadow-xl: none;
-    
-    .card {
-      border: 1px solid var(--color-border);
-      box-shadow: none;
+  
+  // 🎯 BOUTONS
+  .btn {
+    &--primary {
+      @include button-variant('primary');
     }
     
-    .btn {
-      border: 1px solid var(--color-border);
-      background: none !important;
-      color: var(--color-text-primary) !important;
+    &--secondary {
+      @include button-variant('secondary');
+    }
+    
+    &--outline {
+      @include button-outline('primary');
+    }
+    
+    &--danger {
+      @include button-variant('danger');
+    }
+  }
+  
+  // 📈 GRAPHIQUES
+  .chart-container {
+    background: white;
+    border-radius: get-config('lg', 'border-radius');
+    box-shadow: var(--shadow-card);
+  }
+  
+  // 🔔 NOTIFICATIONS
+  .notification {
+    background: white;
+    border-left: 4px solid var(--color-primary);
+    box-shadow: var(--shadow-card);
+    
+    &--success {
+      border-left-color: var(--color-success);
+    }
+    
+    &--warning {
+      border-left-color: var(--color-warning);
+    }
+    
+    &--error {
+      border-left-color: var(--color-danger);
+    }
+  }
+  
+  // 🎪 MODAUX
+  .modal {
+    &__overlay {
+      background: var(--color-overlay);
+    }
+    
+    &__content {
+      background: white;
+      border-radius: get-config('lg', 'border-radius');
+      box-shadow: get-config('xl', 'shadows');
+    }
+  }
+  
+  // 📱 RESPONSIVE
+  @include media-breakpoint-down(md) {
+    .sidebar {
+      transform: translateX(-100%);
+      
+      &.open {
+        transform: translateX(0);
+      }
     }
   }
 }
