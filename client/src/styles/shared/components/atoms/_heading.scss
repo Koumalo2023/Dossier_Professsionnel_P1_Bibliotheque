@@ -1,0 +1,42 @@
+
+
+@use '../../../abstract' as abstracts;
+
+.heading {
+  margin: 0 0 abstracts.spacing(3);
+  font-weight: 700;
+  line-height: 1.3;
+
+  // Variantes de typo
+  &--default {
+    font-family: abstracts.get-config('family-base', 'typography');
+  }
+  &--serif {
+    font-family: abstracts.get-config('family-serif', 'typography');
+    font-weight: 700;
+  }
+
+  // Couleurs dynamiques
+  &--text-primary { color: abstracts.get-config('text-primary', 'colors'); }
+  &--text-secondary { color: abstracts.get-config('text-secondary', 'colors'); }
+  &--primary { color: abstracts.get-config('primary', 'colors'); }
+  &--secondary { color: abstracts.get-config('secondary', 'colors'); }
+  &--accent { color: abstracts.get-config('accent', 'colors'); }
+  &--success { color: abstracts.get-config('success', 'colors'); }
+  &--danger { color: abstracts.get-config('danger', 'colors'); }
+
+  // Alignement
+  &--align-center { text-align: center; }
+  &--align-right { text-align: right; }
+
+  // Tailles par niveau
+  &--default,
+  &--serif {
+    &.heading--h1 { font-size: abstracts.font-size('h1'); }
+    &.heading--h2 { font-size: abstracts.font-size('h2'); }
+    &.heading--h3 { font-size: abstracts.font-size('h3'); }
+    &.heading--h4 { font-size: abstracts.font-size('h4'); }
+    &.heading--h5 { font-size: abstracts.font-size('h5'); }
+    &.heading--h6 { font-size: abstracts.font-size('h6'); }
+  }
+}

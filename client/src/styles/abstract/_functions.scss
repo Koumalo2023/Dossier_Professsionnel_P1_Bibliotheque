@@ -2,16 +2,22 @@
 // │ 🔧 FONCTIONS UTILITAIRES             │
 // └──────────────────────────────────────┘
 
+// Import des variables pour accéder à $global-config
+@use 'sass:map';
+@use 'sass:color';
+@use 'sass:math';
+@use 'variables' as vars;
+
 // ──────────────────────────────────────
 // 🔍 Récupère une valeur depuis une map imbriquée dans $global-config
 // Usage : get-config('primary', 'colors')
 // ──────────────────────────────────────
 @function get-config($key, $map-name: 'colors') {
-  @if not map.has-key($global-config, $map-name) {
+  @if not map.has-key(vars.$global-config, $map-name) {
     @error "❌ La map '#{$map-name}' n'existe pas dans \$global-config.";
   }
 
-  $map: map.get($global-config, $map-name);
+  $map: map.get(vars.$global-config, $map-name);
 
   @if not map.has-key($map, $key) {
     @warn "⚠️ Clé '#{$key}' introuvable dans la map '#{$map-name}'. Retourne null.";
@@ -32,11 +38,11 @@
   }
 
   @if $variant == 'hover' {
-    @return scale-color($color, $lightness: -10%);
+    @return color.scale($color, $lightness: -10%);
   } @else if $variant == 'light' {
-    @return scale-color($color, $lightness: 30%);
+    @return color.scale($color, $lightness: 30%);
   } @else if $variant == 'dark' {
-    @return scale-color($color, $lightness: -15%);
+    @return color.scale($color, $lightness: -15%);
   } @else {
     @return $color;
   }

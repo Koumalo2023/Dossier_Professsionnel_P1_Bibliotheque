@@ -1,1 +1,32 @@
-<p>user-avatar works!</p>
+<div class="{{ containerClasses }}" [attr.aria-label]="'Profil de ' + user.name">
+  @if (user.avatarUrl) {
+    <img
+      [src]="user.avatarUrl"
+      [alt]="'Avatar de ' + user.name"
+      class="user-avatar__image"
+    />
+  } @else {
+    <div class="user-avatar__fallback">
+      <app-typography
+        [variant]="size === 'sm' ? 'small' : 'body'"
+        color="text-primary"
+        weight="bold"
+      >
+        {{ initials }}
+      </app-typography>
+    </div>
+  }
+
+  @if (showName) {
+    <div class="user-avatar__name">
+      <app-typography variant="small" color="text-primary" weight="medium">
+        {{ user.name }}
+      </app-typography>
+      @if (user.email) {
+        <app-typography variant="caption" color="text-secondary">
+          {{ user.email }}
+        </app-typography>
+      }
+    </div>
+  }
+</div>

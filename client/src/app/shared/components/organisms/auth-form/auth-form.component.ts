@@ -1,77 +1,75 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms'; 
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { InputComponent } from '../../atoms/inputs/input.component';
+import { ButtonComponent } from '../../atoms/button/button.component';
+import { TypographyComponent } from '../../atoms/typography/typography.component';
+
+export type AuthFormType = 'login' | 'register';
 
 export interface AuthFormData {
   email: string;
-  name?: string; // Optionnel pour l'inscription
   password: string;
+  name?: string;
 }
+
 @Component({
-    selector: 'app-auth-form',
-    imports: [
-      CommonModule,
-      ReactiveFormsModule,
-      
-    ],
-    templateUrl: './auth-form.component.html',
-    styleUrl: './auth-form.component.scss'
+  selector: 'app-auth-form',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputComponent,
+    ButtonComponent,
+    TypographyComponent
+  ],
+  templateUrl: './auth-form.component.html',
+  styleUrl: './auth-form.component.scss'
 })
 export class AuthFormComponent {
-  @Input() formType: 'login' | 'register' = 'login';
-  @Input() loading: boolean = false;
+  @Input() formType: AuthFormType = 'login';
+  @Input() loading = false;
   @Input() errorMessage: string | null = null;
+
   @Output() formSubmit = new EventEmitter<AuthFormData>();
 
-  private fb = inject(FormBuilder);
-  authForm!: FormGroup;
-  
-  hidePassword = true;
+  authForm = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6)
+    ]),
+    name: new FormControl('')
+  });
 
-  ngOnInit(): void {
-    this.initForm();
+  constructor() {
+    // Validation conditionnelle pour le nom (register uniquement)
+    if (this.formType === 'register') {
+      this.authForm.controls.name.setValidators([Validators.required]);
+      this.authForm.controls.name.updateValueAndValidity();
+    } else {
+      this.authForm.controls.name.clearValidators();
+      this.authForm.controls.name.updateValueAndValidity();
+    }
   }
 
-  initForm(): void {
-    const formControls: any = {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-    };
+  get isRegister(): boolean {
+    return this.formType === 'register';
+  }
 
-    if (this.formType === 'register') {
-      formControls.name = ['', [Validators.required, Validators.minLength(2)]];
-    }
-
-    this.authForm = this.fb.group(formControls);
+  get nameControl() {
+    return this.authForm.get('name');
   }
 
   onSubmit(): void {
-    if (this.authForm.valid && !this.loading) {
-      this.formSubmit.emit(this.authForm.value);
-    }
-  }
+    if (this.authForm.invalid || this.loading) return;
 
-  togglePasswordVisibility(): void {
-    this.hidePassword = !this.hidePassword;
-  }
+    const { email, password, name } = this.authForm.value;
 
-  get email() { return this.authForm.get('email'); }
-  get name() { return this.authForm.get('name'); }
-  get password() { return this.authForm.get('password'); }
-
-  get submitButtonText(): string {
-    return this.loading
-      ? this.formType === 'login' ? 'Connexion...' : 'Inscription...'
-      : this.formType === 'login' ? 'Se connecter' : 'Créer un compte';
-  }
-
-  get title(): string {
-    return this.formType === 'login' ? 'Connexion' : 'Inscription';
-  }
-
-  get subtitle(): string {
-    return this.formType === 'login'
-      ? 'Connectez-vous à votre compte'
-      : 'Créez votre compte bibliothèque';
+    this.formSubmit.emit({
+      email: email!,
+      password: password!,
+      ...(this.isRegister && { name: name! })
+    });
   }
 }

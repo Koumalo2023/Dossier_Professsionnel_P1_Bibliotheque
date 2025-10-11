@@ -1,0 +1,89 @@
+
+
+@use '../../../abstract' as abstracts;
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: abstracts.spacing(3) abstracts.spacing(4);
+  background: white;
+  box-shadow: abstracts.shadow('base');
+  position: sticky;
+  top: 0;
+  z-index: abstracts.z('sticky');
+  width: 100%;
+
+  // Brand
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(2);
+    cursor: pointer;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  // Navigation
+  &__nav {
+    display: flex;
+    gap: abstracts.spacing(5);
+    align-items: center;
+
+    @include abstracts.media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+
+  &__link {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: abstracts.spacing(1) abstracts.spacing(2);
+    border-radius: abstracts.radius('sm');
+    transition: abstracts.transition('fast');
+
+    &:hover {
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  // Actions (droite)
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(4);
+  }
+
+  // Utilisateur
+  &__user {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(2);
+
+    @include abstracts.media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+
+  // Toggle mobile
+  &__mobile-toggle {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: abstracts.spacing(1);
+    border-radius: abstracts.radius('sm');
+    display: none;
+
+    @include abstracts.media-breakpoint-down(md) {
+      display: block;
+    }
+
+    &:hover {
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+}

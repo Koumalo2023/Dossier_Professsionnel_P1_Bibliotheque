@@ -13,6 +13,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/books/books.routes').then(m => m.booksRoutes)
   },
   { 
+    path: 'home', 
+    loadChildren: () => import('./features/public/public.routes').then(m => m.publicRoutes)
+  },
+  { 
     path: 'auth', 
     loadChildren: () => import('./features/auth/auth.routes').then(m => m.authRoutes)
   },
@@ -61,5 +65,5 @@ export const routes: Routes = [
   },
 
   // Route de secours - Redirection vers la liste des livres
-  { path: '**', redirectTo: 'books' }
+  { path: '**', redirectTo: 'home' }
 ];

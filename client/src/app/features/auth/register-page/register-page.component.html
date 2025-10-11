@@ -1,10 +1,22 @@
+<div class="register-page">
+  <div class="register-page__container">
+    <div class="register-page__header">
+      <h1 class="register-page__title">Inscription</h1>
+      <p class="register-page__subtitle">Créez votre compte bibliothèque</p>
+    </div>
 
-  <!-- Formulaire d'inscription -->
-  <div class="form-section">
     <app-auth-form
       formType="register"
       [loading]="loading"
       [errorMessage]="errorMessage"
-      (formSubmit)="onRegister($event)">
-    </app-auth-form>
+      (formSubmit)="onRegisterSubmit($event)"
+    ></app-auth-form>
+
+    <div class="register-page__footer">
+      <p class="register-page__link">
+        Déjà un compte ? 
+        <a routerLink="/auth/login" class="register-page__link--primary">Se connecter</a>
+      </p>
+    </div>
   </div>
+</div>

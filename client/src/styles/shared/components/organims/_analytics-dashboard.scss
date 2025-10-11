@@ -1,0 +1,103 @@
+@use '../../../abstract' as abstracts;
+
+.analytics-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(6);
+
+
+  // Statistiques clés
+  .analytics-dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: abstracts.spacing(4);
+  }
+
+  .stat-card {
+    @include abstracts.card-style;
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(3);
+    padding: abstracts.spacing(4);
+  }
+
+  .stat-card__icon {
+    width: 56px;
+    height: 56px;
+    border-radius: abstracts.radius('md');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(abstracts.get-config('primary', 'colors'), 0.1);
+  }
+
+  // Graphiques
+  .analytics-dashboard__charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: abstracts.spacing(6);
+
+    @include abstracts.media-breakpoint-down(md) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .chart-card {
+    @include abstracts.card-style;
+    padding: abstracts.spacing(5);
+  }
+
+  .chart-card__content {
+    margin-top: abstracts.spacing(3);
+  }
+
+  // Listes
+  .category-list,
+  .book-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .category-item,
+  .book-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: abstracts.spacing(2);
+    border-bottom: 1px solid abstracts.get-config('border', 'colors');
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+
+  .category-name {
+    font-weight: 600;
+    color: abstracts.get-config('text-primary', 'colors');
+  }
+
+  .category-stats {
+    font-size: 0.9rem;
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  // Skeleton
+  .skeleton-list {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .skeleton--row {
+    height: 24px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: abstracts.radius('sm');
+  }
+}

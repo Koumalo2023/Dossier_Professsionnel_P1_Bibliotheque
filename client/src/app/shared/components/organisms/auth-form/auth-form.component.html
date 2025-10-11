@@ -1,0 +1,70 @@
+<form class="auth-form" (ngSubmit)="onSubmit()" [formGroup]="authForm">
+  <!-- Nom (inscription uniquement) -->
+  @if (isRegister) {
+    <div class="auth-form__field">
+      <app-typography variant="label" color="text-primary">Nom complet *</app-typography>
+      <app-input
+        formControlName="name"
+        type="text"
+        placeholder="Marie Dubois"
+        [required]="true"
+        [errorMessage]="nameControl?.invalid && nameControl?.touched ? 'Champ requis' : null"
+      ></app-input>
+    </div>
+  }
+
+  <!-- Email -->
+  <div class="auth-form__field">
+    <app-typography variant="label" color="text-primary">Email *</app-typography>
+    <app-input
+      formControlName="email"
+      type="email"
+      placeholder="votre@email.com"
+      [required]="true"
+      [errorMessage]="
+        authForm.get('email')?.hasError('email') && authForm.get('email')?.touched
+          ? 'Format email invalide'
+          : authForm.get('email')?.invalid && authForm.get('email')?.touched
+            ? 'Champ requis'
+            : null
+      "
+    ></app-input>
+  </div>
+
+  <!-- Mot de passe -->
+  <div class="auth-form__field">
+    <app-typography variant="label" color="text-primary">Mot de passe *</app-typography>
+    <app-input
+      formControlName="password"
+      type="password"
+      placeholder="••••••••"
+      [required]="true"
+      [showPasswordToggle]="true"
+      [errorMessage]="
+        authForm.get('password')?.hasError('minlength') && authForm.get('password')?.touched
+          ? 'Au moins 6 caractères'
+          : authForm.get('password')?.invalid && authForm.get('password')?.touched
+            ? 'Champ requis'
+            : null
+      "
+    ></app-input>
+  </div>
+
+  <!-- Erreur globale -->
+  @if (errorMessage) {
+    <div class="auth-form__error">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <!-- Bouton soumettre -->
+  <app-button
+    type="submit"
+    variant="primary"
+    [disabled]="authForm.invalid || loading"
+    [loading]="loading"
+    class="auth-form__submit"
+  >
+    {{ isRegister ? 'Créer mon compte' : 'Me connecter' }}
+  </app-button>
+</form>

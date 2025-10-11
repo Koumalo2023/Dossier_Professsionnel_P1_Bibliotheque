@@ -1,1 +1,57 @@
-<p>user-profile-card works!</p>
+<div class="user-profile-card">
+  <!-- En-tête -->
+  <div class="user-profile-card__header">
+    <app-user-avatar [user]="user" size="lg"></app-user-avatar>
+    <div class="user-profile-card__info">
+      <app-heading level="h3" color="primary">{{ user.name }}</app-heading>
+      <app-typography variant="body" color="text-secondary" weight="medium">{{ role }}</app-typography>
+      @if (user.email) {
+        <app-typography variant="small" color="text-secondary">{{ user.email }}</app-typography>
+      }
+    </div>
+  </div>
+
+  <!-- Statistiques -->
+  <div class="user-profile-card__stats">
+    <div class="user-profile-card__stat">
+      <app-icon name="fa-book-open" color="primary" size="lg"></app-icon>
+      <div>
+        <app-typography variant="small" color="text-secondary">Livres lus</app-typography>
+        <app-typography variant="body" weight="semibold">{{ stats.booksRead }}</app-typography>
+      </div>
+    </div>
+
+    <div class="user-profile-card__stat">
+      <app-icon name="fa-trophy" color="success" size="lg"></app-icon>
+      <div>
+        <app-typography variant="small" color="text-secondary">Objectifs atteints</app-typography>
+        <app-typography variant="body" weight="semibold">{{ stats.goalsAchieved }}</app-typography>
+      </div>
+    </div>
+
+    <div class="user-profile-card__stat">
+      <app-icon name="fa-clock" color="accent" size="lg"></app-icon>
+      <div>
+        <app-typography variant="small" color="text-secondary">Temps de lecture</app-typography>
+        <app-typography variant="body" weight="semibold">{{ stats.readingTimeHours }}h</app-typography>
+      </div>
+    </div>
+
+    <div class="user-profile-card__stat">
+      <app-icon name="fa-heart" color="secondary" size="lg"></app-icon>
+      <div>
+        <app-typography variant="small" color="text-secondary">Coups de cœur</app-typography>
+        <app-typography variant="body" weight="semibold">{{ stats.favorites }}</app-typography>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions (optionnelles) -->
+  @if (showActions) {
+    <div class="user-profile-card__actions">
+      <app-button variant="outline" size="small" iconLeft="fa-edit">
+        Modifier le profil
+      </app-button>
+    </div>
+  }
+</div>

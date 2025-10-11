@@ -1,0 +1,20 @@
+<ng-container [ngSwitch]="level">
+  <h1 *ngSwitchCase="'h1'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h1>
+  <h2 *ngSwitchCase="'h2'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h2>
+  <h3 *ngSwitchCase="'h3'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h3>
+  <h4 *ngSwitchCase="'h4'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h4>
+  <h5 *ngSwitchCase="'h5'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h5>
+  <h6 *ngSwitchCase="'h6'" class="heading" [class]="'heading--' + variant + ' heading--' + color + ' heading--align-' + align">
+    <ng-content></ng-content>
+  </h6>
+</ng-container>

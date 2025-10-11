@@ -1,0 +1,47 @@
+@use '../../../abstract' as abstracts;
+
+.user-profile-card {
+  @include abstracts.card-style;
+  padding: abstracts.spacing(5);
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(4);
+
+
+  .user-profile-card__header {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(4);
+  }
+
+  .user-profile-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(1);
+  }
+
+  .user-profile-card__stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: abstracts.spacing(4);
+  }
+
+  .user-profile-card__stat {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(3);
+    padding: abstracts.spacing(2) 0;
+
+    >div {
+      display: flex;
+      flex-direction: column;
+      gap: abstracts.spacing(1);
+    }
+  }
+
+  .user-profile-card__actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

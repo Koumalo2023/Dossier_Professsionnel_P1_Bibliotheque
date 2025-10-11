@@ -1,1 +1,57 @@
-<p>notification-panel works!</p>
+<div class="notification-panel">
+  @if (loading) {
+    <div class="notification-panel__skeleton">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton skeleton--notification"></div>
+      }
+    </div>
+  } @else if (notifications.length === 0) {
+    <div class="notification-panel__empty">
+      <app-icon name="fa-bell" size="2x" color="text-secondary"></app-icon>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Aucune notification pour le moment.
+      </app-typography>
+    </div>
+  } @else {
+    <div class="notification-panel__list">
+      @for (notif of notifications; track notif.id) {
+        <div class="notification-item" [class.notification-item--unread]="!notif.isRead">
+          <div class="notification-item__icon">
+            <app-icon
+              [name]="getIconForType(notif.type)"
+              [color]="getColorForType(notif.type)"
+              size="lg"
+            ></app-icon>
+          </div>
+          <div class="notification-item__content">
+            <app-typography variant="body" weight="semibold">{{ notif.title }}</app-typography>
+            <app-typography variant="small" color="text-secondary">{{ notif.message }}</app-typography>
+            <app-typography variant="caption" color="text-secondary">{{ formatDate(notif.createdAt) }}</app-typography>
+          </div>
+          @if (showActions) {
+            <div class="notification-item__actions">
+              @if (!notif.isRead) {
+                <button
+                  type="button"
+                  class="notification-item__action-btn"
+                  (click)="onMarkAsRead(notif.id)"
+                  [attr.aria-label]="'Marquer comme lu'"
+                >
+                  <app-icon name="fa-check" size="sm" color="success"></app-icon>
+                </button>
+              }
+              <button
+                type="button"
+                class="notification-item__action-btn"
+                (click)="onDelete(notif.id)"
+                [attr.aria-label]="'Supprimer la notification'"
+              >
+                <app-icon name="fa-trash" size="sm" color="text-secondary"></app-icon>
+              </button>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>

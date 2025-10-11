@@ -1,0 +1,98 @@
+@use '../../../abstract' as abstracts;
+
+.reading-goals-widget {
+  @include abstracts.card-style;
+  padding: abstracts.spacing(5);
+
+
+  .reading-goals-widget__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: abstracts.spacing(4);
+  }
+
+  .reading-goals-widget__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: abstracts.spacing(8) abstracts.spacing(4);
+    text-align: center;
+    gap: abstracts.spacing(3);
+  }
+
+  .reading-goals-widget__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .skeleton--goal {
+    height: 120px;
+    border-radius: abstracts.radius('lg');
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .reading-goals-widget__section {
+    margin-top: abstracts.spacing(5);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .reading-goals-widget__list {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+    margin-top: abstracts.spacing(2);
+  }
+
+  // Carte objectif
+  .goal-card {
+    @include abstracts.card-style;
+    padding: abstracts.spacing(3);
+    background: abstracts.get-config('light', 'colors');
+
+    &--completed {
+      border-left: 4px solid abstracts.get-config('success', 'colors');
+      background: rgba(abstracts.get-config('success', 'colors'), 0.05);
+    }
+  }
+
+  .goal-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: abstracts.spacing(1);
+  }
+
+  .goal-card__action {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: abstracts.spacing(1);
+    border-radius: abstracts.radius('sm');
+    transition: abstracts.transition('fast');
+
+    &:hover {
+      background: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  .goal-card__progress {
+    margin: abstracts.spacing(2) 0;
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(1);
+  }
+
+  .goal-card__footer {
+    margin-top: auto;
+    padding-top: abstracts.spacing(2);
+    border-top: 1px solid abstracts.get-config('border', 'colors');
+  }
+}

@@ -1,0 +1,38 @@
+
+
+@use '../../../abstract' as abstracts;
+
+// Mapping des couleurs d’icônes
+$icon-colors: (
+  primary: abstracts.get-config('primary', 'colors'),
+  secondary: abstracts.get-config('secondary', 'colors'),
+  accent: abstracts.get-config('accent', 'colors'),
+  success: abstracts.get-config('success', 'colors'),
+  danger: abstracts.get-config('danger', 'colors'),
+  warning: abstracts.get-config('warning', 'colors'),
+  info: abstracts.get-config('info', 'colors'),
+  text-primary: abstracts.get-config('text-primary', 'colors'),
+  text-secondary: abstracts.get-config('text-secondary', 'colors')
+);
+
+.app-icon {
+  display: inline-block;
+  line-height: 1;
+  flex-shrink: 0;
+
+  // Applique les couleurs dynamiquement
+  @each $name, $color in $icon-colors {
+    &.icon-color--#{$name} {
+      color: $color;
+    }
+  }
+
+  // Tailles personnalisées (au cas où on ne veut pas utiliser fa-lg, etc.)
+  &.fa-xs { font-size: 0.75em; }
+  &.fa-sm { font-size: 0.875em; }
+  &.fa-md { font-size: 1em; }
+  &.fa-lg { font-size: 1.25em; }
+  &.fa-xl { font-size: 1.5em; }
+  &.fa-2x { font-size: 2em; }
+  &.fa-3x { font-size: 3em; }
+}

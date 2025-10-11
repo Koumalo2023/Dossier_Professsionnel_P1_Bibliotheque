@@ -1,1 +1,105 @@
-<p>loan-history-table works!</p>
+<div class="loan-table">
+  @if (loading) {
+    <div class="loan-table__skeleton">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="loan-table__skeleton-row">
+          <div class="skeleton skeleton--cell"></div>
+          <div class="skeleton skeleton--cell"></div>
+          <div class="skeleton skeleton--cell"></div>
+          <div class="skeleton skeleton--cell"></div>
+          <div class="skeleton skeleton--cell"></div>
+          @if (showActions) {
+            <div class="skeleton skeleton--cell"></div>
+          }
+        </div>
+      }
+    </div>
+  } @else if (loans.length === 0) {
+    <div class="loan-table__empty">
+      <app-icon name="fa-book" size="2x" color="text-secondary"></app-icon>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Aucun emprunt trouvé.
+      </app-typography>
+    </div>
+  } @else {
+    <table class="loan-table__table">
+      <thead>
+        <tr>
+          <th>Livre</th>
+          @if (isAdminView) { <th>Emprunteur</th> }
+          <th>Emprunté le</th>
+          <th>À rendre le</th>
+          <th>Statut</th>
+          @if (showActions) { <th>Actions</th> }
+        </tr>
+      </thead>
+      <tbody>
+        @for (loan of loans; track loan.id) {
+          <tr class="loan-table__row">
+            <td>
+              <app-typography variant="body" weight="semibold">{{ loan.bookTitle }}</app-typography>
+              <app-typography variant="small" color="text-secondary">{{ loan.bookAuthor }}</app-typography>
+            </td>
+            @if (isAdminView) {
+              <td>
+                <app-typography variant="body">{{ loan.borrowerName }}</app-typography>
+              </td>
+            }
+            <td>{{ formatDate(loan.borrowedAt) }}</td>
+            <td>{{ formatDate(loan.dueDate) }}</td>
+            <td>
+              <span class="loan-table__status">
+                <app-icon
+                  [name]="loan.status === 'overdue' ? 'fa-exclamation-triangle' : 'fa-check-circle'"
+                  [color]="getStatusColor(loan.status)"
+                  size="sm"
+                ></app-icon>
+                <app-typography
+                  variant="small"
+                  [color]="getStatusColor(loan.status)"
+                  weight="semibold"
+                >
+                  {{ getStatusText(loan.status) }}
+                </app-typography>
+              </span>
+            </td>
+            @if (showActions) {
+              <td>
+                @if (loan.status === 'active') {
+                  <app-button
+                    variant="outline"
+                    size="small"
+                    (clicked)="onExtend(loan.id)"
+                    [disabled]="true"
+                  >
+                    Prolonger
+                  </app-button>
+                }
+                @if (isAdminView && loan.status !== 'returned') {
+                  <app-button
+                   variant="outline"
+                   size="small"
+                   (clicked)="onMarkReturned(loan.id)"
+                   [disabled]="true"
+                 >
+                   Marquer retourné
+                 </app-button>
+                }
+                @if (isAdminView && loan.status === 'overdue') {
+                  <app-button
+                   variant="outline"
+                   size="small"
+                   (clicked)="onSendReminder(loan.id)"
+                   [disabled]="true"
+                 >
+                   Relancer
+                 </app-button>
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

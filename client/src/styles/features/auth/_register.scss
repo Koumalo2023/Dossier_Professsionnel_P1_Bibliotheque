@@ -1,0 +1,61 @@
+@use '../../abstract' as abstracts;
+
+// Identique à login-page → on réutilise la même structure
+.register-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    // background: linear-gradient(135deg, abstracts.get-config('light-bg', 'colors'), abstracts.get-config('background', 'colors'));
+    padding: abstracts.spacing(4);
+
+
+    .register-page__container {
+        width: 100%;
+        max-width: 480px;
+        padding: abstracts.spacing(6);
+        background: white;
+        border-radius: abstracts.radius('lg');
+        box-shadow: abstracts.shadow('lg');
+    }
+
+    .register-page__header {
+        text-align: center;
+        margin-bottom: abstracts.spacing(5);
+    }
+
+    .register-page__title {
+        margin: 0;
+        font-size: abstracts.font-size('h2');
+        font-weight: 700;
+        color: abstracts.get-config('primary', 'colors');
+    }
+
+    .register-page__subtitle {
+        margin: abstracts.spacing(2) 0 0;
+        color: abstracts.get-config('text-secondary', 'colors');
+        font-size: abstracts.font-size('body');
+    }
+
+    .register-page__footer {
+        margin-top: abstracts.spacing(4);
+        text-align: center;
+    }
+
+    .register-page__link {
+        margin: 0;
+        color: abstracts.get-config('text-secondary', 'colors');
+        font-size: abstracts.font-size('body');
+    }
+
+    .register-page__link--primary {
+        color: abstracts.get-config('primary', 'colors');
+        text-decoration: none;
+        font-weight: 600;
+        transition: abstracts.transition('fast');
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

@@ -1,0 +1,39 @@
+<div class="app-input-wrapper">
+  @if (label) {
+    <label class="app-input__label">
+      {{ label }}
+      @if (required) { <span class="app-input__required">*</span> }
+    </label>
+  }
+
+  <div class="app-input__container">
+    <input
+      class="app-input__field"
+      [type]="inputType"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [attr.aria-invalid]="errorMessage ? 'true' : 'false'"
+      [class.app-input__field--error]="errorMessage"
+      [class.app-input__field--focused]="isFocused"
+      (input)="onInputChange($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+    />
+
+    @if (type === 'password' && showPasswordToggle) {
+      <button
+        type="button"
+        class="app-input__toggle"
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="isPasswordVisible ? 'Cacher le mot de passe' : 'Afficher le mot de passe'"
+      >
+        <i class="fas" [class]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+      </button>
+    }
+  </div>
+
+  @if (errorMessage) {
+    <div class="app-input__error">{{ errorMessage }}</div>
+  }
+</div>

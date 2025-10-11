@@ -1,1 +1,23 @@
-<p>progress-bar works!</p>
+<div class="progress-bar" [class]="'progress-bar--' + size">
+  @if (label) {
+    <div class="progress-bar__label">
+      <app-typography variant="small" color="text-primary" weight="medium">
+        {{ label }}
+      </app-typography>
+      @if (showPercentage) {
+        <app-typography variant="small" [color]="color" weight="semibold">
+          {{ value | number:'1.0-0' }}%
+        </app-typography>
+      }
+    </div>
+  }
+
+  <div class="progress-bar__track">
+    <div
+      class="progress-bar__fill"
+      [class.progress-bar__fill--animated]="animated"
+      [style.width.%]="(value / max) * 100"
+      [class]="'progress-bar__fill--' + color"
+    ></div>
+  </div>
+</div>

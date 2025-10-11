@@ -1,0 +1,60 @@
+@use '../../../abstract' as abstracts;
+
+.book-form {
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(4);
+  max-width: 600px;
+
+
+  .book-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(1);
+  }
+
+  .book-form__isbn-group {
+    display: flex;
+    gap: abstracts.spacing(2);
+    align-items: center;
+
+    app-input {
+      flex: 1;
+    }
+  }
+
+  .book-form__select,
+  .book-form__textarea {
+    @include abstracts.form-control-style;
+    width: 100%;
+    padding: abstracts.spacing(2) abstracts.spacing(3);
+    font-size: 1rem;
+    border-radius: abstracts.radius('md');
+
+    &:focus {
+      outline: none;
+      border-color: abstracts.get-config('primary', 'colors');
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+    }
+  }
+
+  .book-form__textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .book-form__error {
+    padding: abstracts.spacing(2);
+    background-color: rgba(abstracts.get-config('danger', 'colors'), 0.1);
+    color: abstracts.get-config('danger', 'colors');
+    border-radius: abstracts.radius('md');
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .book-form__submit {
+    margin-top: abstracts.spacing(2);
+    width: 100%;
+  }
+
+}

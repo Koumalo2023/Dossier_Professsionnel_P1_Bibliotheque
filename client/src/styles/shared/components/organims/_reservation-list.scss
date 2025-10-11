@@ -1,0 +1,66 @@
+@use '../../../abstract' as abstracts;
+
+.reservation-list {
+  @include abstracts.card-style;
+  padding: abstracts.spacing(4);
+
+
+  .reservation-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th {
+      background: abstracts.get-config('primary', 'colors');
+      color: white;
+      font-weight: 600;
+      padding: abstracts.spacing(3);
+      text-align: left;
+    }
+
+    td {
+      padding: abstracts.spacing(3);
+      border-bottom: 1px solid abstracts.get-config('border', 'colors');
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  .reservation-status {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(1);
+  }
+
+  // État vide
+  .reservation-list__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: abstracts.spacing(8) abstracts.spacing(4);
+    text-align: center;
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  // Skeleton
+  .reservation-list__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .skeleton--reservation {
+    height: 60px;
+    border-radius: abstracts.radius('md');
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+}

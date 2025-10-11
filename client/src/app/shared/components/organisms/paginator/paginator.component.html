@@ -1,1 +1,64 @@
-<p>paginator works!</p>
+<div class="paginator" [class.paginator--loading]="loading">
+  <!-- Informations -->
+  <div class="paginator__info">
+    <app-typography variant="small" color="text-secondary">
+      {{ totalCount }} élément{{ totalCount > 1 ? 's' : '' }}
+    </app-typography>
+  </div>
+
+  <!-- Contrôles de pagination -->
+  <div class="paginator__controls">
+    <!-- Précédent -->
+    <button
+      class="paginator__btn"
+      [disabled]="currentPage <= 1 || loading"
+      (click)="onPageChange(currentPage - 1)"
+      aria-label="Page précédente"
+    >
+      <app-icon name="fa-chevron-left" size="sm"></app-icon>
+    </button>
+
+    <!-- Numéros de page -->
+    <div class="paginator__pages">
+      @for (page of pages; track page) {
+        @if (isEllipsis(page)) {
+          <span class="paginator__ellipsis">…</span>
+        } @else {
+          <button
+            class="paginator__page-btn"
+            [class.paginator__page-btn--active]="page === currentPage"
+            (click)="onPageChange(page)"
+            [attr.aria-label]="'Aller à la page ' + page"
+          >
+            {{ page }}
+          </button>
+        }
+      }
+    </div>
+
+    <!-- Suivant -->
+    <button
+      class="paginator__btn"
+      [disabled]="currentPage >= totalPages || loading"
+      (click)="onPageChange(currentPage + 1)"
+      aria-label="Page suivante"
+    >
+      <app-icon name="fa-chevron-right" size="sm"></app-icon>
+    </button>
+  </div>
+
+  <!-- Sélecteur de taille de page -->
+  <div class="paginator__page-size">
+    <app-typography variant="small" color="text-secondary">Éléments par page :</app-typography>
+    <select
+      class="paginator__select"
+      [value]="pageSize"
+      (change)="onPageSizeChange($event)"
+      [disabled]="loading"
+    >
+      @for (size of pageSizeOptions; track size) {
+        <option [value]="size">{{ size }}</option>
+      }
+    </select>
+  </div>
+</div>

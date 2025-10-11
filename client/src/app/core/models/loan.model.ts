@@ -1,22 +1,36 @@
+// Modèles d'emprunts
 
 export interface Loan {
-    id: string;
-    userId: string;
-    bookId: string;
-    loanDate: Date;
-    dueDate: Date;
-    returnDate?: Date;
-    status: string;
-  }
-  
-  // DTO pour la création d'un nouvel emprunt
-  export interface CreateLoanDto {
-    bookId: string;
-    dueDate: Date;
-  }
-  
-  // DTO pour la mise à jour d'un emprunt
-  export interface UpdateLoanDto {
-    returnDate?: Date;
-    status?: string;
-  }
+  id: string;
+  bookId: string;
+  userId: string;
+  bookTitle: string;
+  userName: string;
+  borrowDate: string;
+  dueDate: string;
+  returnDate?: string;
+  status: LoanStatus;
+  canExtend: boolean;
+}
+
+export interface CreateLoanRequest {
+  bookId: string;
+}
+
+export interface ExtendLoanRequest {
+  additionalDays: number;
+}
+
+export interface LoanStats {
+  totalLoans: number;
+  activeLoans: number;
+  overdueLoans: number;
+  favoriteCategory: string;
+}
+
+// Statuts d'emprunt
+export enum LoanStatus {
+  ACTIVE = 'ACTIVE',
+  RETURNED = 'RETURNED',
+  OVERDUE = 'OVERDUE'
+}

@@ -1,0 +1,49 @@
+
+
+@use '../../../abstract' as abstracts;
+
+// Définition des tailles d'étoiles
+$star-sizes: (
+  'sm': 16px,
+  'md': 24px,
+  'lg': 32px
+);
+
+.rating-stars {
+  display: flex;
+  gap: abstracts.spacing(1);
+  align-items: center;
+
+  // Tailles
+  @each $size, $value in $star-sizes {
+    &--#{$size} {
+      .rating-stars__star {
+        width: $value;
+        height: $value;
+      }
+    }
+  }
+
+  &__star {
+    background: transparent;
+    border: none;
+    cursor: default;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: abstracts.transition('fast');
+
+    // Mode interactif (hover/focus)
+    &--interactive {
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.2);
+      }
+      &:focus-visible {
+        outline: 2px solid abstracts.get-config('primary', 'colors');
+        border-radius: abstracts.radius('sm');
+      }
+    }
+  }
+}

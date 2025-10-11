@@ -1,0 +1,18 @@
+
+.auth-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, get-config('light-bg', 'colors'), get-config('background', 'colors'));
+  padding: spacing(4);
+}
+
+.auth-layout__container {
+  width: 100%;
+  max-width: 480px;
+  padding: spacing(6);
+  background: white;
+  border-radius: radius('lg');
+  box-shadow: shadow('lg');
+}

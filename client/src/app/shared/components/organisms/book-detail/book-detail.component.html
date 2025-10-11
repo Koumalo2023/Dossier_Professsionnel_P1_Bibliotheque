@@ -1,1 +1,106 @@
-<p>book-detail works!</p>
+<div class="book-detail" [class.book-detail--loading]="loading">
+  <!-- Couverture -->
+  <div class="book-detail__cover">
+    @if (book.coverUrl) {
+      <img [src]="book.coverUrl" [alt]="'Couverture de ' + book.title" class="book-detail__image" />
+    } @else {
+      <div class="book-detail__cover-fallback">
+        <app-icon name="fa-book" size="3x" color="text-secondary"></app-icon>
+      </div>
+    }
+  </div>
+
+  <!-- Détails -->
+  <div class="book-detail__info">
+    <!-- Titre -->
+    <app-heading level="h1" variant="serif" color="primary">
+      {{ book.title }}
+    </app-heading>
+
+    <!-- Auteur -->
+    <app-typography variant="body" color="text-secondary" weight="medium">
+      par {{ book.author }}
+    </app-typography>
+
+    <!-- Catégorie -->
+    @if (book.category) {
+      <app-typography variant="small" color="text-secondary" weight="semibold">
+        {{ book.category }}
+      </app-typography>
+    }
+
+    <!-- Disponibilité -->
+    <div class="book-detail__availability">
+      @if (isAvailable) {
+        <app-icon name="fa-check-circle" color="success" size="sm"></app-icon>
+        <app-typography variant="small" color="success" weight="semibold">
+          ✅ Disponible ({{ book.availableCopies }} exemplaire(s))
+        </app-typography>
+      } @else {
+        <app-icon name="fa-times-circle" color="danger" size="sm"></app-icon>
+        <app-typography variant="small" color="danger" weight="semibold">
+          ❌ Indisponible
+        </app-typography>
+      }
+    </div>
+
+    <!-- Métadonnées -->
+    <div class="book-detail__metadata">
+      @if (book.isbn) {
+        <div><strong>ISBN :</strong> {{ book.isbn }}</div>
+      }
+      @if (book.publisher) {
+        <div><strong>Éditeur :</strong> {{ book.publisher }}</div>
+      }
+      @if (book.publicationDate) {
+        <div><strong>Date de publication :</strong> {{ book.publicationDate | date:'dd/MM/yyyy' }}</div>
+      }
+      @if (book.pageCount) {
+        <div><strong>Pages :</strong> {{ book.pageCount }}</div>
+      }
+    </div>
+
+    <!-- Description -->
+    @if (book.description) {
+      <div class="book-detail__description">
+        <app-typography variant="label" color="text-primary" weight="semibold">Résumé</app-typography>
+        <app-typography variant="body" color="text-primary">
+          {{ book.description }}
+        </app-typography>
+      </div>
+    }
+
+    <!-- Actions -->
+    @if (showActions && !loading) {
+      <div class="book-detail__actions">
+        @if (isAvailable) {
+          <app-button
+            variant="primary"
+            size="medium"
+            (clicked)="onBorrow()"
+            iconLeft="fa-book-open"
+          >
+            Emprunter ce livre
+          </app-button>
+        } @else {
+          <app-button
+            variant="outline"
+            size="medium"
+            (clicked)="onReserve()"
+            iconLeft="fa-calendar-plus"
+            [disabled]="true"
+          >
+            Réserver (bientôt disponible)
+          </app-button>
+        }
+      </div>
+    }
+
+    <!-- Skeleton loader -->
+    @if (loading) {
+      <div class="book-detail__skeleton-actions">
+        <div class="skeleton skeleton--btn"></div>
+      </div>
+    }
+  </div>
+</div>
