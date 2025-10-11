@@ -81,11 +81,22 @@ export class AuthService {
     return !!this.storageService.getToken();
   }
 
+  isAuthenticated(): boolean {
+    return this.isLoggedIn();
+  }
+
+  isAdmin(): boolean {
+    const user = this.getCurrentUser();
+    return user && user.role && (user.role.includes('admin') || user.role.includes('Admin'));
+  }
+
   getToken(): string | null {
     return this.storageService.getToken();
   }
 
   getCurrentUser(): any {
-    return this.storageService.getUser();
+    const user = this.storageService.getUser();
+    console.log('🔐 AuthService - getCurrentUser:', user);
+    return user;
   }
 }

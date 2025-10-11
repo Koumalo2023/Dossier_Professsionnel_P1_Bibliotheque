@@ -9,19 +9,40 @@
 
   <!-- Navigation Desktop -->
   <nav class="navbar__nav">
-    <button class="navbar__link" (click)="navigateTo('/books')">
+    <button
+      class="navbar__link"
+      [class.navbar__link--active]="isActiveRoute('/books')"
+      (click)="navigateTo('/books')">
       <app-typography variant="body" weight="medium">Catalogue</app-typography>
     </button>
 
     @if (isLoggedIn()) {
-      <button class="navbar__link" (click)="navigateTo('/profile')">
-        <app-typography variant="body" weight="medium">Mon Profil</app-typography>
+      <!-- Navigation pour utilisateurs connectés -->
+      <button
+        class="navbar__link"
+        [class.navbar__link--active]="isActiveRoute('/loans')"
+        (click)="navigateToLoans()">
+        <app-typography variant="body" weight="medium">Mes Emprunts</app-typography>
       </button>
 
+      <button
+        class="navbar__link"
+        [class.navbar__link--active]="isActiveRoute('/reservations')"
+        (click)="navigateToReservations()">
+        <app-typography variant="body" weight="medium">Mes Réservations</app-typography>
+      </button>
+
+      <!-- Bouton Espace Admin pour managers et admins -->
       @if (isAdminOrManager()) {
-        <button class="navbar__link" (click)="navigateTo('/admin/statistics')">
-          <app-typography variant="body" weight="medium">Admin</app-typography>
-        </button>
+        <app-button
+          variant="outline"
+          size="small"
+          (clicked)="navigateToAdmin()"
+          [class.navbar__admin-btn--active]="isActiveRoute('/admin')"
+          class="navbar__admin-btn">
+          <app-icon name="fa-cog" size="sm"></app-icon>
+          Espace Admin
+        </app-button>
       }
     }
   </nav>
@@ -29,25 +50,88 @@
   <!-- Actions droite -->
   <div class="navbar__actions">
     @if (isLoggedIn()) {
-      <!-- Avatar utilisateur -->
-      <div class="navbar__user">
-        <app-user-avatar
-          [user]="userInfo!"
-          size="md"
-          [clickable]="true"
-          (click)="onLogout()"
-        ></app-user-avatar>
-        <div class="navbar__user-info">
-          <app-typography variant="small" weight="semibold">{{ userInfo?.name }}</app-typography>
-          <app-typography variant="caption" color="text-secondary">{{ userRole }}</app-typography>
+      <!-- Boutons d'action pour utilisateur connecté -->
+      <div class="navbar__user-actions">
+        <!-- Bouton Notifications -->
+        <app-button
+          variant="outline"
+          size="small"
+          (clicked)="navigateToNotifications()"
+          class="navbar__action-btn"
+          [class.navbar__action-btn--active]="isActiveRoute('/notifications')">
+          <app-icon name="fa-bell" size="sm"></app-icon>
+        </app-button>
+
+        <!-- Bouton Espace Admin pour managers et admins -->
+        @if (isAdminOrManager()) {
+          <app-button
+            variant="outline"
+            size="small"
+            (clicked)="navigateToAdmin()"
+            class="navbar__action-btn"
+            [class.navbar__action-btn--active]="isActiveRoute('/admin')">
+            <app-icon name="fa-cog" size="sm"></app-icon>
+            Admin
+          </app-button>
+        }
+
+        <!-- Menu déroulant utilisateur -->
+        <div class="navbar__user-dropdown">
+          <app-user-avatar
+            [user]="userInfo!"
+            size="md"
+            [clickable]="true"
+            (click)="toggleUserDropdown()"
+          ></app-user-avatar>
+          
+          <!-- Menu déroulant -->
+          @if (isUserDropdownOpen) {
+            <div class="navbar__dropdown-menu">
+              <div class="navbar__dropdown-header">
+                <app-typography variant="small" weight="semibold">{{ userInfo?.name }}</app-typography>
+                <app-typography variant="caption" color="text-secondary">{{ userRole }}</app-typography>
+              </div>
+              
+              <div class="navbar__dropdown-divider"></div>
+              
+              <button class="navbar__dropdown-item" (click)="navigateToProfile()">
+                <app-icon name="fa-user" size="sm"></app-icon>
+                <app-typography variant="body">Mon Profil</app-typography>
+              </button>
+              
+              <button class="navbar__dropdown-item" (click)="navigateToLoans()">
+                <app-icon name="fa-book" size="sm"></app-icon>
+                <app-typography variant="body">Mes Emprunts</app-typography>
+              </button>
+              
+              <button class="navbar__dropdown-item" (click)="navigateToReservations()">
+                <app-icon name="fa-calendar" size="sm"></app-icon>
+                <app-typography variant="body">Mes Réservations</app-typography>
+              </button>
+              
+              <div class="navbar__dropdown-divider"></div>
+              
+              <button class="navbar__dropdown-item navbar__dropdown-item--logout" (click)="onLogout()">
+                <app-icon name="fa-sign-out-alt" size="sm"></app-icon>
+                <app-typography variant="body">Déconnexion</app-typography>
+              </button>
+            </div>
+          }
         </div>
       </div>
     } @else {
-      <!-- Bouton connexion desktop -->
-      <app-button variant="primary" size="small" (clicked)="navigateTo('/auth/login')" class="navbar__login-btn">
-        <app-icon name="fa-sign-in-alt" size="sm"></app-icon>
-        Connexion
-      </app-button>
+      <!-- Boutons pour utilisateur non connecté -->
+      <div class="navbar__guest-actions">
+        <app-button variant="outline" size="small" (clicked)="navigateToRegister()" class="navbar__register-btn">
+          <app-icon name="fa-user-plus" size="sm"></app-icon>
+          Inscription
+        </app-button>
+        
+        <app-button variant="primary" size="small" (clicked)="navigateToLogin()" class="navbar__login-btn">
+          <app-icon name="fa-sign-in-alt" size="sm"></app-icon>
+          Connexion
+        </app-button>
+      </div>
     }
 
     <!-- Bouton menu mobile -->
@@ -66,17 +150,19 @@
         </button>
 
         @if (isLoggedIn()) {
-          <button class="navbar__mobile-link" (click)="navigateTo('/profile')">
+          <!-- Bouton Espace Admin pour managers et admins (mobile) -->
+          @if (isAdminOrManager()) {
+            <button class="navbar__mobile-link" (click)="navigateToAdmin()">
+              <app-icon name="fa-cog" size="sm"></app-icon>
+              <app-typography variant="body" weight="medium">Espace Admin</app-typography>
+            </button>
+          }
+
+          <!-- Bouton Profil pour tous les utilisateurs connectés (mobile) -->
+          <button class="navbar__mobile-link" (click)="navigateToProfile()">
             <app-icon name="fa-user" size="sm"></app-icon>
             <app-typography variant="body" weight="medium">Mon Profil</app-typography>
           </button>
-
-          @if (isAdminOrManager()) {
-            <button class="navbar__mobile-link" (click)="navigateTo('/admin/statistics')">
-              <app-icon name="fa-cog" size="sm"></app-icon>
-              <app-typography variant="body" weight="medium">Admin</app-typography>
-            </button>
-          }
 
           <button class="navbar__mobile-link navbar__mobile-link--logout" (click)="onLogout()">
             <app-icon name="fa-sign-out-alt" size="sm"></app-icon>

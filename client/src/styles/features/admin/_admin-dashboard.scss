@@ -1,0 +1,214 @@
+@use '../../abstract/' as abstracts;
+
+.admin-dashboard {
+  padding: abstracts.spacing(4) 0;
+
+  // ========== HEADER ========== 
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: abstracts.spacing(6);
+    flex-wrap: wrap;
+    gap: abstracts.spacing(2);
+  }
+
+  .dashboard-title {
+    margin: 0;
+    color: abstracts.get-config('primary', 'colors');
+  }
+
+  // ========== ÉTATS ========== 
+  .loading-container,
+  .error-container {
+    text-align: center;
+    padding: abstracts.spacing(6);
+    background: abstracts.get-config('light', 'colors');
+    border-radius: abstracts.radius('lg');
+    margin-bottom: abstracts.spacing(6);
+  }
+
+  // ========== STATISTIQUES ========== 
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: abstracts.spacing(4);
+    margin-bottom: abstracts.spacing(6);
+  }
+
+  .stat-card {
+    background: white;
+    border-radius: abstracts.radius('lg');
+    padding: abstracts.spacing(4);
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(3);
+    box-shadow: abstracts.shadow('base');
+    transition: abstracts.transition('default');
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: abstracts.shadow('md');
+  }
+
+  .stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: abstracts.radius('md');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(abstracts.get-config('primary', 'colors'), 0.1);
+    color: abstracts.get-config('primary', 'colors');
+    font-size: 1.5rem;
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-value {
+    font-size: 1.8rem;
+    color: abstracts.get-config('primary', 'colors');
+    margin-bottom: abstracts.spacing(1);
+  }
+
+  .stat-label {
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  // ========== GRAPHIQUES ========== 
+  .charts-section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: abstracts.spacing(6);
+    margin-bottom: abstracts.spacing(6);
+
+    @include abstracts.media-breakpoint-up(md) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .chart-container {
+    background: white;
+    border-radius: abstracts.radius('lg');
+    padding: abstracts.spacing(4);
+    box-shadow: abstracts.shadow('base');
+  }
+
+  .section-title {
+    margin-bottom: abstracts.spacing(4);
+    color: abstracts.get-config('primary', 'colors');
+  }
+
+  // ========== ACTIVITÉS ========== 
+  .activities-section {
+    margin-bottom: abstracts.spacing(6);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: abstracts.spacing(4);
+    flex-wrap: wrap;
+    gap: abstracts.spacing(2);
+  }
+
+  .activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .activity-item {
+    display: flex;
+    gap: abstracts.spacing(3);
+    padding: abstracts.spacing(3);
+    border-radius: abstracts.radius('md');
+    background: abstracts.get-config('light', 'colors');
+    transition: abstracts.transition('fast');
+  }
+
+  .activity-item:hover {
+    background: abstracts.get-config('light-bg', 'colors');
+  }
+
+  .activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: abstracts.radius('full');
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+  }
+
+  .activity-success { background: abstracts.get-config('success', 'colors'); }
+  .activity-warning { background: abstracts.get-config('warning', 'colors'); }
+  .activity-danger { background: abstracts.get-config('danger', 'colors'); }
+  .activity-info { background: abstracts.get-config('primary', 'colors'); }
+
+  .activity-content {
+    flex: 1;
+  }
+
+  .activity-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: abstracts.spacing(1);
+  }
+
+  .activity-time {
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  .activity-description {
+    color: abstracts.get-config('text-secondary', 'colors');
+    margin-bottom: abstracts.spacing(2);
+  }
+
+  .activity-user {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(2);
+  }
+
+  // ========== ACTIONS RAPIDES ========== 
+  .quick-actions-section {
+    margin-bottom: abstracts.spacing(6);
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: abstracts.spacing(3);
+  }
+
+  .action-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: abstracts.spacing(2);
+    height: 120px;
+    text-align: center;
+    padding: abstracts.spacing(2);
+  }
+
+  // ========== RESPONSIVE ========== 
+  @include abstracts.media-breakpoint-down(sm) {
+    .dashboard-header,
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .action-button {
+      height: auto;
+      padding: abstracts.spacing(3);
+    }
+  }
+}

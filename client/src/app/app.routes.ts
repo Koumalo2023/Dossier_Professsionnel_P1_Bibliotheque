@@ -51,11 +51,11 @@ export const routes: Routes = [
     data: { roles: ['Manager', 'Admin'] }
   },
 
-  // Routes administration (protégées par adminGuard)
-  { 
-    path: 'admin', 
+  // Routes administration (protégées par rôle admin ou manager)
+  {
+    path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.adminRoutes),
-    canActivate: [adminGuard]
+    canActivate: [roleGuard(['Admin', 'Manager'])]
   },
 
   // Pages d'erreur

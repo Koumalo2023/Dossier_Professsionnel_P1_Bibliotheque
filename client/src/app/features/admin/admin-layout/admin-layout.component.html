@@ -1,7 +1,10 @@
 <app-header></app-header>
-<main class="admin-layout__main">
-  <div class="container">
-    <router-outlet></router-outlet>
-  </div>
-</main>
+<div class="admin-layout__content">
+  <!-- <app-sidebar [isOpen]="true"></app-sidebar> -->
+  <main class="admin-layout__main">
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>
 <app-footer></app-footer>

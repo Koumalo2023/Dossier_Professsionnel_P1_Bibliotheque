@@ -1,4 +1,244 @@
-<div class="admin-dashboard-page">
-  <h1>Dashboard Administrateur</h1>
-  <p>Page du dashboard administrateur - À implémenter</p>
+<div class="admin-dashboard">
+  <!-- En-tête du tableau de bord -->
+  <div class="dashboard-header">
+    <app-heading level="h1" variant="default" class="dashboard-title">
+      Tableau de Bord Administrateur
+    </app-heading>
+    <app-button 
+      variant="primary" 
+      size="medium"
+      (click)="refreshData()"
+      [disabled]="loading">
+      <i class="fas fa-sync-alt"></i>
+      Actualiser
+    </app-button>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  @if (loading) {
+    <div class="loading-container">
+      <app-typography variant="body">Chargement des données...</app-typography>
+    </div>
+  }
+
+  <!-- Message d'erreur -->
+  @if (error) {
+    <div class="error-container">
+      <app-typography variant="body" color="danger">{{ error }}</app-typography>
+    </div>
+  }
+
+  <!-- Statistiques principales -->
+  @if (!loading && !error) {
+    <div class="stats-grid">
+      <!-- Carte Utilisateurs -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatNumber(stats.totalUsers) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Utilisateurs Totaux
+          </app-typography>
+        </div>
+      </div>
+
+      <!-- Carte Livres -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-book"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatNumber(stats.totalBooks) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Livres en Catalogue
+          </app-typography>
+        </div>
+      </div>
+
+      <!-- Carte Emprunts -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-exchange-alt"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatNumber(stats.activeLoans) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Emprunts Actifs
+          </app-typography>
+        </div>
+      </div>
+
+      <!-- Carte Réservations -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatNumber(stats.pendingReservations) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Réservations en Attente
+          </app-typography>
+        </div>
+      </div>
+
+      <!-- Carte Visites -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatNumber(stats.monthlyVisits) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Visites Mensuelles
+          </app-typography>
+        </div>
+      </div>
+
+      <!-- Carte Revenus -->
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="fas fa-euro-sign"></i>
+        </div>
+        <div class="stat-content">
+          <app-typography variant="body" weight="bold" class="stat-value">
+            {{ formatCurrency(stats.revenue) }}
+          </app-typography>
+          <app-typography variant="body" class="stat-label">
+            Revenus Mensuels
+          </app-typography>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section Analytics Dashboard -->
+    <app-analytics-dashboard></app-analytics-dashboard>
+
+    <!-- Section Graphiques -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <app-heading level="h2" variant="default" class="section-title">
+          Croissance des Utilisateurs
+        </app-heading>
+        <app-chart
+          [type]="'line'"
+          [data]="userGrowthData"
+          [title]="'Évolution des nouveaux utilisateurs'"
+          [height]="'300px'">
+        </app-chart>
+      </div>
+
+      <div class="chart-container">
+        <app-heading level="h2" variant="default" class="section-title">
+          Utilisation par Catégorie
+        </app-heading>
+        <app-chart
+          [type]="'pie'"
+          [data]="bookUsageData"
+          [title]="'Répartition des emprunts par catégorie'"
+          [height]="'300px'">
+        </app-chart>
+      </div>
+    </div>
+
+    <!-- Section Activités Récentes -->
+    <div class="activities-section">
+      <div class="section-header">
+        <app-heading level="h2" variant="default" class="section-title">
+          Activités Récentes
+        </app-heading>
+        <app-button 
+          variant="outline" 
+          size="small"
+          routerLink="/admin/activity">
+          Voir tout
+        </app-button>
+      </div>
+
+      <div class="activities-list">
+        @for (activity of recentActivities; track activity.id) {
+          <div class="activity-item">
+            <div class="activity-icon" [class]="'activity-' + getActivityColor(activity.type)">
+              <i class="fas" [class]="getActivityIcon(activity.type)"></i>
+            </div>
+            <div class="activity-content">
+              <div class="activity-header">
+                <app-typography variant="body" weight="bold" class="activity-title">
+                  {{ activity.title }}
+                </app-typography>
+                <app-typography variant="caption" class="activity-time">
+                  {{ activity.timestamp | date:'short' }}
+                </app-typography>
+              </div>
+              <app-typography variant="body" class="activity-description">
+                {{ activity.description }}
+              </app-typography>
+              <div class="activity-user">
+                <app-user-avatar 
+                  [size]="'sm'"
+                  [user]="{ name: activity.user }"
+                  [showName]="true">
+                </app-user-avatar>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Section Actions Rapides -->
+    <div class="quick-actions-section">
+      <app-heading level="h2" variant="default" class="section-title">
+        Actions Rapides
+      </app-heading>
+      <div class="actions-grid">
+        <app-button 
+          variant="primary" 
+          size="large"
+          routerLink="/admin/books"
+          class="action-button">
+          <i class="fas fa-book"></i>
+          Gérer les Livres
+        </app-button>
+
+        <app-button 
+          variant="primary" 
+          size="large"
+          routerLink="/admin/users"
+          class="action-button">
+          <i class="fas fa-users"></i>
+          Gérer les Utilisateurs
+        </app-button>
+
+        <app-button 
+          variant="primary" 
+          size="large"
+          routerLink="/admin/loans"
+          class="action-button">
+          <i class="fas fa-exchange-alt"></i>
+          Gérer les Emprunts
+        </app-button>
+
+        <app-button 
+          variant="primary" 
+          size="large"
+          routerLink="/admin/analytics"
+          class="action-button">
+          <i class="fas fa-chart-bar"></i>
+          Analytics Détaillés
+        </app-button>
+      </div>
+    </div>
+  }
 </div>

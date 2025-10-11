@@ -1,0 +1,24 @@
+<div class="chart-container">
+  @if (loading) {
+    <div class="chart-skeleton">
+      <div class="skeleton skeleton--chart"></div>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Chargement des données...
+      </app-typography>
+    </div>
+  } @else if (!data || data.datasets.length === 0) {
+    <div class="chart-empty">
+      <app-icon name="fa-chart-bar" size="3x" color="text-secondary"></app-icon>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Aucune donnée disponible
+      </app-typography>
+    </div>
+  } @else {
+    @if (title) {
+      <div class="chart-title">
+        <app-heading level="h4" color="primary">{{ title }}</app-heading>
+      </div>
+    }
+    <div class="chart-svg-container" [innerHTML]="chartSvg"></div>
+  }
+</div>

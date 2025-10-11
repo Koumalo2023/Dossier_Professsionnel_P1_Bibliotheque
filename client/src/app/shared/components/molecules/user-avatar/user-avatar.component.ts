@@ -7,6 +7,7 @@ export interface UserInfo {
   name: string;
   email?: string;
   avatarUrl?: string | null;
+  role?: 'user' | 'manager' | 'admin';
 }
 @Component({
   selector: 'app-user-avatar',

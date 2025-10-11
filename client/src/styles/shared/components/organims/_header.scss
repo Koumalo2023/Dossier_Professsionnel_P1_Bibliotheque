@@ -140,6 +140,23 @@
   }
 }
 
+// Actions utilisateur connecté
+.navbar__user-actions {
+  display: flex;
+  align-items: center;
+  gap: abstracts.spacing(2);
+  
+  @include abstracts.media-breakpoint-down(md) {
+    display: none;
+  }
+}
+
+.navbar__action-btn {
+  @include abstracts.media-breakpoint-down(md) {
+    display: none;
+  }
+}
+
 // Bouton connexion desktop
 .navbar__login-btn {
   @include abstracts.media-breakpoint-down(md) {

@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthFormComponent, AuthFormData } from '../../../shared/components/organisms/auth-form/auth-form.component';
 import { AuthService, LoginRequest } from '../../../core/services/auth.service';
+import { UserStateService } from '../../../core/services/user-state.service';
 
 @Component({
     selector: 'app-login-page',
@@ -17,7 +18,8 @@ export class LoginPageComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private userStateService: UserStateService
   ) {}
 
   onLoginSubmit(formData: AuthFormData): void {
@@ -33,8 +35,30 @@ export class LoginPageComponent {
       next: (response) => {
         this.loading = false;
         console.log('Connexion réussie:', response);
-        // Redirection vers la page d'accueil ou dashboard
-        this.router.navigate(['/books']);
+        
+        // Mettre à jour l'état utilisateur
+        const userRoles = response.user.role;
+        const role = Array.isArray(userRoles) ? userRoles[0] : userRoles;
+        const normalizedRole = this.userStateService.normalizeRole(role);
+        
+        this.userStateService.setCurrentUser({
+          name: response.user.name,
+          email: response.user.email,
+          role: normalizedRole,
+          avatarUrl: null
+        });
+        
+        // Redirection en fonction du rôle de l'utilisateur
+        let redirectPath = '/books'; // Par défaut
+        
+        if (userRoles.includes('admin') || userRoles.includes('manager')) {
+          redirectPath = '/admin';
+        } else if (userRoles.includes('user')) {
+          redirectPath = '/profile';
+        }
+        
+        console.log(`Redirection vers: ${redirectPath} (rôles: ${userRoles.join(', ')})`);
+        this.router.navigate([redirectPath]);
       },
       error: (error) => {
         this.loading = false;

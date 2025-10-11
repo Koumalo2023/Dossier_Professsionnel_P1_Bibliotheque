@@ -1,6 +1,45 @@
 
+@use '../../abstract' as abstracts;
+
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-layout__content {
+  display: flex;
+  flex: 1;
+  background-color: abstracts.get-config('light-bg', 'colors');
+}
+
+// ========== SIDEBAR ========== 
+::ng-deep app-sidebar {
+  flex: 0 0 auto;
+  width: 280px;
+  height: 100%;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
+// ========== MAIN ========== 
 .admin-layout__main {
+  flex: 1;
   min-height: calc(100vh - 120px);
-  background-color: get-config('light-bg', 'colors');
+  background-color: abstracts.get-config('light-bg', 'colors');
   padding: 2rem 0;
+}
+
+// ========== RESPONSIVE ========== 
+@include abstracts.media-breakpoint-down(md) {
+  .admin-layout__content {
+    flex-direction: column;
+  }
+
+  ::ng-deep app-sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+  }
 }
