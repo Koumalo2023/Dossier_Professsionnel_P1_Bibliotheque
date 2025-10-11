@@ -1,0 +1,43 @@
+
+
+
+@use '../../../abstract' as abstracts;
+
+.text {
+  margin: 0 0 abstracts.spacing(2);
+  line-height: 1.6;
+
+  // Variantes de taille
+  &--body {
+    font-size: abstracts.font-size('body');
+  }
+  &--small,
+  &--label,
+  &--caption {
+    font-size: abstracts.font-size('small');
+  }
+
+  // Poids
+  &--weight-regular { font-weight: abstracts.get-config('weight-regular', 'typography'); }
+  &--weight-medium { font-weight: abstracts.get-config('weight-medium', 'typography'); }
+  &--weight-semibold { font-weight: abstracts.get-config('weight-semibold', 'typography'); }
+  &--weight-bold { font-weight: abstracts.get-config('weight-bold', 'typography'); }
+
+  // Italic
+  &--italic {
+    font-style: italic;
+  }
+
+  // Couleurs
+  &--text-primary { color: abstracts.get-config('text-primary', 'colors'); }
+  &--text-secondary { color: abstracts.get-config('text-secondary', 'colors'); }
+  &--primary { color: abstracts.get-config('primary', 'colors'); }
+  &--secondary { color: abstracts.get-config('secondary', 'colors'); }
+  &--accent { color: abstracts.get-config('accent', 'colors'); }
+  &--success { color: abstracts.get-config('success', 'colors'); }
+  &--danger { color: abstracts.get-config('danger', 'colors'); }
+
+  // Alignement
+  &--align-center { text-align: center; }
+  &--align-right { text-align: right; }
+}

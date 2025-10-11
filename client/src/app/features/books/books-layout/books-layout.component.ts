@@ -1,21 +1,12 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-
+import { FooterComponent } from '../../../shared/components/organisms/footer/footer.component';
+import { HeaderComponent } from '../../../shared/components/organisms/header/header.component';
 @Component({
   selector: 'app-books-layout',
+  templateUrl: './books-layout.component.html',
+  styleUrls: ['./books-layout.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  template: `
-    <div class="books-layout">
-      <router-outlet></router-outlet>
-    </div>
-  `,
-  styles: [`
-    .books-layout {
-      min-height: 100vh;
-      background-color: var(--background-color);
-    }
-  `]
+  imports: [RouterOutlet, HeaderComponent, FooterComponent]
 })
 export class BooksLayoutComponent {}

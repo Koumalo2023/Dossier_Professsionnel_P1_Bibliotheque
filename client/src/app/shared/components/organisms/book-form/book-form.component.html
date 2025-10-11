@@ -1,1 +1,148 @@
-<p>book-form works!</p>
+<form class="book-form" (ngSubmit)="onSubmit()" [formGroup]="bookForm">
+  <!-- Titre -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Titre *</app-typography>
+    <app-input
+      formControlName="title"
+      type="text"
+      placeholder="Titre du livre"
+      [required]="true"
+      [errorMessage]="bookForm.get('title')?.invalid && bookForm.get('title')?.touched ? 'Champ requis' : null"
+    ></app-input>
+  </div>
+
+  <!-- Auteur -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Auteur *</app-typography>
+    <app-input
+      formControlName="author"
+      type="text"
+      placeholder="Nom de l'auteur"
+      [required]="true"
+      [errorMessage]="bookForm.get('author')?.invalid && bookForm.get('author')?.touched ? 'Champ requis' : null"
+    ></app-input>
+  </div>
+
+  <!-- ISBN -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">ISBN *</app-typography>
+    <div class="book-form__isbn-group">
+      <app-input
+        formControlName="isbn"
+        type="text"
+        placeholder="978-3-16-148410-0"
+        [required]="true"
+        [errorMessage]="
+          bookForm.get('isbn')?.hasError('required') && bookForm.get('isbn')?.touched
+            ? 'Champ requis'
+            : bookForm.get('isbn')?.hasError('pattern')
+              ? 'Format ISBN invalide (10 ou 13 chiffres)'
+              : null
+        "
+      ></app-input>
+      <app-button
+        variant="outline"
+        size="small"
+        (clicked)="onImportFromGoogle()"
+        [disabled]="!bookForm.get('isbn')?.valid || !bookForm.get('isbn')?.value"
+      >
+        <app-icon name="fa-cloud-download-alt" size="sm"></app-icon>
+        Importer
+      </app-button>
+    </div>
+  </div>
+
+  <!-- Éditeur -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Éditeur *</app-typography>
+    <app-input
+      formControlName="publisher"
+      type="text"
+      placeholder="Nom de l'éditeur"
+      [required]="true"
+      [errorMessage]="bookForm.get('publisher')?.invalid && bookForm.get('publisher')?.touched ? 'Champ requis' : null"
+    ></app-input>
+  </div>
+
+  <!-- Date de publication -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Date de publication *</app-typography>
+    <app-input
+      formControlName="publicationDate"
+      type="text"
+      [required]="true"
+      [errorMessage]="bookForm.get('publicationDate')?.invalid && bookForm.get('publicationDate')?.touched ? 'Date requise' : null"
+    ></app-input>
+  </div>
+
+  <!-- Catégorie -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Catégorie *</app-typography>
+    <select class="book-form__select" formControlName="categoryId">
+      <option value="">Sélectionner une catégorie</option>
+      @for (cat of categories; track cat.id) {
+        <option [value]="cat.id">{{ cat.name }}</option>
+      }
+    </select>
+    @if (bookForm.get('categoryId')?.invalid && bookForm.get('categoryId')?.touched) {
+      <app-typography variant="small" color="danger">Catégorie requise</app-typography>
+    }
+  </div>
+
+  <!-- Nombre d'exemplaires -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Nombre d'exemplaires *</app-typography>
+    <app-input
+      formControlName="totalCopies"
+      type="number"
+      [required]="true"
+      [errorMessage]="
+        bookForm.get('totalCopies')?.hasError('required')
+          ? 'Champ requis'
+          : bookForm.get('totalCopies')?.hasError('min')
+            ? 'Au moins 1 exemplaire'
+            : null
+      "
+    ></app-input>
+  </div>
+
+  <!-- Description -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">Description *</app-typography>
+    <textarea
+      class="book-form__textarea"
+      formControlName="description"
+      placeholder="Résumé du livre..."
+      [required]="true"
+    ></textarea>
+    @if (bookForm.get('description')?.invalid && bookForm.get('description')?.touched) {
+      <app-typography variant="small" color="danger">Description requise</app-typography>
+    }
+  </div>
+
+  <!-- URL de couverture (optionnel) -->
+  <div class="book-form__field">
+    <app-typography variant="label" color="text-primary">URL de la couverture</app-typography>
+    <app-input
+      formControlName="coverUrl"
+      type="text"
+      placeholder="https://example.com/cover.jpg"
+    ></app-input>
+  </div>
+
+  <!-- Erreur globale -->
+  @if (errorMessage) {
+    <div class="book-form__error">{{ errorMessage }}</div>
+  }
+
+  <!-- Bouton soumettre -->
+  <app-button
+    type="submit"
+    variant="primary"
+    [disabled]="bookForm.invalid || loading"
+    [loading]="loading"
+    class="book-form__submit"
+  >
+    {{ isEditMode ? 'Mettre à jour' : 'Créer le livre' }}
+  </app-button>
+</form>

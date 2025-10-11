@@ -5,6 +5,15 @@
 @use 'functions' as *;
 
 // ──────────────────────────────────────
+// 📱 RESPONSIVE ALIAS (compatibilité)
+// ──────────────────────────────────────
+@mixin respond-to($name) {
+  @include media-breakpoint-up($name) {
+    @content;
+  }
+}
+
+// ──────────────────────────────────────
 // 📱 RESPONSIVE (Mobile-first)
 // Usage : @include media-breakpoint-up(md) { ... }
 // ──────────────────────────────────────
@@ -31,6 +40,32 @@
 
 @mixin bg-color($key) {
   background-color: get-config($key, 'colors');
+}
+
+// ──────────────────────────────────────
+// 📰 TYPOGRAPHIE
+// ──────────────────────────────────────
+@mixin text-size($size) {
+  font-size: get-config($size, 'typography');
+}
+
+@mixin text-weight($weight) {
+  font-weight: get-config('weight-#{$weight}', 'typography');
+}
+
+@mixin line-height($height) {
+  line-height: get-config($height, 'typography');
+}
+
+// ──────────────────────────────────────
+// ⏱️ TRANSITIONS
+// ──────────────────────────────────────
+@mixin transition-duration($duration) {
+  transition-duration: get-config($duration, 'transitions');
+}
+
+@mixin transition-timing($timing) {
+  transition-timing-function: get-config($timing, 'transitions');
 }
 
 // ──────────────────────────────────────
@@ -99,7 +134,7 @@
 // Usage : @include card-style;
 // ──────────────────────────────────────
 @mixin card-style {
-  background: get-config('card-bg', 'colors') or white;
+  background: var(--color-card-bg, white);
   border-radius: get-config('lg', 'border-radius');
   box-shadow: get-config('base', 'shadows');
   transition: get-config('default', 'transitions');

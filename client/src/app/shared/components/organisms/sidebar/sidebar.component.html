@@ -1,84 +1,59 @@
-<aside class="sidebar" [class.sidebar--open]="isOpen">
-    <div class="sidebar__header">
-      <h2 class="sidebar__title">Bibliothèque</h2>
-      <button class="sidebar__close" (click)="onCloseClick()" aria-label="Fermer">
-        <span class="sidebar__close-icon">&times;</span>
-      </button>
-    </div>
-  
-    <div class="sidebar__content">
-      <nav class="sidebar__nav">
-        <ul class="sidebar__menu">
-          <li class="sidebar__item">
-            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="sidebar__link" (click)="onNavLinkClick()">
-              <i class="sidebar__icon">🏠</i>
-              <span>Accueil</span>
-            </a>
-          </li>
-          <li class="sidebar__item">
-            <a routerLink="/books" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-              <i class="sidebar__icon">📚</i>
-              <span>Catalogue de livres</span>
-            </a>
-          </li>
-  
-          <!-- Liens pour utilisateurs connectés -->
-          <ng-container *ngIf="userInfo.isLoggedIn">
-            <li class="sidebar__divider">Mon espace</li>
-            <li class="sidebar__item">
-              <a routerLink="/profile" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-                <i class="sidebar__icon">👤</i>
-                <span>Mon profil</span>
-              </a>
-            </li>
-            <li class="sidebar__item">
-              <a routerLink="/profile/loans" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-                <i class="sidebar__icon">📖</i>
-                <span>Mes emprunts</span>
-              </a>
-            </li>
-          </ng-container>
-  
-          <!-- Liens pour administrateurs -->
-          <ng-container *ngIf="userInfo.isAdmin">
-            <li class="sidebar__divider">Administration</li>
-            <li class="sidebar__item">
-              <a routerLink="/admin/books/new" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-                <i class="sidebar__icon">➕</i>
-                <span>Ajouter un livre</span>
-              </a>
-            </li>
-            <li class="sidebar__item">
-              <a routerLink="/admin/loans" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-                <i class="sidebar__icon">📋</i>
-                <span>Gestion des emprunts</span>
-              </a>
-            </li>
-            <li class="sidebar__item">
-              <a routerLink="/admin/statistics" routerLinkActive="active" class="sidebar__link" (click)="onNavLinkClick()">
-                <i class="sidebar__icon">📊</i>
-                <span>Statistiques</span>
-              </a>
-            </li>
-          </ng-container>
-        </ul>
-      </nav>
-    </div>
-  
-    <div class="sidebar__footer">
-      <ng-container *ngIf="!userInfo.isLoggedIn">
-        <a routerLink="/auth/login" class="sidebar__btn sidebar__btn--login" (click)="onNavLinkClick()">Connexion</a>
-        <a routerLink="/auth/register" class="sidebar__btn sidebar__btn--register" (click)="onNavLinkClick()">Inscription</a>
-      </ng-container>
-      <ng-container *ngIf="userInfo.isLoggedIn">
-        <div class="sidebar__user">
-          <span class="sidebar__username">{{ userInfo.username }}</span>
+<aside
+  class="sidebar"
+  [class.sidebar--open]="isOpen"
+  (click)="closeSidebar.emit()"
+>
+  <div class="sidebar__content" (click)="$event.stopPropagation()">
+    <!-- En-tête utilisateur -->
+    @if (isLoggedIn()) {
+      <div class="sidebar__header">
+        <app-user-avatar [user]="userInfo!" size="lg"></app-user-avatar>
+        <div class="sidebar__user-info">
+          <app-typography variant="body" weight="semibold">{{ userInfo?.name }}</app-typography>
+          <app-typography variant="small" color="text-secondary">{{ userRole }}</app-typography>
         </div>
-        <button class="sidebar__btn sidebar__btn--logout" (click)="onLogoutClick()">Déconnexion</button>
-      </ng-container>
-    </div>
-  </aside>
-  
-  <!-- Overlay pour fermer le sidebar en cliquant à l'extérieur -->
-  <div *ngIf="isOpen" class="sidebar__overlay" (click)="onCloseClick()"></div>
-  
+      </div>
+
+      <hr class="sidebar__divider" />
+    }
+
+    <!-- Navigation -->
+    <nav class="sidebar__nav">
+      <button class="sidebar__link" (click)="navigateTo('/books')">
+        <app-icon name="fa-book" color="primary"></app-icon>
+        <app-typography variant="body" weight="medium">Catalogue</app-typography>
+      </button>
+
+      @if (isLoggedIn()) {
+        <button class="sidebar__link" (click)="navigateTo('/profile')">
+          <app-icon name="fa-user" color="primary"></app-icon>
+          <app-typography variant="body" weight="medium">Mon Profil</app-typography>
+        </button>
+
+        @if (isAdminOrManager()) {
+          <button class="sidebar__link" (click)="navigateTo('/admin/statistics')">
+            <app-icon name="fa-chart-line" color="primary"></app-icon>
+            <app-typography variant="body" weight="medium">Administration</app-typography>
+          </button>
+        }
+
+        <button class="sidebar__link sidebar__link--danger" (click)="onLogout()">
+          <app-icon name="fa-sign-out-alt" color="danger"></app-icon>
+          <app-typography variant="body" weight="medium" color="danger">Déconnexion</app-typography>
+        </button>
+      } @else {
+        <button class="sidebar__link" (click)="navigateTo('/auth/login')">
+          <app-icon name="fa-sign-in-alt" color="primary"></app-icon>
+          <app-typography variant="body" weight="medium">Connexion</app-typography>
+        </button>
+      }
+    </nav>
+
+    <!-- Pied de page -->
+    <footer class="sidebar__footer">
+      <app-typography variant="small" color="text-secondary">
+        © <span id="current-year"></span> Bibliothèque Numérique
+      </app-typography>
+    </footer>
+  </div>
+</aside>

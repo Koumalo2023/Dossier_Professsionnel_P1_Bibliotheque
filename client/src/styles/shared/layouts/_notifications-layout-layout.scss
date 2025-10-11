@@ -1,0 +1,7 @@
+
+
+.notifications-layout__main {
+  min-height: calc(100vh - 120px);
+  background-color: get-config('background', 'colors');
+  padding: 2rem 0;
+}

@@ -1,1 +1,76 @@
-<p>analytics-dashboard works!</p>
+<div class="analytics-dashboard">
+  <!-- Statistiques clés -->
+  <div class="analytics-dashboard__stats">
+    @for (item of statItems; track item.label) {
+    <div class="stat-card">
+      <div class="stat-card__icon">
+        <app-icon [name]="item.icon" [color]="item.color" size="lg"></app-icon>
+      </div>
+      <div class="stat-card__content">
+        <app-typography variant="small" color="text-secondary">{{ item.label }}</app-typography>
+        <app-typography variant="body" [color]="item.color" weight="bold">
+          {{ loading ? '--' : getStatValue(item.key) }}
+        </app-typography>
+        @if (item.key === 'monthlyGrowth' && !loading) {
+          <app-typography variant="small" color="success" weight="semibold">
+            <app-icon name="fa-arrow-up" size="sm" color="success"></app-icon>
+            {{ (overview ? overview.monthlyGrowth : mockOverview.monthlyGrowth) | number:'1.1-1' }}%
+          </app-typography>
+        }
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Deux colonnes : Catégories populaires + Livres populaires -->
+  <div class="analytics-dashboard__charts">
+    <!-- Catégories populaires -->
+    <div class="chart-card">
+      <app-heading level="h4" color="primary">Catégories populaires</app-heading>
+      <div class="chart-card__content">
+        @if (loading) {
+          <div class="skeleton-list">
+            @for (i of [1,2,3,4]; track i) {
+              <div class="skeleton skeleton--row"></div>
+            }
+          </div>
+        } @else {
+          <ul class="category-list">
+            @for (cat of popularCategories.length ? popularCategories : mockCategories; track cat.categoryName) {
+              <li class="category-item">
+                <span class="category-name">{{ cat.categoryName }}</span>
+                <span class="category-stats">
+                  {{ cat.borrowCount }} emprunts ({{ cat.percentage }}%)
+                </span>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+
+    <!-- Livres populaires -->
+    <div class="chart-card">
+      <app-heading level="h4" color="primary">Livres les plus empruntés</app-heading>
+      <div class="chart-card__content">
+        @if (loading) {
+          <div class="skeleton-list">
+            @for (i of [1,2,3]; track i) {
+              <div class="skeleton skeleton--row"></div>
+            }
+          </div>
+        } @else {
+          <ul class="book-list">
+            @for (book of topBooks.length ? topBooks : mockTopBooks; track book.bookId) {
+              <li class="book-item">
+                <app-typography variant="body" weight="semibold">{{ book.title }}</app-typography>
+                <app-typography variant="small" color="text-secondary">{{ book.author }}</app-typography>
+                <app-typography variant="small" color="primary">{{ book.borrowCount }} emprunts</app-typography>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    </div>
+  </div>
+</div>

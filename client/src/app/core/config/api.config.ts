@@ -173,7 +173,8 @@ export const stagingApiConfig: Partial<ApiConfig> = {
 
 // Fonction pour obtenir la configuration API en fonction de l'environnement
 export function getApiConfig(): ApiConfig {
-  const environment = process.env['NODE_ENV'] || 'development';
+  // Utiliser les environnements Angular au lieu de process.env
+  const environment = (window as any).environment || 'development';
   
   let environmentConfig: Partial<ApiConfig> = {};
   
@@ -195,20 +196,17 @@ export function getApiConfig(): ApiConfig {
   };
 }
 
+import { Injectable } from '@angular/core';
+
 // Service de configuration API
+@Injectable({
+  providedIn: 'root'
+})
 export class ApiConfigService {
-  private static instance: ApiConfigService;
   private config: ApiConfig;
 
-  private constructor() {
+  constructor() {
     this.config = getApiConfig();
-  }
-
-  static getInstance(): ApiConfigService {
-    if (!ApiConfigService.instance) {
-      ApiConfigService.instance = new ApiConfigService();
-    }
-    return ApiConfigService.instance;
   }
 
   getConfig(): ApiConfig {

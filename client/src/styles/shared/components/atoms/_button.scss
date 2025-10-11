@@ -1,0 +1,132 @@
+@use '../../../abstract' as abstracts;
+
+// Base button
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: abstracts.spacing(2);
+  font-family: abstracts.get-config('family-base', 'typography');
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: abstracts.radius('pill');
+  cursor: pointer;
+  transition: abstracts.transition('default');
+  box-shadow: abstracts.shadow('base');
+  min-height: 40px;
+  padding: 0 abstracts.spacing(5);
+
+  // Loading spinner
+  .loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: abstracts.spacing(2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  // Disabled
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: abstracts.shadow('base') !important;
+  }
+
+  // Focus accessibilité
+  &:focus-visible {
+    outline: 2px solid abstracts.get-config('primary', 'colors');
+    outline-offset: 2px;
+  }
+}
+
+// Variantes
+.btn-primary {
+  background: abstracts.get-config('primary', 'colors');
+  color: white;
+  &:not(:disabled):hover {
+    background: abstracts.color-variant('primary', 'hover');
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+.btn-secondary {
+  background: abstracts.get-config('secondary', 'colors');
+  color: white;
+  &:not(:disabled):hover {
+    background: abstracts.color-variant('secondary', 'hover');
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+.btn-accent {
+  background: abstracts.get-config('accent', 'colors');
+  color: abstracts.get-config('dark', 'colors');
+  &:not(:disabled):hover {
+    background: abstracts.color-variant('accent', 'hover');
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+.btn-success {
+  background: abstracts.get-config('success', 'colors');
+  color: white;
+  &:not(:disabled):hover {
+    background: abstracts.color-variant('success', 'hover');
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+.btn-danger {
+  background: abstracts.get-config('danger', 'colors');
+  color: white;
+  &:not(:disabled):hover {
+    background: abstracts.color-variant('danger', 'hover');
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+.btn-outline-primary {
+  background: transparent;
+  color: abstracts.get-config('primary', 'colors');
+  border: 2px solid abstracts.get-config('primary', 'colors');
+  &:not(:disabled):hover {
+    background: rgba(abstracts.get-config('primary', 'colors'), 0.08);
+    transform: translateY(-2px);
+    box-shadow: abstracts.shadow('md');
+  }
+}
+
+// Tailles
+.btn-sm {
+  font-size: 0.875rem;
+  padding: abstracts.spacing(2) abstracts.spacing(4);
+  min-height: 32px;
+}
+
+.btn-md {
+  font-size: 1rem;
+  padding: abstracts.spacing(3) abstracts.spacing(5);
+  min-height: 40px;
+}
+
+.btn-lg {
+  font-size: 1.125rem;
+  padding: abstracts.spacing(4) abstracts.spacing(6);
+  min-height: 48px;
+}
+
+// Animation du spinner
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

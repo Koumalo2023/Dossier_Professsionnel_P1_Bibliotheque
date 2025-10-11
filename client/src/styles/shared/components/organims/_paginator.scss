@@ -1,0 +1,81 @@
+@use '../../../abstract' as abstracts;
+
+.paginator {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: abstracts.spacing(3);
+  padding: abstracts.spacing(3) 0;
+  border-top: 1px solid abstracts.get-config('border', 'colors');
+
+  &--loading {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+
+  .paginator__info,
+  .paginator__page-size {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(2);
+  }
+
+  .paginator__controls {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(1);
+  }
+
+  .paginator__btn,
+  .paginator__page-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 1px solid abstracts.get-config('border', 'colors');
+    border-radius: abstracts.radius('sm');
+    cursor: pointer;
+    transition: abstracts.transition('fast');
+    color: abstracts.get-config('text-primary', 'colors');
+
+    &:hover:not(:disabled) {
+      background: abstracts.get-config('light-bg', 'colors');
+      border-color: abstracts.get-config('primary', 'colors');
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .paginator__page-btn {
+    width: auto;
+    min-width: 36px;
+    padding: 0 abstracts.spacing(2);
+
+    &--active {
+      background: abstracts.get-config('primary', 'colors');
+      color: white;
+      border-color: abstracts.get-config('primary', 'colors');
+    }
+  }
+
+  .paginator__ellipsis {
+    padding: 0 abstracts.spacing(1);
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  .paginator__select {
+    @include abstracts.form-control-style;
+    width: auto;
+    padding: abstracts.spacing(1) abstracts.spacing(2);
+    font-size: 0.875rem;
+    border-radius: abstracts.radius('sm');
+  }
+
+}

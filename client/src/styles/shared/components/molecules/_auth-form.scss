@@ -1,0 +1,33 @@
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: spacing(4);
+
+
+  .auth-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(1);
+  }
+
+  .auth-form__password-wrapper {
+    position: relative;
+  }
+
+  .auth-form__error {
+    padding: spacing(2);
+    background-color: rgba(get-config('danger', 'colors'), 0.1);
+    color: get-config('danger', 'colors');
+    border-radius: radius('md');
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .auth-form__submit {
+    margin-top: spacing(2);
+    width: 100%;
+  }
+
+}

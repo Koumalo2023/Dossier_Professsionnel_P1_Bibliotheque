@@ -1,0 +1,97 @@
+@use '../../../abstract' as abstracts;
+
+.notification-panel {
+  @include abstracts.card-style;
+  padding: abstracts.spacing(4);
+
+
+  // Liste
+  .notification-panel__list {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  // Élément de notification
+  .notification-item {
+    display: flex;
+    gap: abstracts.spacing(3);
+    padding: abstracts.spacing(3);
+    border-radius: abstracts.radius('md');
+    background: abstracts.get-config('light', 'colors');
+    transition: abstracts.transition('fast');
+
+    &--unread {
+      border-left: 4px solid abstracts.get-config('primary', 'colors');
+      background: rgba(abstracts.get-config('primary', 'colors'), 0.05);
+    }
+
+    &:hover {
+      background: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  .notification-item__icon {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: abstracts.radius('full');
+    background: rgba(abstracts.get-config('primary', 'colors'), 0.1);
+  }
+
+  .notification-item__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(1);
+  }
+
+  .notification-item__actions {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(2);
+  }
+
+  .notification-item__action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: abstracts.spacing(1);
+    border-radius: abstracts.radius('sm');
+    transition: abstracts.transition('fast');
+
+    &:hover {
+      background: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  // État vide
+  .notification-panel__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: abstracts.spacing(8) abstracts.spacing(4);
+    text-align: center;
+    color: abstracts.get-config('text-secondary', 'colors');
+  }
+
+  // Skeleton
+  .notification-panel__skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: abstracts.spacing(3);
+  }
+
+  .skeleton--notification {
+    height: 80px;
+    border-radius: abstracts.radius('md');
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+}

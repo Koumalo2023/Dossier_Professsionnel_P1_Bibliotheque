@@ -22,13 +22,14 @@ $colors: (
   dark:           #0c0a09,
 
   // Fond de page global
-  background:     #f8fafc
+  background:     #f8fafc,
+  card-bg:        #ffffff
 );
 
 // 📰 TYPOGRAPHIE
 $typography: (
-  family-base:      'Poppins', sans-serif,
-  family-serif:     'Merriweather', serif,
+  family-base:      ('Poppins', sans-serif),
+  family-serif:     ('Merriweather', serif),
   weight-regular:   400,
   weight-medium:    500,
   weight-semibold:  600,

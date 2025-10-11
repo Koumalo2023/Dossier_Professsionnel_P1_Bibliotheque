@@ -1,21 +1,14 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { HeaderComponent } from '../../../shared/components/organisms/header/header.component';
+import { FooterComponent } from '../../../shared/components/organisms/footer/footer.component';
+
 
 @Component({
   selector: 'app-reservations-layout',
+  templateUrl: './reservations-layout.component.html',
+  styleUrls: ['./reservations-layout.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  template: `
-    <div class="reservations-layout">
-      <router-outlet></router-outlet>
-    </div>
-  `,
-  styles: [`
-    .reservations-layout {
-      min-height: 100vh;
-      background-color: var(--background-color);
-    }
-  `]
+  imports: [RouterOutlet, HeaderComponent, FooterComponent]
 })
 export class ReservationsLayoutComponent {}

@@ -1,14 +1,22 @@
 <footer class="footer">
-    <div class="container">
-      <p class="footer__text">
-        &copy; {{ currentYear }} Application de Gestion de Bibliothèque. Tous droits réservés.
-      </p>
+  <div class="container">
+    <div class="footer__content">
+      <div class="footer__brand">
+        <app-icon name="fa-book" color="primary" size="lg"></app-icon>
+        <app-typography variant="body" weight="semibold" color="primary">
+          Bibliothèque Numérique
+        </app-typography>
+      </div>
       <div class="footer__links">
+        <a href="#" class="footer__link">Mentions légales</a>
         <a href="#" class="footer__link">Politique de confidentialité</a>
-        <span class="footer__separator">|</span>
-        <a href="#" class="footer__link">Conditions d'utilisation</a>
+        <a href="#" class="footer__link">Contact</a>
+      </div>
+      <div class="footer__copyright">
+        <app-typography variant="small" color="text-secondary">
+          © {{ currentYear }} Bibliothèque Numérique – Tous droits réservés
+        </app-typography>
       </div>
     </div>
-  </footer>
-  
-  
+  </div>
+</footer>

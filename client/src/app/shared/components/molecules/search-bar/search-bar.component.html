@@ -1,0 +1,72 @@
+<div class="search-bar">
+  <div class="search-bar__input-group">
+    <div class="search-bar__icon">
+      <app-icon name="fa-search" color="text-secondary" size="sm"></app-icon>
+    </div>
+
+    <input
+      #searchInput
+      class="search-bar__input"
+      [formControl]="searchControl"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      type="text"
+      aria-label="Rechercher dans la bibliothèque"
+    />
+
+    @if (searchControl.value) {
+      <button
+        type="button"
+        class="search-bar__clear"
+        (click)="clearSearch()"
+        aria-label="Effacer la recherche"
+      >
+        <app-icon name="fa-times" color="text-secondary" size="sm"></app-icon>
+      </button>
+    }
+  </div>
+
+  @if (showFilters) {
+    <button
+      type="button"
+      class="search-bar__filter-toggle"
+      (click)="toggleFilters()"
+      [class.active]="showAdvancedFilters"
+      aria-expanded="{{ showAdvancedFilters }}"
+      aria-controls="advanced-filters"
+    >
+      <app-icon name="fa-sliders-h" size="sm"></app-icon>
+      Filtres
+    </button>
+  }
+
+  @if (showAdvancedFilters) {
+    <div id="advanced-filters" class="search-bar__filters">
+      <div class="search-bar__filter-group">
+        <label class="search-bar__filter-label">Catégorie</label>
+        <select
+          class="search-bar__select"
+          (change)="onCategoryChange($any($event.target).value || null)"
+        >
+          <option value="">Toutes les catégories</option>
+          @for (cat of categories; track cat) {
+            <option [value]="cat" [selected]="selectedCategory === cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="search-bar__filter-group">
+        <label class="search-bar__checkbox">
+          <input
+            type="checkbox"
+            [checked]="availableOnly"
+            (change)="onAvailableOnlyChange()"
+          />
+          <span>Disponible uniquement</span>
+        </label>
+      </div>
+    </div>
+  }
+</div>

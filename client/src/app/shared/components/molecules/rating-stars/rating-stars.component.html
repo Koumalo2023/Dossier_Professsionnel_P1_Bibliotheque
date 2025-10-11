@@ -1,1 +1,19 @@
-<p>rating-stars works!</p>
+<div class="rating-stars" [class]="'rating-stars--' + size">
+  @for (star of stars; track star) {
+    <button
+      type="button"
+      class="rating-stars__star"
+      [class.rating-stars__star--interactive]="interactive && !readonly"
+      [attr.aria-label]="'Étoile ' + star + ' sur ' + max"
+      [attr.aria-readonly]="readonly"
+      (click)="onStarClick(star)"
+      (mouseenter)="onStarHover(star)"
+    >
+      <app-icon
+        [name]="getStarIcon(star)"
+        [color]="getStarColor(star)"
+        [size]="size === 'sm' ? 'sm' : (size === 'lg' ? 'lg' : 'md')"
+      ></app-icon>
+    </button>
+  }
+</div>

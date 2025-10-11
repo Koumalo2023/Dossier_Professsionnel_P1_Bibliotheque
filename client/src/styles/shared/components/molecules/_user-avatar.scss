@@ -1,0 +1,68 @@
+
+
+@use '../../../abstract' as abstracts;
+
+// Définition des tailles d'avatar
+$avatar-sizes: (
+  'sm': 32px,
+  'md': 48px,
+  'lg': 64px
+);
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  gap: abstracts.spacing(2);
+  border-radius: abstracts.radius('full');
+  transition: abstracts.transition('fast');
+
+  &--clickable {
+    cursor: pointer;
+    &:hover {
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  // Taille dynamique
+  @each $size, $value in $avatar-sizes {
+    &--#{$size} {
+      .user-avatar__image,
+      .user-avatar__fallback {
+        width: $value;
+        height: $value;
+        min-width: $value;
+        min-height: $value;
+      }
+
+      .user-avatar__fallback {
+        font-size: if($size == 'sm', 0.75rem, if($size == 'md', 1rem, 1.25rem));
+      }
+    }
+  }
+
+  // Image
+  &__image {
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: abstracts.shadow('sm');
+  }
+
+  // Fallback (initiales)
+  &__fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, abstracts.get-config('primary-light', 'colors'), abstracts.get-config('secondary', 'colors'));
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    box-shadow: abstracts.shadow('sm');
+  }
+
+  // Nom (optionnel)
+  &__name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+}

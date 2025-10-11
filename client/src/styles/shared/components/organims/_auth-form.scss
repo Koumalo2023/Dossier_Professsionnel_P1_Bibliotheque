@@ -1,0 +1,33 @@
+
+
+@use '../../../abstract' as abstracts;
+
+.auth-form {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(4);
+
+
+.auth-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(1);
+}
+
+.auth-form__error {
+  padding: abstracts.spacing(2);
+  background-color: rgba(abstracts.get-config('danger', 'colors'), 0.1);
+  color: abstracts.get-config('danger', 'colors');
+  border-radius: abstracts.radius('md');
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-form__submit {
+  margin-top: abstracts.spacing(2);
+  width: 100%;
+}
+}

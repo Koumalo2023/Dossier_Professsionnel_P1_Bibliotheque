@@ -1,0 +1,77 @@
+<div class="book-card" [class.book-card--loading]="loading">
+  <!-- Couverture -->
+  <div class="book-card__cover">
+    @if (book.coverUrl) {
+      <img [src]="book.coverUrl" [alt]="'Couverture de ' + book.title" class="book-card__image" />
+    } @else {
+      <div class="book-card__cover-fallback">
+        <app-icon name="fa-book" size="2x" color="text-secondary"></app-icon>
+        <app-typography variant="small" color="text-secondary">{{ coverFallback }}</app-typography>
+      </div>
+    }
+  </div>
+
+  <!-- Corps -->
+  <div class="book-card__body">
+    <!-- Titre -->
+    <app-heading level="h3" variant="serif" color="primary">
+      {{ book.title }}
+    </app-heading>
+
+    <!-- Auteur -->
+    <app-typography variant="body" color="text-secondary" weight="medium">
+      {{ book.author }}
+    </app-typography>
+
+    <!-- Catégorie (optionnelle) -->
+    @if (book.category) {
+      <app-typography variant="small" color="text-secondary" weight="semibold">
+        {{ book.category }}
+      </app-typography>
+    }
+
+    <!-- Statut -->
+    <div class="book-card__status">
+      <app-icon
+        [name]="book.available ? 'fa-check-circle' : 'fa-times-circle'"
+        [color]="availabilityColor"
+        size="sm"
+      ></app-icon>
+      <app-typography variant="small" [color]="availabilityColor" weight="semibold">
+        {{ availabilityText }}
+      </app-typography>
+    </div>
+
+    <!-- Actions -->
+    @if (showActions && !loading) {
+      <div class="book-card__actions">
+        @if (book.available) {
+          <app-button
+            variant="primary"
+            size="small"
+            (clicked)="onBorrow()"
+            iconLeft="fa-book-open"
+          >
+            Emprunter
+          </app-button>
+        } @else {
+          <app-button
+            variant="outline"
+            size="small"
+            (clicked)="onReserve()"
+            iconLeft="fa-calendar-plus"
+          >
+            Réserver
+          </app-button>
+        }
+      </div>
+    }
+
+    <!-- Skeleton loader -->
+    @if (loading) {
+      <div class="book-card__skeleton-actions">
+        <div class="skeleton skeleton--btn"></div>
+      </div>
+    }
+  </div>
+</div>

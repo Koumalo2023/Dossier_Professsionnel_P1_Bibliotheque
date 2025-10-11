@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import { Subject, Observable, filter, map } from 'rxjs';
 
 // Interface pour les événements
@@ -74,7 +74,7 @@ export class EventBusService {
     this.addToHistory(event);
     
     // Log en développement
-    if (!environment.production) {
+    if (isDevMode()) {
       console.log(`Event emitted: ${eventType}`, payload);
     }
   }
@@ -264,8 +264,3 @@ export class EventBusService {
     console.log('Event History:', this.eventHistory);
   }
 }
-
-// Import d'environnement (à créer si nécessaire)
-const environment = {
-  production: false
-};

@@ -1,0 +1,61 @@
+
+@use 'sass:map';
+@use '../../../abstract' as abstracts;
+
+// Définition des hauteurs de barre de progression
+$progress-heights: (
+  'sm': 4px,
+  'md': 8px,
+  'lg': 12px
+);
+
+.progress-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(1);
+
+  &--sm { .progress-bar__track { height: map.get($progress-heights, 'sm'); } }
+  &--md { .progress-bar__track { height: map.get($progress-heights, 'md'); } }
+  &--lg { .progress-bar__track { height: map.get($progress-heights, 'lg'); } }
+
+  &__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__track {
+    width: 100%;
+    background-color: abstracts.get-config('light-bg', 'colors');
+    border-radius: abstracts.radius('full');
+    overflow: hidden;
+    position: relative;
+  }
+
+  &__fill {
+    height: 100%;
+    background: linear-gradient(90deg, abstracts.get-config('primary', 'colors'), abstracts.get-config('secondary', 'colors'));
+    border-radius: abstracts.radius('full');
+    transition: width 0.6s ease;
+
+    // Variantes de couleur
+    &--primary {
+      background: linear-gradient(90deg, abstracts.get-config('primary', 'colors'), abstracts.get-config('secondary', 'colors'));
+    }
+    &--success {
+      background: linear-gradient(90deg, abstracts.get-config('success', 'colors'), #14b8a6);
+    }
+    &--accent {
+      background: linear-gradient(90deg, abstracts.get-config('accent', 'colors'), #fcd34d);
+    }
+    &--secondary {
+      background: linear-gradient(90deg, abstracts.get-config('secondary', 'colors'), #a78bfa);
+    }
+
+    // Animation au chargement initial
+    &--animated {
+      transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+  }
+}

@@ -1,58 +1,46 @@
+// Modèles d'authentification
+
 export interface User {
   id: string;
   name: string;
   email: string;
   roles: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface UserDto {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface UpdateUserDto {
-  name: string;
-  email: string;
+export interface UserInfo {
+  isLoggedIn: boolean;
+  username: string;
+  isAdmin: boolean;
 }
 
-export interface RegisterDto {
-  name: string;
-  email: string;
-  password: string;
-}
-
-export interface LoginDto {
+export interface LoginRequest {
   email: string;
   password: string;
 }
 
 export interface LoginResponse {
   token: string;
-  user: UserDto;
-  expiresIn?: number;
+  refreshToken: string;
+  tokenExpires: string;
+  user: User;
 }
 
-export interface RefreshTokenRequest {
-  token: string;
-}
-
-export interface CurrentUser {
-  id: string;
+export interface RegisterRequest {
   name: string;
   email: string;
-  roles: string[];
-  createdAt: Date;
-  updatedAt: Date;
+  password: string;
 }
 
-export interface UserInfo {
-  isLoggedIn: boolean;
-  username?: string;
-  isAdmin?: boolean;
+export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+}
+
+// Rôles utilisateur
+export enum UserRole {
+  ADMIN = 'Admin',
+  MANAGER = 'Manager',
+  USER = 'User'
 }

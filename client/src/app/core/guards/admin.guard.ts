@@ -1,5 +1,5 @@
 import { CanActivateFn, Router } from "@angular/router";
-import { AuthService } from "../services/auth.service";
+import { AuthService } from "../services/api/auth.service";
 import { inject } from "@angular/core";
 
 export const adminGuard: CanActivateFn = (route, state) => {
@@ -13,7 +13,8 @@ export const adminGuard: CanActivateFn = (route, state) => {
     }
     
     // Ensuite vérifier le rôle admin
-    if (!authService.isAdmin()) {
+    const isAdmin = authService.isAdmin();
+    if (!isAdmin) {
       router.navigate(['/access-denied']);
       return false;
     }

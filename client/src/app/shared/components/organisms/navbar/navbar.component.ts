@@ -1,35 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { UserInfo } from '../../../core/models/user.model';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { UserAvatarComponent, UserInfo } from '../../molecules/user-avatar/user-avatar.component';
+import { HeadingComponent } from '../../atoms/heading/heading.component';
+import { IconComponent } from '../../atoms/icons/icon.component';
+import { TypographyComponent } from '../../atoms/typography/typography.component';
+import { ButtonComponent } from '../../atoms/button/button.component';
 
 @Component({
     selector: 'app-navbar',
-    imports: [CommonModule, RouterModule],
+    standalone: true,
+    imports: [CommonModule, RouterModule, HeadingComponent, IconComponent, TypographyComponent, UserAvatarComponent, ButtonComponent],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  @Input() userInfo: UserInfo = { isLoggedIn: false };
+   @Input() userInfo: UserInfo | null = null;
+  @Input() isSidebarOpen = false;
+
   @Output() logout = new EventEmitter<void>();
-  @Output() toggleSidebar = new EventEmitter<void>(); // Pour le menu mobile
+  @Output() toggleSidebar = new EventEmitter<void>();
 
-  isMobileMenuOpen = false;
+  constructor(private router: Router) {}
 
-  onLogoutClick(): void {
-    this.logout.emit();
-    this.isMobileMenuOpen = false; // Fermer le menu mobile après déconnexion
+  onLogoClick(): void {
+    this.router.navigate(['/']);
   }
 
-  onToggleSidebarClick(): void {
+  onLogout(): void {
+    this.logout.emit();
+  }
+
+  onToggleSidebar(): void {
     this.toggleSidebar.emit();
   }
 
-  toggleMobileMenu(): void {
-    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  navigateTo(path: string): void {
+    this.router.navigate([path]);
   }
 
-  closeMobileMenu(): void {
-    this.isMobileMenuOpen = false;
+  isLoggedIn(): boolean {
+    return !!this.userInfo;
+  }
+
+  getUserRole(): string {
+    // Dans une implémentation réelle, ce serait dans `userInfo.roles`
+    // Ici, on simule pour le design
+    return this.userInfo ? 'User' : '';
+  }
+
+  isAdminOrManager(): boolean {
+    const role = this.getUserRole();
+    return ['Admin', 'Manager'].includes(role);
   }
 }

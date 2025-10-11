@@ -1,1 +1,87 @@
-<p>reservation-list works!</p>
+<div class="reservation-list">
+  @if (loading) {
+    <div class="reservation-list__skeleton">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="skeleton skeleton--reservation"></div>
+      }
+    </div>
+  } @else if (reservations.length === 0) {
+    <div class="reservation-list__empty">
+      <app-icon name="fa-calendar" size="2x" color="text-secondary"></app-icon>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Aucune réservation trouvée.
+      </app-typography>
+    </div>
+  } @else {
+    <div class="reservation-list__table">
+      <table class="reservation-table">
+        <thead>
+          <tr>
+            <th>Livre</th>
+            @if (isAdminView) { <th>Utilisateur</th> }
+            <th>Réservé le</th>
+            <th>Disponible le</th>
+            <th>Statut</th>
+            @if (showActions) { <th>Actions</th> }
+          </tr>
+        </thead>
+        <tbody>
+          @for (res of reservations; track res.id) {
+            <tr class="reservation-table__row">
+              <td>
+                <app-typography variant="body" weight="semibold">{{ res.bookTitle }}</app-typography>
+              </td>
+              @if (isAdminView) {
+                <td>
+                  <app-typography variant="body">{{ res.userName }}</app-typography>
+                </td>
+              }
+              <td>{{ formatDate(res.reservationDate) }}</td>
+              <td>{{ res.availableSince ? formatDate(res.availableSince) : '—' }}</td>
+              <td>
+                <span class="reservation-status">
+                  <app-icon
+                    [name]="getIconForStatus(res.status)"
+                    [color]="getStatusColor(res.status)"
+                    size="sm"
+                  ></app-icon>
+                  <app-typography
+                    variant="small"
+                    [color]="getStatusColor(res.status)"
+                    weight="semibold"
+                  >
+                    {{ getStatusText(res.status) }}
+                  </app-typography>
+                </span>
+              </td>
+              @if (showActions) {
+                <td>
+                  @if (res.status === 'PENDING') {
+                    <app-button
+                      variant="outline"
+                      size="small"
+                      (clicked)="onCancel(res.id)"
+                      [disabled]="true"
+                    >
+                      Annuler
+                    </app-button>
+                  }
+                  @if (isAdminView && res.status === 'PENDING') {
+                    <app-button
+                      variant="outline"
+                      size="small"
+                      (clicked)="onMarkAvailable(res.id)"
+                      [disabled]="true"
+                    >
+                      Marquer dispo
+                    </app-button>
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

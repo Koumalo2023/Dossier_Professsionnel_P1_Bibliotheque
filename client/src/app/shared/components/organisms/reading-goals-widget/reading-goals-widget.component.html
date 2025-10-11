@@ -1,1 +1,93 @@
-<p>reading-goals-widget works!</p>
+<div class="reading-goals-widget">
+  <div class="reading-goals-widget__header">
+    <app-heading level="h4" color="primary">Mes objectifs de lecture</app-heading>
+    @if (showCreateButton) {
+      <app-button variant="primary" size="small" (clicked)="createGoal.emit()">
+        <app-icon name="fa-plus" size="sm"></app-icon>
+        Nouvel objectif
+      </app-button>
+    }
+  </div>
+
+  @if (loading) {
+    <div class="reading-goals-widget__skeleton">
+      @for (i of [1,2]; track i) {
+        <div class="skeleton skeleton--goal"></div>
+      }
+    </div>
+  } @else if (goals.length === 0) {
+    <div class="reading-goals-widget__empty">
+      <app-icon name="fa-bullseye" size="2x" color="text-secondary"></app-icon>
+      <app-typography variant="body" color="text-secondary" align="center">
+        Vous n’avez pas encore d’objectif de lecture.
+      </app-typography>
+      @if (showCreateButton) {
+        <app-button variant="outline" size="small" (clicked)="createGoal.emit()">
+          Créer mon premier objectif
+        </app-button>
+      }
+    </div>
+  } @else {
+    <!-- Objectifs actifs -->
+    @if (activeGoals.length > 0) {
+      <div class="reading-goals-widget__section">
+        <app-typography variant="small" weight="semibold" color="primary">En cours</app-typography>
+        <div class="reading-goals-widget__list">
+          @for (goal of activeGoals; track goal.id) {
+            <div class="goal-card">
+              <div class="goal-card__header">
+                <app-typography variant="body" weight="semibold">{{ goal.title }}</app-typography>
+                <button class="goal-card__action" (click)="onDeleteGoal(goal.id)" aria-label="Supprimer">
+                  <app-icon name="fa-trash" size="sm" color="text-secondary"></app-icon>
+                </button>
+              </div>
+              <app-typography variant="small" color="text-secondary">{{ goal.description }}</app-typography>
+              <div class="goal-card__progress">
+                <app-progress-bar
+                  [value]="goal.progressPercentage"
+                  [max]="100"
+                  [showPercentage]="true"
+                  size="sm"
+                  color="success"
+                ></app-progress-bar>
+                <app-typography variant="small" color="text-secondary">
+                  {{ goal.currentProgress }} / {{ goal.targetBooks }} livres
+                </app-typography>
+              </div>
+              <div class="goal-card__footer">
+                <app-typography variant="caption" color="text-secondary">
+                  Du {{ goal.startDate | date:'shortDate' }} au {{ goal.endDate | date:'shortDate' }}
+                </app-typography>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Objectifs terminés -->
+    @if (completedGoals.length > 0) {
+      <div class="reading-goals-widget__section">
+        <app-typography variant="small" weight="semibold" color="success">Terminés</app-typography>
+        <div class="reading-goals-widget__list">
+          @for (goal of completedGoals; track goal.id) {
+            <div class="goal-card goal-card--completed">
+              <div class="goal-card__header">
+                <app-typography variant="body" weight="semibold" color="success">
+                  <app-icon name="fa-check-circle" size="sm" color="success"></app-icon>
+                  {{ goal.title }}
+                </app-typography>
+              </div>
+              <app-typography variant="small" color="text-secondary">{{ goal.description }}</app-typography>
+              <div class="goal-card__footer">
+                <app-typography variant="caption" color="text-secondary">
+                  Terminé le {{ goal.endDate | date:'shortDate' }}
+                </app-typography>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>

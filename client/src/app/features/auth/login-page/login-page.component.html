@@ -1,0 +1,22 @@
+<div class="login-page">
+  <div class="login-page__container">
+    <div class="login-page__header">
+      <h1 class="login-page__title">Connexion</h1>
+      <p class="login-page__subtitle">Accédez à votre compte bibliothèque</p>
+    </div>
+
+    <app-auth-form
+      formType="login"
+      [loading]="loading"
+      [errorMessage]="errorMessage"
+      (formSubmit)="onLoginSubmit($event)"
+    ></app-auth-form>
+
+    <div class="login-page__footer">
+      <p class="login-page__link">
+        Pas encore de compte ? 
+        <a routerLink="/auth/register" class="login-page__link--primary">Créer un compte</a>
+      </p>
+    </div>
+  </div>
+</div>

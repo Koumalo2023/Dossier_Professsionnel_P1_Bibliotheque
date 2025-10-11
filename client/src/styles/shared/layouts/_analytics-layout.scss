@@ -1,0 +1,6 @@
+
+.analytics-layout__main {
+  min-height: calc(100vh - 120px);
+  background-color: get-config('light-bg', 'colors');
+  padding: 2rem 0;
+}

@@ -143,7 +143,8 @@ export const stagingConfig: Partial<AppConfig> = {
 
 // Fonction pour obtenir la configuration en fonction de l'environnement
 export function getAppConfig(): AppConfig {
-  const environment = process.env['NODE_ENV'] || 'development';
+  // Utiliser les environnements Angular au lieu de process.env
+  const environment = (window as any).environment || 'development';
   
   let environmentConfig: Partial<AppConfig> = {};
   

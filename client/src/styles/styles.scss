@@ -11,12 +11,29 @@
 // =============================================================================
 // Layouts (Grid, Header, Sidebar)
 // =============================================================================
-@use 'layouts' as layouts;
+// @use 'layouts' as layouts;
 
 // =============================================================================
 // Themes (Light, Dark)
 // =============================================================================
 @use 'themes' as themes;
+
+// =============================================================================
+// Les composants
+// =============================================================================
+@use 'shared/components';
+
+// =============================================================================
+// Les composants
+// =============================================================================
+@use 'shared/layouts';
+
+// =============================================================================
+// Les composants
+// =============================================================================
+@use 'features/index';
+
+
 
 // =============================================================================
 // Variables CSS globales
@@ -104,25 +121,75 @@ button {
 
 // Classe utilitaire pour les cartes partout
 .card-style {
-  @include card-style;
+  // Styles de carte inline (remplacement du mixin)
+  background: white;
+  border-radius: abstracts.radius('lg');
+  box-shadow: abstracts.shadow('base');
+  transition: abstracts.transition('default');
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: abstracts.shadow('md');
+  }
 }
 
 // Classe utilitaire pour les boutons primaires
 .btn-primary-style {
-  @include button-variant('primary');
+  // Styles de bouton primaire inline
+  background: abstracts.get-config('primary', 'colors');
+  color: white;
+  border: none;
+  border-radius: abstracts.radius('pill');
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: abstracts.transition('default');
+  box-shadow: abstracts.shadow('base');
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: abstracts.shadow('md');
+  }
 }
 
 // Classe utilitaire pour les badges de statut
 .badge-available {
-  @include badge-style('success');
+  // Styles de badge succès inline
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: abstracts.radius('full');
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(abstracts.get-config('success', 'colors'), 0.15);
+  color: abstracts.get-config('success', 'colors');
 }
+
 .badge-unavailable {
-  @include badge-style('danger');
+  // Styles de badge danger inline
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: abstracts.radius('full');
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: rgba(abstracts.get-config('danger', 'colors'), 0.15);
+  color: abstracts.get-config('danger', 'colors');
 }
 
 // Animation fade-in globale
 .fade-in {
-  @include fade-in;
+  // Animation fade-in inline
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 // ──────────────────────────────────────
@@ -131,24 +198,113 @@ button {
 // Exemple : on remplace les boutons Bootstrap par notre style
 .btn {
   &.btn-primary {
-    @include button-variant('primary');
+    // Styles de bouton primaire Bootstrap
+    background: abstracts.get-config('primary', 'colors');
+    color: white;
+    border: none;
+    border-radius: abstracts.radius('pill');
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: abstracts.transition('default');
+    box-shadow: abstracts.shadow('base');
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: abstracts.shadow('md');
+    }
   }
+  
   &.btn-outline-primary {
-    @include button-outline('primary');
+    // Styles de bouton outline primaire Bootstrap
+    background: transparent;
+    color: abstracts.get-config('primary', 'colors');
+    border: 2px solid abstracts.get-config('primary', 'colors');
+    border-radius: abstracts.radius('pill');
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: abstracts.transition('default');
+    box-shadow: abstracts.shadow('base');
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: abstracts.shadow('md');
+    }
   }
+  
   &.btn-secondary {
-    @include button-variant('secondary');
+    // Styles de bouton secondaire Bootstrap
+    background: abstracts.get-config('secondary', 'colors');
+    color: white;
+    border: none;
+    border-radius: abstracts.radius('pill');
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: abstracts.transition('default');
+    box-shadow: abstracts.shadow('base');
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: abstracts.shadow('md');
+    }
   }
+  
   &.btn-success {
-    @include button-variant('success');
+    // Styles de bouton succès Bootstrap
+    background: abstracts.get-config('success', 'colors');
+    color: white;
+    border: none;
+    border-radius: abstracts.radius('pill');
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: abstracts.transition('default');
+    box-shadow: abstracts.shadow('base');
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: abstracts.shadow('md');
+    }
   }
+  
   &.btn-danger {
-    @include button-variant('danger');
+    // Styles de bouton danger Bootstrap
+    background: abstracts.get-config('danger', 'colors');
+    color: white;
+    border: none;
+    border-radius: abstracts.radius('pill');
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: abstracts.transition('default');
+    box-shadow: abstracts.shadow('base');
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: abstracts.shadow('md');
+    }
   }
 }
 
 // Surcharge légère des cards Bootstrap
 .card {
-  @include card-style;
+  // Styles de carte Bootstrap
+  background: white;
+  border-radius: abstracts.radius('lg');
+  box-shadow: abstracts.shadow('base');
+  transition: abstracts.transition('default');
+  overflow: hidden;
   border: none;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: abstracts.shadow('md');
+  }
 }

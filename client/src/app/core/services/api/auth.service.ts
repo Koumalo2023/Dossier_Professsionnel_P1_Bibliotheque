@@ -1,21 +1,20 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
-import {
-  User,
-  LoginRequest,
-  LoginResponse,
-  RegisterRequest,
-  UpdateUserRequest
-} from '../../models/auth/user.model';
+
 import { StorageService } from '../storage/storage.service';
 import { EventBusService } from '../event-bus/event-bus.service';
 import { ApiConfigService } from '../../config/api.config';
+import { LoginRequest, LoginResponse, RegisterRequest, UpdateUserRequest, User } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  isAdmin(): boolean {
+    const user = this.getStoredUser();
+    return user?.roles?.includes('Admin') || false;
+  }
   private http = inject(HttpClient);
   private storageService = inject(StorageService);
   private eventBus = inject(EventBusService);

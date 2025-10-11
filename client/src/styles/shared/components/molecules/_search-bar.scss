@@ -1,0 +1,129 @@
+@use '../../../abstract' as abstracts;
+
+.search-bar {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: abstracts.spacing(3);
+
+
+  .search-bar__input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  .search-bar__icon,
+  .search-bar__clear {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: abstracts.get-config('text-secondary', 'colors');
+    pointer-events: none;
+  }
+
+  .search-bar__icon {
+    left: abstracts.spacing(3);
+    z-index: 2;
+  }
+
+  .search-bar__clear {
+    right: abstracts.spacing(3);
+    pointer-events: auto;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: abstracts.radius('sm');
+    padding: abstracts.spacing(1);
+    transition: abstracts.transition('fast');
+
+    &:hover {
+      color: abstracts.get-config('danger', 'colors');
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+  }
+
+  .search-bar__input {
+    @include abstracts.search-bar-style; // Déjà défini dans _mixins.scss
+    width: 100%;
+    padding-left: abstracts.spacing(8); // Espace pour l'icône
+    padding-right: abstracts.spacing(8); // Espace pour le clear
+
+    &:focus {
+      padding-left: abstracts.spacing(8);
+      padding-right: abstracts.spacing(8);
+    }
+  }
+
+  // Bouton filtres
+  .search-bar__filter-toggle {
+    align-self: flex-end;
+    background: transparent;
+    border: none;
+    color: abstracts.get-config('primary', 'colors');
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(1);
+    padding: abstracts.spacing(1) abstracts.spacing(2);
+    border-radius: abstracts.radius('sm');
+    transition: abstracts.transition('fast');
+
+    &:hover {
+      background-color: abstracts.get-config('light-bg', 'colors');
+    }
+
+    &.active {
+      color: abstracts.get-config('secondary', 'colors');
+    }
+  }
+
+  // Filtres avancés
+  .search-bar__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: abstracts.spacing(4);
+    padding: abstracts.spacing(3);
+    background: abstracts.get-config('light', 'colors');
+    border-radius: abstracts.radius('lg');
+    border: 1px solid abstracts.get-config('border', 'colors');
+  }
+
+  .search-bar__filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+  }
+
+  .search-bar__filter-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: abstracts.spacing(1);
+    color: abstracts.get-config('text-primary', 'colors');
+  }
+
+  .search-bar__select {
+    @include abstracts.form-control-style;
+    width: 100%;
+    padding: abstracts.spacing(2) abstracts.spacing(3);
+    font-size: 0.95rem;
+  }
+
+  .search-bar__checkbox {
+    display: flex;
+    align-items: center;
+    gap: abstracts.spacing(2);
+    font-weight: 500;
+    color: abstracts.get-config('text-primary', 'colors');
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: abstracts.get-config('primary', 'colors');
+    }
+  }
+}

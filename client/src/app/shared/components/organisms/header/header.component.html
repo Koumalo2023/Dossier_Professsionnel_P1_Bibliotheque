@@ -1,0 +1,99 @@
+<header class="navbar">
+  <!-- Logo & Titre -->
+  <div class="navbar__brand" (click)="onLogoClick()">
+    <app-icon name="fa-book" color="primary" size="lg"></app-icon>
+    <app-heading level="h4" color="primary" class="navbar__title">
+      Bibliothèque Numérique
+    </app-heading>
+  </div>
+
+  <!-- Navigation Desktop -->
+  <nav class="navbar__nav">
+    <button class="navbar__link" (click)="navigateTo('/books')">
+      <app-typography variant="body" weight="medium">Catalogue</app-typography>
+    </button>
+
+    @if (isLoggedIn()) {
+      <button class="navbar__link" (click)="navigateTo('/profile')">
+        <app-typography variant="body" weight="medium">Mon Profil</app-typography>
+      </button>
+
+      @if (isAdminOrManager()) {
+        <button class="navbar__link" (click)="navigateTo('/admin/statistics')">
+          <app-typography variant="body" weight="medium">Admin</app-typography>
+        </button>
+      }
+    }
+  </nav>
+
+  <!-- Actions droite -->
+  <div class="navbar__actions">
+    @if (isLoggedIn()) {
+      <!-- Avatar utilisateur -->
+      <div class="navbar__user">
+        <app-user-avatar
+          [user]="userInfo!"
+          size="md"
+          [clickable]="true"
+          (click)="onLogout()"
+        ></app-user-avatar>
+        <div class="navbar__user-info">
+          <app-typography variant="small" weight="semibold">{{ userInfo?.name }}</app-typography>
+          <app-typography variant="caption" color="text-secondary">{{ userRole }}</app-typography>
+        </div>
+      </div>
+    } @else {
+      <!-- Bouton connexion desktop -->
+      <app-button variant="primary" size="small" (clicked)="navigateTo('/auth/login')" class="navbar__login-btn">
+        <app-icon name="fa-sign-in-alt" size="sm"></app-icon>
+        Connexion
+      </app-button>
+    }
+
+    <!-- Bouton menu mobile -->
+    <button class="navbar__mobile-toggle" (click)="toggleMobileMenu()" aria-label="Menu mobile">
+      <app-icon [name]="isMobileMenuOpen ? 'fa-times' : 'fa-bars'" size="lg" color="primary"></app-icon>
+    </button>
+  </div>
+
+  <!-- Menu mobile -->
+  @if (isMobileMenuOpen) {
+    <div class="navbar__mobile-menu">
+      <nav class="navbar__mobile-nav">
+        <button class="navbar__mobile-link" (click)="navigateTo('/books')">
+          <app-icon name="fa-book" size="sm"></app-icon>
+          <app-typography variant="body" weight="medium">Catalogue</app-typography>
+        </button>
+
+        @if (isLoggedIn()) {
+          <button class="navbar__mobile-link" (click)="navigateTo('/profile')">
+            <app-icon name="fa-user" size="sm"></app-icon>
+            <app-typography variant="body" weight="medium">Mon Profil</app-typography>
+          </button>
+
+          @if (isAdminOrManager()) {
+            <button class="navbar__mobile-link" (click)="navigateTo('/admin/statistics')">
+              <app-icon name="fa-cog" size="sm"></app-icon>
+              <app-typography variant="body" weight="medium">Admin</app-typography>
+            </button>
+          }
+
+          <button class="navbar__mobile-link navbar__mobile-link--logout" (click)="onLogout()">
+            <app-icon name="fa-sign-out-alt" size="sm"></app-icon>
+            <app-typography variant="body" weight="medium">Déconnexion</app-typography>
+          </button>
+        } @else {
+          <button class="navbar__mobile-link" (click)="navigateTo('/auth/login')">
+            <app-icon name="fa-sign-in-alt" size="sm"></app-icon>
+            <app-typography variant="body" weight="medium">Connexion</app-typography>
+          </button>
+
+          <button class="navbar__mobile-link" (click)="navigateTo('/auth/register')">
+            <app-icon name="fa-user-plus" size="sm"></app-icon>
+            <app-typography variant="body" weight="medium">Inscription</app-typography>
+          </button>
+        }
+      </nav>
+    </div>
+  }
+</header>
