@@ -1,4 +1,85 @@
 <div class="admin-book-management-page">
-  <h1>Gestion des Livres - Administration</h1>
-  <p>Page de gestion des livres administrateur - À implémenter</p>
+  <!-- En-tête avec titre et actions -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Gestion des Livres</h1>
+      <p class="page-subtitle">Administration du catalogue de livres</p>
+    </div>
+    <div class="header-actions">
+      <app-button 
+        variant="primary" 
+        size="medium"
+        (click)="navigateToCreateBook()">
+        <app-icon name="fa-plus" size="sm"></app-icon>
+        Nouveau Livre
+      </app-button>
+      <app-button 
+        variant="secondary" 
+        size="medium"
+        (click)="navigateToCreateBookWithGoogle()">
+        <app-icon name="fa-google" size="sm"></app-icon>
+        Importer depuis Google Books
+      </app-button>
+    </div>
+  </div>
+
+
+  <!-- Barre de recherche et filtres -->
+  <div class="search-section">
+    <div class="search-bar">
+      <app-input
+        type="text"
+        placeholder="Rechercher un livre par titre, auteur ou ISBN..."
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()">
+      </app-input>
+      <app-button 
+        variant="primary" 
+        size="medium"
+        (click)="onSearch()">
+        <app-icon name="fa-search" size="sm"></app-icon>
+        Rechercher
+      </app-button>
+      @if (searchQuery) {
+        <app-button 
+          variant="secondary" 
+          size="medium"
+          (click)="searchQuery = ''; loadBooks()">
+          <app-icon name="fa-times" size="sm"></app-icon>
+          Effacer
+        </app-button>
+      }
+    </div>
+  </div>
+
+  <!-- Grille de livres -->
+  <div class="books-section">
+    @if (loading) {
+      <div class="loading-state">
+        <app-icon name="fa-spinner" size="2x" class="spinner"></app-icon>
+        <app-typography variant="body" color="text-secondary">
+          Chargement des livres...
+        </app-typography>
+      </div>
+    } @else if (books.length === 0) {
+      <div class="empty-state">
+        <app-icon name="fa-book" size="3x" color="text-secondary"></app-icon>
+        <app-typography variant="body" color="text-secondary" align="center">
+          {{ searchQuery ? 'Aucun livre trouvé pour votre recherche' : 'Aucun livre dans le catalogue' }}
+        </app-typography>
+      </div>
+    } @else {
+      <div class="books-grid">
+        @for (book of books; track book.id) {
+          <app-book-card
+            [book]="book"
+            [showActions]="true"
+            (edit)="navigateToEditBook(book)"
+            (delete)="deleteBook(book)">
+          </app-book-card>
+        }
+      </div>
+    }
+  </div>
+
 </div>

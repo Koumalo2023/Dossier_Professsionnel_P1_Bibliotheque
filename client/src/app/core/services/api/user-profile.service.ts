@@ -1,21 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  UserProfile,
-  CreateUserProfileRequest,
-  UpdateUserProfileRequest,
-  UserCategoryPreference,
-  CreateUserCategoryPreferenceRequest,
-  UserReadingGoal,
-  CreateUserReadingGoalRequest,
-  UpdateUserReadingGoalRequest,
-  UpdateReadingGoalProgressRequest,
-  UserReadingHistory,
-  CreateUserReadingHistoryRequest,
-  UpdateUserReadingHistoryRequest,
-  UserReadingStats
-} from '../../models/user-profile/user-profile.model';
+import { CreateUserCategoryPreferenceRequest, CreateUserProfileRequest, CreateUserReadingGoalRequest, CreateUserReadingHistoryRequest, UpdateReadingGoalProgressRequest, UpdateUserProfileRequest, UpdateUserReadingGoalRequest, UpdateUserReadingHistoryRequest, UserCategoryPreference, UserProfile, UserReadingGoal, UserReadingHistory, UserReadingStats } from '../../models/user-profile.model';
+
 
 @Injectable({
   providedIn: 'root'

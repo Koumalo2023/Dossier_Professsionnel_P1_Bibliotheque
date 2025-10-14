@@ -1,0 +1,396 @@
+<div class="book-edit">
+  <!-- En-tête avec titre et bouton de retour -->
+  <div class="book-edit__header">
+    <div class="book-edit__header-top">
+      <app-button
+        variant="secondary"
+        size="small"
+        (click)="goBack()"
+        class="book-edit__back-button">
+        <app-icon name="fa-arrow-left" size="sm"></app-icon>
+        Retour à la gestion des livres
+      </app-button>
+    </div>
+    
+    <h2 class="book-edit__title">
+      {{ isEditMode ? 'Modifier le livre' : 'Créer un nouveau livre' }}
+    </h2>
+    
+    <!-- Onglets -->
+    <div class="book-edit__tabs">
+      <button
+        class="book-edit__tab"
+        [class.active]="activeTab === 'manual'"
+        (click)="setActiveTab('manual')">
+        <app-icon name="fa-edit" size="sm"></app-icon>
+        {{ isEditMode ? 'Modification manuelle' : 'Création manuelle' }}
+      </button>
+      
+      <button
+        class="book-edit__tab"
+        [class.active]="activeTab === 'google'"
+        (click)="setActiveTab('google')">
+        <app-icon name="fa-google" size="sm"></app-icon>
+        Importer depuis Google Books
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenu des onglets -->
+  <div class="book-edit__content">
+    
+    <!-- Onglet création/manuelle -->
+    @if (activeTab === 'manual') {
+      <form class="book-edit__form" (ngSubmit)="onSubmitManual()" [formGroup]="bookForm">
+        
+        <!-- Titre -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Titre *</app-typography>
+          <app-input
+            formControlName="title"
+            type="text"
+            placeholder="Titre du livre"
+            [required]="true"
+            [errorMessage]="getFieldError('title')">
+          </app-input>
+        </div>
+
+        <!-- Auteur -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Auteur *</app-typography>
+          <app-input
+            formControlName="author"
+            type="text"
+            placeholder="Nom de l'auteur"
+            [required]="true"
+            [errorMessage]="getFieldError('author')">
+          </app-input>
+        </div>
+
+        <!-- ISBN -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">ISBN *</app-typography>
+          <app-input
+            formControlName="isbn"
+            type="text"
+            placeholder="9783161484100 (10 ou 13 chiffres)"
+            [required]="true"
+            [errorMessage]="getFieldError('isbn')">
+          </app-input>
+        </div>
+
+        <!-- Éditeur -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Éditeur *</app-typography>
+          <app-input
+            formControlName="publisher"
+            type="text"
+            placeholder="Nom de l'éditeur"
+            [required]="true"
+            [errorMessage]="getFieldError('publisher')">
+          </app-input>
+        </div>
+
+        <!-- Date de publication -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Date de publication *</app-typography>
+          <input
+            type="date"
+            formControlName="publicationDate"
+            class="book-edit__date-input"
+            [class.error]="getFieldError('publicationDate')">
+          @if (getFieldError('publicationDate')) {
+            <app-typography variant="small" color="danger">
+              {{ getFieldError('publicationDate') }}
+            </app-typography>
+          }
+        </div>
+
+        <!-- Catégorie -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Catégorie *</app-typography>
+          <select 
+            formControlName="category"
+            class="book-edit__select"
+            [class.error]="getFieldError('category')">
+            <option value="">Sélectionnez une catégorie</option>
+            @for (category of categories; track category.id) {
+              <option [value]="category.id">{{ category.name }}</option>
+            }
+          </select>
+          @if (getFieldError('category')) {
+            <app-typography variant="small" color="danger">
+              {{ getFieldError('category') }}
+            </app-typography>
+          }
+        </div>
+
+        <!-- Nombre d'exemplaires (uniquement en création) -->
+        @if (!isEditMode) {
+          <div class="book-edit__field">
+            <app-typography variant="label" color="text-primary">Nombre d'exemplaires *</app-typography>
+            <input
+              type="number"
+              formControlName="totalCopies"
+              class="book-edit__number-input"
+              min="1"
+              max="1000"
+              [class.error]="getFieldError('totalCopies')">
+            @if (getFieldError('totalCopies')) {
+              <app-typography variant="small" color="danger">
+                {{ getFieldError('totalCopies') }}
+              </app-typography>
+            }
+          </div>
+        }
+
+        <!-- Nombre de pages -->
+        <div class="book-edit__field">
+          <app-typography variant="label" color="text-primary">Nombre de pages</app-typography>
+          <input
+            type="number"
+            formControlName="pageCount"
+            class="book-edit__number-input"
+            min="1"
+            [class.error]="getFieldError('pageCount')">
+          @if (getFieldError('pageCount')) {
+            <app-typography variant="small" color="danger">
+              {{ getFieldError('pageCount') }}
+            </app-typography>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="book-edit__field book-edit__field--full">
+          <app-typography variant="label" color="text-primary">Description *</app-typography>
+          <textarea
+            formControlName="description"
+            class="book-edit__textarea"
+            placeholder="Résumé du livre..."
+            rows="4"
+            [class.error]="getFieldError('description')">
+          </textarea>
+          @if (getFieldError('description')) {
+            <app-typography variant="small" color="danger">
+              {{ getFieldError('description') }}
+            </app-typography>
+          }
+        </div>
+
+        <!-- URL de couverture -->
+        <div class="book-edit__field book-edit__field--full">
+          <app-typography variant="label" color="text-primary">URL de la couverture</app-typography>
+          <input
+            type="text"
+            formControlName="coverUrl"
+            placeholder="https://example.com/cover.jpg"
+            class="book-edit__input"
+            [class.error]="getFieldError('coverUrl')">
+          
+          <!-- Debug: Afficher la valeur actuelle -->
+          @if (bookForm.get('coverUrl')?.value) {
+            <app-typography variant="caption" color="success">
+              URL saisie: {{ bookForm.get('coverUrl')?.value }}
+            </app-typography>
+          }
+          
+          @if (bookForm.get('coverUrl')?.value) {
+            <div class="book-edit__cover-preview">
+              <img [src]="bookForm.get('coverUrl')?.value" alt="Aperçu de la couverture"
+                   (error)="bookForm.get('coverUrl')?.setValue('')">
+            </div>
+          }
+          @if (getFieldError('coverUrl')) {
+            <app-typography variant="small" color="danger">
+              {{ getFieldError('coverUrl') }}
+            </app-typography>
+          }
+        </div>
+
+
+        <!-- Actions du formulaire -->
+        <div class="book-edit__actions">
+          <app-button
+            type="button"
+            variant="secondary"
+            size="medium"
+            (click)="onCancel()"
+            [disabled]="loading">
+            Annuler
+          </app-button>
+          
+          <app-button
+            type="submit"
+            variant="primary"
+            size="medium"
+            [disabled]="bookForm.invalid || loading"
+            [loading]="loading">
+            {{ isEditMode ? 'Mettre à jour' : 'Créer le livre' }}
+          </app-button>
+        </div>
+      </form>
+    }
+
+    <!-- Onglet Google Books -->
+    @if (activeTab === 'google') {
+      <div class="book-edit__google">
+        
+        <!-- Recherche Google Books -->
+        <div class="book-edit__search-section">
+          <h3>Rechercher sur Google Books</h3>
+          <div class="book-edit__search-bar">
+            <app-input
+              type="text"
+              placeholder="Entrez le titre, l'auteur ou l'ISBN..."
+              [(ngModel)]="googleSearchQuery"
+              (keyup.enter)="searchGoogleBooks()">
+            </app-input>
+            <app-button
+              variant="primary"
+              size="medium"
+              (click)="searchGoogleBooks()"
+              [loading]="googleBooksLoading">
+              <app-icon name="fa-search" size="sm"></app-icon>
+              Rechercher
+            </app-button>
+          </div>
+        </div>
+
+        <!-- Chargement des résultats -->
+        @if (googleBooksLoading) {
+          <div class="book-edit__loading">
+            <app-icon name="fa-spinner" size="lg" class="spinner"></app-icon>
+            <app-typography variant="body">Recherche en cours...</app-typography>
+          </div>
+        }
+
+
+        <!-- Résultats de recherche -->
+        @if (googleBooksResults.length > 0) {
+          <div class="book-edit__results">
+            <h4>Résultats trouvés ({{ googleBooksResults.length }})</h4>
+            <div class="book-edit__results-grid">
+              @for (book of googleBooksResults; track book.googleBooksId) {
+                <div
+                  class="book-edit__result-card"
+                  [class.selected]="selectedGoogleBook?.googleBooksId === book.googleBooksId"
+                  (click)="selectGoogleBook(book)">
+                  
+                  <!-- Couverture -->
+                  <div class="book-edit__result-cover">
+                    @if (book.coverUrl) {
+                      <img [src]="book.coverUrl" [alt]="book.title" class="book-edit__result-img">
+                    } @else {
+                      <div class="book-edit__result-no-cover">
+                        <app-icon name="fa-book" size="2x"></app-icon>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Informations du livre -->
+                  <div class="book-edit__result-info">
+                    <div class="book-edit__result-title">{{ book.title }}</div>
+                    <app-typography variant="body" color="text-secondary">
+                      {{ book.authors?.join(', ') }}
+                    </app-typography>
+                    <app-typography variant="caption" color="text-secondary">
+                      {{ book.publisher }} • {{ book.publishedDate }}
+                      @if (book.pageCount) {
+                        • {{ book.pageCount }} pages
+                      }
+                    </app-typography>
+                    
+                    <!-- Catégories -->
+                    @if (book.categories?.length) {
+                      <div class="book-edit__result-categories">
+                        @for (category of book.categories.slice(0, 3); track category) {
+                          <span class="book-edit__result-category">{{ category }}</span>
+                        }
+                      </div>
+                    }
+
+                    <!-- Description tronquée -->
+                    @if (book.description) {
+                      <div class="book-edit__result-description">
+                        {{ book.description | slice:0:150 }}{{ book.description.length > 150 ? '...' : '' }}
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Formulaire d'importation -->
+        @if (selectedGoogleBook) {
+          <div class="book-edit__import-form">
+            <h4>Paramètres d'importation</h4>
+            
+            <!-- Sélection de la catégorie -->
+            <div class="book-edit__field">
+              <app-typography variant="label" color="text-primary">Catégorie *</app-typography>
+              <select 
+                [(ngModel)]="selectedCategoryId"
+                class="book-edit__select"
+                [class.error]="!selectedCategoryId">
+                <option value="">Sélectionnez une catégorie</option>
+                @for (category of categories; track category.id) {
+                  <option [value]="category.id">{{ category.name }}</option>
+                }
+              </select>
+              @if (!selectedCategoryId) {
+                <app-typography variant="small" color="danger">
+                  Veuillez sélectionner une catégorie
+                </app-typography>
+              }
+            </div>
+
+            <!-- Nombre d'exemplaires -->
+            <div class="book-edit__field">
+              <app-typography variant="label" color="text-primary">Nombre d'exemplaires *</app-typography>
+              <input
+                type="number"
+                [(ngModel)]="importCopies"
+                class="book-edit__number-input"
+                min="1"
+                max="100"
+                required>
+            </div>
+
+            <!-- Actions d'importation -->
+            <div class="book-edit__import-actions">
+              <app-button
+                variant="secondary"
+                size="medium"
+                (click)="fillFormWithGoogleData()">
+                <app-icon name="fa-edit" size="sm"></app-icon>
+                Remplir le formulaire manuel
+              </app-button>
+              
+              <app-button
+                variant="primary"
+                size="medium"
+                (click)="importGoogleBook()"
+                [disabled]="!selectedCategoryId || importCopies < 1"
+                [loading]="loading">
+                <app-icon name="fa-download" size="sm"></app-icon>
+                Importer directement
+              </app-button>
+            </div>
+          </div>
+        }
+
+        <!-- Aucun résultat -->
+        @if (googleBooksResults.length === 0 && !googleBooksLoading && googleSearchQuery) {
+          <div class="book-edit__no-results">
+            <app-icon name="fa-search" size="2x"></app-icon>
+            <app-typography variant="body" color="text-secondary">
+              Aucun résultat trouvé pour "{{ googleSearchQuery }}"
+            </app-typography>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

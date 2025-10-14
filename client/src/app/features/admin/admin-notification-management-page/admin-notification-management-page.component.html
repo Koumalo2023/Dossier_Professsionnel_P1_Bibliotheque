@@ -1,4 +1,241 @@
-<div class="admin-notification-management-page">
-  <h1>Gestion des Notifications - Administration</h1>
-  <p>Page de gestion des notifications administrateur - À implémenter</p>
+<div class="admin-notifications-page">
+  <div class="page-header">
+    <h1>Gestion des Notifications</h1>
+    <p>Gérez toutes les notifications du système</p>
+    <button (click)="openCreateModal()" class="create-button">
+      + Nouvelle notification
+    </button>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="search-filter">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        placeholder="Rechercher par titre, message ou ID..."
+        class="search-input"
+      />
+    </div>
+    
+    <div class="type-filter">
+      <select
+        [(ngModel)]="typeFilter"
+        (change)="onTypeFilterChange()"
+        class="type-select"
+      >
+        <option *ngFor="let option of typeOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading-section">
+    <div class="loading-spinner"></div>
+    <p>Chargement des notifications...</p>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error && !loading" class="error-section">
+    <div class="error-message">
+      {{ error }}
+    </div>
+    <button (click)="loadNotifications()" class="retry-button">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des notifications -->
+  <div *ngIf="!loading && !error" class="notifications-section">
+    <div class="notifications-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ filteredNotifications.length }}</span>
+        <span class="stat-label">Notifications trouvées</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getUnreadCount() }}</span>
+        <span class="stat-label">Non lues</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getReminderCount() }}</span>
+        <span class="stat-label">Rappels</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getWarningCount() }}</span>
+        <span class="stat-label">Avertissements</span>
+      </div>
+    </div>
+
+    <div class="notifications-table-container">
+      <table class="notifications-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Message</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let notification of paginatedNotifications" [class.unread]="!notification.isRead">
+            <td class="notification-id">{{ notification.id }}</td>
+            <td class="notification-title">{{ notification.title }}</td>
+            <td class="notification-message">{{ notification.message }}</td>
+            <td>
+              <span [class]="'type-badge ' + getNotificationTypeBadge(notification.type)">
+                {{ getNotificationTypeLabel(notification.type) }}
+              </span>
+            </td>
+            <td class="notification-date">{{ formatDate(notification.createdAt) }}</td>
+            <td>
+              <span [class]="'status-badge ' + (notification.isRead ? 'read' : 'unread')">
+                {{ notification.isRead ? 'Lu' : 'Non lu' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button
+                (click)="toggleReadStatus(notification)"
+                class="action-button read-button"
+                [title]="notification.isRead ? 'Marquer comme non lu' : 'Marquer comme lu'"
+              >
+                {{ notification.isRead ? 'Non lu' : 'Lu' }}
+              </button>
+              <button
+                (click)="openDeleteModal(notification)"
+                class="action-button delete-button"
+                title="Supprimer la notification"
+              >
+                Supprimer
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Aucun résultat -->
+      <div *ngIf="filteredNotifications.length === 0" class="no-results">
+        <p>Aucune notification trouvée avec les critères de recherche actuels.</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-paginator
+      *ngIf="filteredNotifications.length > 0"
+      [currentPage]="currentPage"
+      [pageSize]="itemsPerPage"
+      [totalPages]="totalPages"
+      [totalCount]="totalItems"
+      (pageChange)="onPageChange($event)"
+    ></app-paginator>
+  </div>
+
+  <!-- Modal de création de notification -->
+  <div *ngIf="showCreateModal" class="modal-overlay">
+    <div class="modal large-modal">
+      <div class="modal-header">
+        <h3>Créer une nouvelle notification</h3>
+        <button (click)="closeCreateModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Modèles prédéfinis -->
+        <div class="templates-section">
+          <h4>Modèles prédéfinis</h4>
+          <div class="templates-grid">
+            <div 
+              *ngFor="let template of notificationTemplates"
+              (click)="useTemplate(template)"
+              class="template-card"
+            >
+              <div class="template-header">
+                <span [class]="'template-type ' + getNotificationTypeBadge(template.type)">
+                  {{ getNotificationTypeLabel(template.type) }}
+                </span>
+                <span class="template-name">{{ template.name }}</span>
+              </div>
+              <div class="template-content">
+                <strong>{{ template.title }}</strong>
+                <p>{{ template.message }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulaire de création -->
+        <div class="creation-form">
+          <h4>Créer une notification personnalisée</h4>
+          <div class="form-group">
+            <label for="notificationTitle">Titre :</label>
+            <input
+              type="text"
+              id="notificationTitle"
+              [(ngModel)]="newNotification.title"
+              placeholder="Saisissez le titre de la notification"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label for="notificationType">Type :</label>
+            <select
+              id="notificationType"
+              [(ngModel)]="newNotification.type"
+              class="form-select"
+            >
+              <option value="REMINDER">Rappel</option>
+              <option value="INFO">Information</option>
+              <option value="WARNING">Avertissement</option>
+              <option value="SUCCESS">Succès</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="notificationMessage">Message :</label>
+            <textarea
+              id="notificationMessage"
+              [(ngModel)]="newNotification.message"
+              rows="6"
+              placeholder="Saisissez le message de la notification..."
+              class="form-textarea"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeCreateModal()" class="cancel-button">Annuler</button>
+        <button 
+          (click)="createNotification()" 
+          class="confirm-button"
+          [disabled]="!newNotification.title.trim() || !newNotification.message.trim()"
+        >
+          Créer la notification
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de suppression -->
+  <div *ngIf="showDeleteModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirmer la suppression</h3>
+        <button (click)="closeDeleteModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir supprimer cette notification ?</p>
+        <div *ngIf="selectedNotification" class="notification-info">
+          <p><strong>Titre :</strong> {{ selectedNotification.title }}</p>
+          <p><strong>Type :</strong> {{ getNotificationTypeLabel(selectedNotification.type) }}</p>
+          <p><strong>Date :</strong> {{ formatDate(selectedNotification.createdAt) }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeDeleteModal()" class="cancel-button">Annuler</button>
+        <button (click)="confirmDelete()" class="confirm-button">Confirmer la suppression</button>
+      </div>
+    </div>
+  </div>
 </div>

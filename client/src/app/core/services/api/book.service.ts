@@ -1,21 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import { 
-  Book, 
-  CreateBookRequest, 
-  UpdateBookRequest, 
-  BookStats,
-  ImportBookFromGoogleRequest,
-  GoogleBookPreview,
-  Category,
-  CreateCategoryRequest,
-  UpdateCategoryRequest
-} from '../../models/books/book.model';
-import { PaginatedResponse } from '../../models/shared/shared.model';
+import { Observable, tap, map } from 'rxjs';
+
+
 import { StorageService } from '../storage/storage.service';
 import { EventBusService } from '../event-bus/event-bus.service';
 import { ApiConfigService } from '../../config/api.config';
+import { Book, BookStats, Category, CreateBookRequest, CreateCategoryRequest, GoogleBookPreview, ImportBookFromGoogleRequest, UpdateBookRequest, UpdateCategoryRequest } from '../../models/book.model';
+import { PaginatedResponse } from '../../models/shared.model';
 
 @Injectable({
   providedIn: 'root'
@@ -168,7 +160,7 @@ export class BookService {
   // Importation depuis Google Books
   importFromGoogle(request: ImportBookFromGoogleRequest): Observable<Book> {
     return this.http.post<Book>(
-      this.apiConfig.buildBooksUrl('import'), 
+      `${this.apiConfig.buildBooksUrl('import')}/google`,
       request
     ).pipe(
       tap(book => {
@@ -179,9 +171,15 @@ export class BookService {
   }
 
   searchGoogleBooks(query: string): Observable<GoogleBookPreview[]> {
-    return this.http.get<GoogleBookPreview[]>(
-      `${this.apiConfig.buildBooksUrl('import')}/search`, 
-      { params: { query } }
+    const params = new HttpParams()
+      .set('q', query)
+      .set('maxResults', '10');
+    
+    return this.http.get<{ items: GoogleBookPreview[] }>(
+      `${this.apiConfig.buildBooksUrl('import')}/google/search`,
+      { params }
+    ).pipe(
+      map(response => response.items)
     );
   }
 

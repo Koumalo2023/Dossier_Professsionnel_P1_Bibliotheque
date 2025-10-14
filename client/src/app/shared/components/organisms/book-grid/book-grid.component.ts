@@ -13,13 +13,15 @@ import { BookCardComponent } from '../../molecules/book-card/book-card.component
   styleUrl: './book-grid.component.scss'
 })
 export class BookGridComponent {
- @Input() books: Book[] = [];
+  @Input() books: Book[] = [];
   @Input() loading = false;
   @Input() showActions = true;
   @Input() emptyMessage = 'Aucun livre trouvé.';
 
   @Output() borrow = new EventEmitter<string>();
   @Output() reserve = new EventEmitter<string>();
+  @Output() edit = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<string>();
 
   onBorrow(bookId: string): void {
     this.borrow.emit(bookId);
@@ -27,6 +29,14 @@ export class BookGridComponent {
 
   onReserve(bookId: string): void {
     this.reserve.emit(bookId);
+  }
+
+  onEdit(bookId: string): void {
+    this.edit.emit(bookId);
+  }
+
+  onDelete(bookId: string): void {
+    this.delete.emit(bookId);
   }
 
   trackByBookId(index: number, book: Book): string {

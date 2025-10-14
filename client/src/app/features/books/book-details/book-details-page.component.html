@@ -1,1 +1,302 @@
-<p>book-details works!</p>
+<div class="book-details-page">
+  <!-- Indicateurs de chargement et d'erreur -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Chargement des détails du livre...</p>
+  </div>
+
+  <div *ngIf="hasError && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <h3>Livre non trouvé</h3>
+    <p>Le livre que vous recherchez n'existe pas ou n'est plus disponible.</p>
+    <button routerLink="/books" class="back-button">
+      ← Retour au catalogue
+    </button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="book && !isLoading && !hasError" class="book-details-content">
+    <!-- Navigation -->
+    <nav class="breadcrumb">
+      <a routerLink="/books" class="breadcrumb-link">Catalogue</a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-current">{{ book.title }}</span>
+    </nav>
+
+    <!-- En-tête du livre -->
+    <div class="book-header">
+      <div class="book-cover-section">
+        <img 
+          [src]="book.coverImage || 'https://via.placeholder.com/300x400?text=Couverture'" 
+          [alt]="book.title"
+          class="book-cover"
+        />
+        <div class="book-actions">
+          <button 
+            *ngIf="book.availableCopies > 0"
+            (click)="onBorrowBook()"
+            [disabled]="isBorrowing"
+            class="action-button primary"
+          >
+            <span *ngIf="!isBorrowing">📚 Emprunter</span>
+            <span *ngIf="isBorrowing">Chargement...</span>
+          </button>
+          
+          <button 
+            (click)="onReserveBook()"
+            [disabled]="isReserving"
+            class="action-button secondary"
+          >
+            <span *ngIf="!isReserving">🔖 Réserver</span>
+            <span *ngIf="isReserving">Chargement...</span>
+          </button>
+
+          <div class="availability-info">
+            <span class="status-badge" [class]="getStatusClass(book.status)">
+              {{ getStatusText(book.status) }}
+            </span>
+            <p class="copies-info">{{ getAvailabilityText() }}</p>
+            <p class="total-copies">Sur {{ book.totalCopies }} exemplaire{{ book.totalCopies > 1 ? 's' : '' }} au total</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="book-info-section">
+        <h1 class="book-title">{{ book.title }}</h1>
+        <p class="book-author">par {{ book.author }}</p>
+        
+        <div class="book-meta">
+          <div class="meta-item">
+            <span class="meta-label">Catégorie :</span>
+            <span class="meta-value">{{ book.category }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Éditeur :</span>
+            <span class="meta-value">{{ book.publisher }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Date de publication :</span>
+            <span class="meta-value">{{ formatDate(book.publicationDate) }}</span>
+          </div>
+          <div class="meta-item" *ngIf="book.pages">
+            <span class="meta-label">Pages :</span>
+            <span class="meta-value">{{ book.pages }}</span>
+          </div>
+          <div class="meta-item" *ngIf="book.language">
+            <span class="meta-label">Langue :</span>
+            <span class="meta-value">{{ book.language }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">ISBN :</span>
+            <span class="meta-value isbn">{{ book.isbn }}</span>
+          </div>
+        </div>
+
+        <!-- Note moyenne -->
+        <div *ngIf="book.rating" class="book-rating">
+          <div class="rating-stars">
+            <span *ngFor="let star of getStarRating(book.rating)" 
+                  class="star"
+                  [class.half]="star === '½'">
+              {{ star }}
+            </span>
+          </div>
+          <span class="rating-value">{{ book.rating }}/5</span>
+          <span class="rating-count">({{ book.reviews?.length || 0 }} avis)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation par onglets -->
+    <div class="tabs-navigation">
+      <button 
+        (click)="onTabChange('details')"
+        [class.active]="selectedTab === 'details'"
+        class="tab-button"
+      >
+        📖 Description
+      </button>
+      <button 
+        (click)="onTabChange('reviews')"
+        [class.active]="selectedTab === 'reviews'"
+        class="tab-button"
+      >
+        ⭐ Avis ({{ book.reviews?.length || 0 }})
+      </button>
+      <button 
+        (click)="onTabChange('history')"
+        [class.active]="selectedTab === 'history'"
+        class="tab-button"
+      >
+        📊 Historique
+      </button>
+      <button 
+        (click)="onTabChange('similar')"
+        [class.active]="selectedTab === 'similar'"
+        class="tab-button"
+      >
+        🔍 Livres similaires
+      </button>
+    </div>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content">
+      <!-- Onglet Description -->
+      <div *ngIf="selectedTab === 'details'" class="tab-panel">
+        <div class="description-content">
+          <p [class.expanded]="showFullDescription" class="book-description">
+            {{ book.description }}
+          </p>
+          <button 
+            *ngIf="book.description.length > 300"
+            (click)="toggleDescription()"
+            class="read-more-btn"
+          >
+            {{ showFullDescription ? 'Lire moins' : 'Lire la suite' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Onglet Avis -->
+      <div *ngIf="selectedTab === 'reviews'" class="tab-panel">
+        <div class="reviews-section">
+          <div *ngIf="!book.reviews || book.reviews.length === 0" class="no-reviews">
+            <p>📝 Aucun avis pour le moment</p>
+            <p>Soyez le premier à donner votre avis sur ce livre !</p>
+          </div>
+
+          <div *ngIf="book.reviews && book.reviews.length > 0" class="reviews-list">
+            <div *ngFor="let review of book.reviews" class="review-card">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  <span class="reviewer-name">{{ review.userName }}</span>
+                  <span class="review-date">{{ formatDate(review.date) }}</span>
+                </div>
+                <div class="review-rating">
+                  <span class="rating-stars">
+                    <span *ngFor="let star of getStarRating(review.rating)" 
+                          class="star"
+                          [class.half]="star === '½'">
+                      {{ star }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <p class="review-comment">{{ review.comment }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Historique -->
+      <div *ngIf="selectedTab === 'history'" class="tab-panel">
+        <div class="history-section">
+          <h3>📊 Historique des Prêts</h3>
+          
+          <div *ngIf="loanHistory.length === 0" class="no-history">
+            <p>Aucun prêt enregistré pour ce livre.</p>
+          </div>
+
+          <div *ngIf="loanHistory.length > 0" class="loan-history">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Date d'emprunt</th>
+                  <th>Date de retour</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let loan of loanHistory">
+                  <td>{{ loan.userName }}</td>
+                  <td>{{ formatDate(loan.loanDate) }}</td>
+                  <td>{{ loan.returnDate ? formatDate(loan.returnDate) : 'En cours' }}</td>
+                  <td>
+                    <span class="status-badge" 
+                          [class]="loan.status === 'active' ? 'status-active' : 
+                                   loan.status === 'returned' ? 'status-returned' : 
+                                   'status-overdue'">
+                      {{ loan.status === 'active' ? 'En cours' : 
+                         loan.status === 'returned' ? 'Retourné' : 'En retard' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onglet Livres similaires -->
+      <div *ngIf="selectedTab === 'similar'" class="tab-panel">
+        <div class="similar-books-section">
+          <h3>🔍 Livres Similaires</h3>
+          
+          <div *ngIf="similarBooks.length === 0" class="no-similar">
+            <p>Aucun livre similaire trouvé.</p>
+          </div>
+
+          <div *ngIf="similarBooks.length > 0" class="similar-books-grid">
+            <div *ngFor="let similarBook of similarBooks" 
+                 class="similar-book-card"
+                 (click)="navigateToBook(similarBook.id)">
+              <img 
+                [src]="similarBook.coverImage || 'https://via.placeholder.com/100x150?text=Couv'" 
+                [alt]="similarBook.title"
+                class="similar-book-cover"
+              />
+              <div class="similar-book-info">
+                <h4 class="similar-book-title">{{ similarBook.title }}</h4>
+                <p class="similar-book-author">{{ similarBook.author }}</p>
+                <div class="similar-book-meta">
+                  <span class="similar-book-category">{{ similarBook.category }}</span>
+                  <span class="similar-book-status" [class]="getStatusClass(similarBook.status)">
+                    {{ getStatusText(similarBook.status) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations supplémentaires -->
+    <div class="additional-info">
+      <div class="info-card">
+        <h3>📋 Informations Bibliographiques</h3>
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>ISBN :</strong> {{ book.isbn }}
+          </div>
+          <div class="info-item">
+            <strong>Éditeur :</strong> {{ book.publisher }}
+          </div>
+          <div class="info-item">
+            <strong>Date de publication :</strong> {{ formatDate(book.publicationDate) }}
+          </div>
+          <div class="info-item" *ngIf="book.pages">
+            <strong>Nombre de pages :</strong> {{ book.pages }}
+          </div>
+          <div class="info-item" *ngIf="book.language">
+            <strong>Langue :</strong> {{ book.language }}
+          </div>
+          <div class="info-item">
+            <strong>Catégorie :</strong> {{ book.category }}
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>📞 Contact</h3>
+        <p>Pour toute question concernant ce livre :</p>
+        <ul class="contact-list">
+          <li>📧 Email : bibliotheque&#64;example.com</li>
+          <li>📞 Téléphone : 01 23 45 67 89</li>
+          <li>📍 Adresse : 123 Rue de la Bibliothèque, 75000 Paris</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,330 @@
 <div class="user-activity-page">
-  <h1>Activité des Utilisateurs</h1>
-  <p>Page de l'activité des utilisateurs - À implémenter</p>
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <h1>Activité des Utilisateurs</h1>
+    <p>Analyse du comportement et de l'engagement des utilisateurs</p>
+    
+    <!-- Contrôles de filtrage -->
+    <div class="filter-controls">
+      <!-- Filtre de période -->
+      <div class="filter-group">
+        <label for="periodFilter">Période :</label>
+        <select 
+          id="periodFilter" 
+          [(ngModel)]="periodFilter" 
+          (change)="onPeriodFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of periodOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtre par type d'utilisateur -->
+      <div class="filter-group">
+        <label for="userTypeFilter">Type d'utilisateur :</label>
+        <select 
+          id="userTypeFilter" 
+          [(ngModel)]="userTypeFilter" 
+          (change)="onUserTypeFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of userTypeOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtre par niveau d'activité -->
+      <div class="filter-group">
+        <label for="activityLevelFilter">Niveau d'activité :</label>
+        <select 
+          id="activityLevelFilter" 
+          [(ngModel)]="activityLevelFilter" 
+          (change)="onActivityLevelFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of activityLevelOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Bouton d'export -->
+      <button 
+        class="export-btn" 
+        (click)="exportUserActivityReport()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">📊 Exporter le rapport</span>
+        <span *ngIf="loading">Export en cours...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Métriques principales -->
+  <div class="key-metrics" *ngIf="!loading && !error">
+    <div class="metric-card" *ngFor="let metric of activityMetrics">
+      <div class="metric-value">{{ metric.value | number:'1.0-0' }}</div>
+      <div class="metric-label">{{ metric.label }}</div>
+      <div class="metric-trend" [class]="getTrendColor(metric.trend)">
+        {{ getTrendIcon(metric.trend) }} 
+        {{ metric.change > 0 ? '+' : '' }}{{ metric.change }}%
+      </div>
+    </div>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement de l'activité des utilisateurs...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadUserActivity()">Réessayer</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading && !error" class="page-content">
+    <!-- Graphiques principaux -->
+    <div class="charts-section">
+      <!-- Activité des utilisateurs -->
+      <div class="chart-card full-width">
+        <h3>Évolution de l'Activité des Utilisateurs</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📊</div>
+            <p>Visualisation de l'activité des utilisateurs au fil du temps</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphiques secondaires -->
+      <div class="chart-card">
+        <h3>Taux d'Engagement</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📈</div>
+            <p>Évolution du taux d'engagement des utilisateurs</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Segmentation des Utilisateurs</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">👥</div>
+            <p>Répartition des utilisateurs par segments</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Sessions Moyennes</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">⏱️</div>
+            <p>Nombre moyen de sessions par utilisateur</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des utilisateurs actifs -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Utilisateurs les Plus Actifs</h3>
+        <div class="table-info">
+          Affichage de {{ getFilteredActiveUsers().length }} utilisateur(s)
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Utilisateur</th>
+              <th>Email</th>
+              <th>Emprunts</th>
+              <th>Dernière Activité</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of getFilteredActiveUsers()" class="user-row">
+              <td class="user-name">
+                <div class="user-avatar">
+                  {{ user.userName?.charAt(0) || 'U' }}
+                </div>
+                <div class="user-details">
+                  <strong>{{ user.userName || 'Utilisateur' }}</strong>
+                </div>
+              </td>
+              <td class="user-email">
+                {{ user.email || 'email@example.com' }}
+              </td>
+              <td class="loan-count">
+                {{ user.loanCount || 0 }}
+                <div class="activity-level">
+                  <span class="level-dot" [class]="getActivityLevelClass(user.loanCount || 0)"></span>
+                  {{ getActivityLevel(user.loanCount || 0) }}
+                </div>
+              </td>
+              <td class="last-activity">
+                {{ formatLastActivity(user.lastActivity) }}
+              </td>
+              <td class="user-status">
+                <span class="status-badge" [class]="getUserStatusClass(user.lastActivity)">
+                  {{ getUserStatus(user.lastActivity) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Message si aucune donnée -->
+        <div *ngIf="getFilteredActiveUsers().length === 0" class="no-data">
+          <div class="no-data-icon">👤</div>
+          <p>Aucun utilisateur trouvé</p>
+          <small>Essayez de modifier vos critères de filtrage</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyse des segments -->
+    <div class="segments-section" *ngIf="userSegments.length > 0">
+      <h3>Analyse des Segments d'Utilisateurs</h3>
+      <div class="segments-grid">
+        <div *ngFor="let segment of userSegments" class="segment-card">
+          <div class="segment-header">
+            <h4>{{ segment.segment }}</h4>
+            <span class="segment-trend" [class]="getTrendColor(segment.trend)">
+              {{ getTrendIcon(segment.trend) }}
+            </span>
+          </div>
+          <div class="segment-content">
+            <div class="segment-count">{{ segment.count }} utilisateurs</div>
+            <div class="segment-percentage">{{ segment.percentage }}%</div>
+            <div class="segment-progress">
+              <div class="progress-bar">
+                <div 
+                  class="progress-fill" 
+                  [style.width.%]="segment.percentage"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicateurs de performance -->
+    <div class="performance-section" *ngIf="userActivity.length > 0">
+      <h3>Indicateurs de Performance</h3>
+      <div class="performance-cards">
+        <div class="performance-card">
+          <div class="performance-icon">🔄</div>
+          <div class="performance-content">
+            <div class="performance-value">{{ getRetentionRate() | number:'1.1-1' }}%</div>
+            <div class="performance-label">Taux de Rétention</div>
+            <div class="performance-detail">
+              Utilisateurs qui reviennent régulièrement
+            </div>
+          </div>
+        </div>
+
+        <div class="performance-card">
+          <div class="performance-icon">📈</div>
+          <div class="performance-content">
+            <div class="performance-value">{{ getGrowthRate() | number:'1.1-1' }}%</div>
+            <div class="performance-label">Taux de Croissance</div>
+            <div class="performance-detail">
+              Évolution de la base utilisateurs
+            </div>
+          </div>
+        </div>
+
+        <div class="performance-card">
+          <div class="performance-icon">⏱️</div>
+          <div class="performance-content">
+            <div class="performance-value">{{ getAverageEngagement() | number:'1.1-1' }}%</div>
+            <div class="performance-label">Engagement Moyen</div>
+            <div class="performance-detail">
+              Niveau d'engagement global
+            </div>
+          </div>
+        </div>
+
+        <div class="performance-card">
+          <div class="performance-icon">📚</div>
+          <div class="performance-content">
+            <div class="performance-value">{{ getAverageSessions() | number:'1.1-1' }}</div>
+            <div class="performance-label">Sessions Moyennes</div>
+            <div class="performance-detail">
+              Par utilisateur actif
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommandations -->
+    <div class="recommendations-section" *ngIf="userActivity.length > 0">
+      <h3>Recommandations</h3>
+      <div class="recommendations-grid">
+        <div class="recommendation-card">
+          <div class="recommendation-icon">🎯</div>
+          <div class="recommendation-content">
+            <h4>Fidélisation</h4>
+            <p>
+              Avec un taux de rétention de {{ getRetentionRate() | number:'1.1-1' }}%, 
+              {{ getRetentionRate() > 70 ? 'excellent travail de fidélisation' : getRetentionRate() > 50 ? 'bonne fidélisation à améliorer' : 'nécessite des actions de fidélisation' }}.
+            </p>
+          </div>
+        </div>
+
+        <div class="recommendation-card">
+          <div class="recommendation-icon">🚀</div>
+          <div class="recommendation-content">
+            <h4>Croissance</h4>
+            <p>
+              Taux de croissance de {{ getGrowthRate() | number:'1.1-1' }}%, 
+              {{ getGrowthRate() > 10 ? 'très bonne croissance' : getGrowthRate() > 0 ? 'croissance positive' : 'stagnation à surveiller' }}.
+            </p>
+          </div>
+        </div>
+
+        <div class="recommendation-card">
+          <div class="recommendation-icon">💡</div>
+          <div class="recommendation-content">
+            <h4>Engagement</h4>
+            <p>
+              Engagement moyen de {{ getAverageEngagement() | number:'1.1-1' }}%, 
+              {{ getAverageEngagement() > 80 ? 'excellent niveau d\'engagement' : getAverageEngagement() > 60 ? 'bon engagement' : 'opportunité d\'amélioration' }}.
+            </p>
+          </div>
+        </div>
+
+        <div class="recommendation-card">
+          <div class="recommendation-icon">📊</div>
+          <div class="recommendation-content">
+            <h4>Optimisation</h4>
+            <p>
+              {{ getAverageSessions() | number:'1.1-1' }} sessions moyennes par utilisateur, 
+              {{ getAverageSessions() > 3 ? 'très bonne fréquence d\'utilisation' : getAverageSessions() > 1 ? 'fréquence acceptable' : 'opportunité d\'augmenter l\'utilisation' }}.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

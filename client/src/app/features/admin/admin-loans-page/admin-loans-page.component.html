@@ -1,4 +1,193 @@
 <div class="admin-loans-page">
-  <h1>Gestion des Emprunts - Administration</h1>
-  <p>Page de gestion des emprunts administrateur - À implémenter</p>
+  <div class="page-header">
+    <h1>Gestion des Emprunts</h1>
+    <p>Gérez tous les emprunts de la bibliothèque</p>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="search-filter">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        placeholder="Rechercher par livre, utilisateur ou ID..."
+        class="search-input"
+      />
+    </div>
+    
+    <div class="status-filter">
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="onStatusFilterChange()"
+        class="status-select"
+      >
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading-section">
+    <div class="loading-spinner"></div>
+    <p>Chargement des emprunts...</p>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error && !loading" class="error-section">
+    <div class="error-message">
+      {{ error }}
+    </div>
+    <button (click)="loadLoans()" class="retry-button">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des emprunts -->
+  <div *ngIf="!loading && !error" class="loans-section">
+    <div class="loans-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ filteredLoans.length }}</span>
+        <span class="stat-label">Emprunts trouvés</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getActiveLoansCount() }}</span>
+        <span class="stat-label">Emprunts actifs</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getOverdueLoansCount() }}</span>
+        <span class="stat-label">Emprunts en retard</span>
+      </div>
+    </div>
+
+    <div class="loans-table-container">
+      <table class="loans-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Livre</th>
+            <th>Utilisateur</th>
+            <th>Date d'emprunt</th>
+            <th>Date de retour prévue</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let loan of paginatedLoans" [class.overdue]="getLoanStatusBadge(loan) === 'overdue'">
+            <td class="loan-id">{{ loan.id }}</td>
+            <td class="book-title">{{ loan.bookTitle }}</td>
+            <td class="user-name">{{ loan.userName }}</td>
+            <td class="borrow-date">{{ loan.borrowDate | date:'dd/MM/yyyy' }}</td>
+            <td class="due-date">{{ loan.dueDate | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <span [class]="'status-badge ' + getLoanStatusBadge(loan)">
+                {{ getLoanStatusLabel(loan) }}
+              </span>
+            </td>
+            <td class="actions">
+              <button
+                *ngIf="getLoanStatusBadge(loan) !== 'returned'"
+                (click)="openReturnModal(loan)"
+                class="action-button return-button"
+                title="Marquer comme retourné"
+              >
+                Retour
+              </button>
+              <button
+                *ngIf="getLoanStatusBadge(loan) === 'overdue'"
+                (click)="sendOverdueNotification(loan)"
+                class="action-button notify-button"
+                title="Envoyer notification de retard"
+              >
+                Notifier
+              </button>
+              <button
+                (click)="openNotificationModal(loan)"
+                class="action-button message-button"
+                title="Envoyer un message"
+              >
+                Message
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Aucun résultat -->
+      <div *ngIf="filteredLoans.length === 0" class="no-results">
+        <p>Aucun emprunt trouvé avec les critères de recherche actuels.</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-paginator
+      *ngIf="filteredLoans.length > 0"
+      [currentPage]="currentPage"
+      [pageSize]="itemsPerPage"
+      [totalPages]="totalPages"
+      [totalCount]="totalItems"
+      (pageChange)="onPageChange($event)"
+    ></app-paginator>
+  </div>
+
+  <!-- Modal de retour -->
+  <div *ngIf="showReturnModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirmer le retour</h3>
+        <button (click)="closeReturnModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir marquer cet emprunt comme retourné ?</p>
+        <div *ngIf="selectedLoan" class="loan-info">
+          <p><strong>Livre :</strong> {{ selectedLoan.bookTitle }}</p>
+          <p><strong>Utilisateur :</strong> {{ selectedLoan.userName }}</p>
+          <p><strong>Date d'emprunt :</strong> {{ selectedLoan.borrowDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeReturnModal()" class="cancel-button">Annuler</button>
+        <button (click)="confirmReturn()" class="confirm-button">Confirmer le retour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de notification -->
+  <div *ngIf="showNotificationModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Envoyer une notification</h3>
+        <button (click)="closeNotificationModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedLoan" class="loan-info">
+          <p><strong>Destinataire :</strong> {{ selectedLoan.userName }}</p>
+          <p><strong>Livre :</strong> {{ selectedLoan.bookTitle }}</p>
+        </div>
+        <div class="notification-form">
+          <label for="notificationMessage">Message :</label>
+          <textarea
+            id="notificationMessage"
+            [(ngModel)]="notificationMessage"
+            rows="4"
+            placeholder="Saisissez votre message..."
+            class="message-textarea"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeNotificationModal()" class="cancel-button">Annuler</button>
+        <button 
+          (click)="sendNotification()" 
+          class="confirm-button"
+          [disabled]="!notificationMessage.trim()"
+        >
+          Envoyer
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

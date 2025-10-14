@@ -1,1 +1,146 @@
-<p>book-list works!</p>
+<div class="book-list-page">
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <h1 class="page-title">📚 Catalogue des Livres</h1>
+    <p class="page-description">
+      Explorez notre collection complète de livres. Utilisez les filtres pour affiner votre recherche.
+    </p>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="search-section">
+    <app-book-search (search)="onSearch($event)"></app-book-search>
+  </div>
+
+  <!-- Filtres et contrôles -->
+  <div class="controls-section">
+    <div class="filters-row">
+      <!-- Filtre par catégorie -->
+      <div class="filter-group">
+        <label for="categoryFilter" class="filter-label">Catégorie :</label>
+        <select
+          id="categoryFilter"
+          [(ngModel)]="selectedCategory"
+          (change)="onCategoryChange()"
+          class="filter-select"
+        >
+          <option value="all">Toutes les catégories</option>
+          <option *ngFor="let category of categories" [value]="category">
+            {{ category }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtre par disponibilité -->
+      <div class="filter-group">
+        <label for="availabilityFilter" class="filter-label">Disponibilité :</label>
+        <select
+          id="availabilityFilter"
+          [(ngModel)]="availabilityFilter"
+          (change)="onAvailabilityChange()"
+          class="filter-select"
+        >
+          <option value="all">Tous</option>
+          <option value="available">Disponible</option>
+          <option value="unavailable">Indisponible</option>
+        </select>
+      </div>
+
+      <!-- Tri -->
+      <div class="filter-group">
+        <label for="sortFilter" class="filter-label">Trier par :</label>
+        <select
+          id="sortFilter"
+          [(ngModel)]="sortBy"
+          (change)="onSortChange()"
+          class="filter-select"
+        >
+          <option value="title">Titre</option>
+          <option value="author">Auteur</option>
+          <option value="publicationDate">Date de publication</option>
+          <option value="category">Catégorie</option>
+        </select>
+        
+        <button
+          (click)="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; onSortChange()"
+          class="sort-order-btn"
+          [class.desc]="sortOrder === 'desc'"
+        >
+          {{ sortOrder === 'asc' ? '↑' : '↓' }}
+        </button>
+      </div>
+
+      <!-- Résultats -->
+      <div class="results-info">
+        <span class="results-count">
+          {{ totalItems }} livre{{ totalItems !== 1 ? 's' : '' }} trouvé{{ totalItems !== 1 ? 's' : '' }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicateurs de chargement et d'erreur -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Chargement des livres...</p>
+  </div>
+
+  <div *ngIf="hasError && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>Erreur lors du chargement des livres. Veuillez réessayer.</p>
+    <button (click)="loadBooks()" class="retry-button">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Grille de livres -->
+  <div *ngIf="!isLoading && !hasError" class="books-content">
+    <app-book-grid [books]="filteredBooks"></app-book-grid>
+
+    <!-- Pagination -->
+    <div *ngIf="totalPages > 1" class="pagination-section">
+      <div class="pagination-controls">
+        <button
+          (click)="onPageChange(currentPage - 1)"
+          [disabled]="currentPage === 1"
+          class="pagination-btn"
+        >
+          ← Précédent
+        </button>
+
+        <div class="page-numbers">
+          <span *ngFor="let page of getPageNumbers()"
+                class="page-number"
+                [class.active]="page === currentPage"
+                (click)="onPageChange(page)">
+            {{ page }}
+          </span>
+        </div>
+
+        <button
+          (click)="onPageChange(currentPage + 1)"
+          [disabled]="currentPage === totalPages"
+          class="pagination-btn"
+        >
+          Suivant →
+        </button>
+      </div>
+
+      <div class="pagination-info">
+        Page {{ currentPage }} sur {{ totalPages }}
+        ({{ itemsPerPage }} livres par page)
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun résultat -->
+  <div *ngIf="!isLoading && !hasError && filteredBooks.length === 0" class="no-results">
+    <div class="no-results-icon">🔍</div>
+    <h3>Aucun livre trouvé</h3>
+    <p>Essayez de modifier vos critères de recherche ou vos filtres.</p>
+    <button (click)="searchQuery = ''; selectedCategory = 'all'; availabilityFilter = 'all'; loadBooks()"
+            class="clear-filters-btn">
+      Effacer tous les filtres
+    </button>
+  </div>
+</div>

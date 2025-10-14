@@ -1,14 +1,221 @@
 <div class="analytics-dashboard-page">
-  <h1>Dashboard Analytique</h1>
-  <p>Page de tableau de bord analytique - À implémenter</p>
-  <div class="dashboard-content">
-    <div class="kpi-section">
-      <h2>Indicateurs Clés de Performance</h2>
-      <!-- KPIs à implémenter -->
+  <!-- En-tête du dashboard -->
+  <div class="dashboard-header">
+    <h1>Dashboard Analytique</h1>
+    <p>Visualisez les performances et les tendances de votre bibliothèque</p>
+    
+    <!-- Contrôles de filtrage -->
+    <div class="filter-controls">
+      <div class="period-selector">
+        <label for="periodFilter">Période :</label>
+        <select 
+          id="periodFilter" 
+          [(ngModel)]="periodFilter" 
+          (change)="onPeriodFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of periodOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Dates personnalisées -->
+      <div *ngIf="periodFilter === 'custom'" class="custom-dates">
+        <div class="date-input">
+          <label for="startDate">Du :</label>
+          <input 
+            type="date" 
+            id="startDate" 
+            [(ngModel)]="startDate" 
+            (change)="onCustomDateChange()"
+            class="form-input"
+          >
+        </div>
+        <div class="date-input">
+          <label for="endDate">Au :</label>
+          <input 
+            type="date" 
+            id="endDate" 
+            [(ngModel)]="endDate" 
+            (change)="onCustomDateChange()"
+            class="form-input"
+          >
+        </div>
+      </div>
+
+      <!-- Bouton d'export -->
+      <button 
+        class="export-btn" 
+        (click)="exportReport()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">📊 Exporter le rapport</span>
+        <span *ngIf="loading">Export en cours...</span>
+      </button>
     </div>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des données analytiques...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadDashboardData()">Réessayer</button>
+  </div>
+
+  <!-- Dashboard principal -->
+  <div *ngIf="!loading && !error" class="dashboard-content">
+    <!-- Indicateurs clés -->
+    <div class="key-metrics">
+      <div class="metric-card">
+        <div class="metric-value">{{ getTotalLoans() }}</div>
+        <div class="metric-label">Total Emprunts</div>
+        <div class="metric-trend" [class.positive]="getLoanIncrease() > 0">
+          {{ getLoanIncrease() > 0 ? '+' : '' }}{{ getLoanIncrease() }}%
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-value">{{ getActiveLoans() }}</div>
+        <div class="metric-label">Emprunts Actifs</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-value">{{ getOverdueLoans() }}</div>
+        <div class="metric-label">Retards</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-value">{{ getTotalUsers() }}</div>
+        <div class="metric-label">Utilisateurs</div>
+        <div class="metric-trend" [class.positive]="getUserGrowth() > 0">
+          {{ getUserGrowth() > 0 ? '+' : '' }}{{ getUserGrowth() }}%
+        </div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-value">{{ getActiveUsers() }}</div>
+        <div class="metric-label">Utilisateurs Actifs</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-value">{{ getPopularCategory() }}</div>
+        <div class="metric-label">Catégorie Populaire</div>
+      </div>
+    </div>
+
+    <!-- Graphiques et visualisations -->
     <div class="charts-section">
-      <h2>Graphiques et Tendances</h2>
-      <!-- Graphiques à implémenter -->
+      <!-- Tendances des emprunts -->
+      <div class="chart-card">
+        <h3>Tendances des Emprunts</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📊</div>
+            <p>Visualisation des tendances d'emprunt</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Distribution des catégories -->
+      <div class="chart-card">
+        <h3>Distribution par Catégorie</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📈</div>
+            <p>Répartition des emprunts par catégorie</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activité des utilisateurs -->
+      <div class="chart-card">
+        <h3>Activité des Utilisateurs</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">👥</div>
+            <p>Analyse de l'activité des utilisateurs</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion des réservations -->
+      <div class="chart-card">
+        <h3>Conversion des Réservations</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">🔄</div>
+            <p>Taux de conversion des réservations</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Tableaux détaillés -->
+    <div class="tables-section">
+      <!-- Livres les plus empruntés -->
+      <div class="table-card" *ngIf="statisticsData?.topBooks?.length">
+        <h3>Livres les Plus Empruntés</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Livre</th>
+                <th>Auteur</th>
+                <th>Emprunts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let book of statisticsData.topBooks">
+                <td>{{ book.title }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.borrowCount }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Catégories populaires -->
+      <div class="table-card" *ngIf="statisticsData?.popularCategories?.length">
+        <h3>Catégories Populaires</h3>
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Catégorie</th>
+                <th>Emprunts</th>
+                <th>Part</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let category of statisticsData.popularCategories">
+                <td>{{ category.category }}</td>
+                <td>{{ category.borrowCount }}</td>
+                <td>{{ category.percentage }}%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Utilisation du composant AnalyticsDashboard réutilisable -->
+    <app-analytics-dashboard
+      [overview]="overviewData"
+      [popularCategories]="statisticsData?.popularCategories || []"
+      [topBooks]="statisticsData?.topBooks || []"
+      [loading]="loading"
+    ></app-analytics-dashboard>
   </div>
 </div>

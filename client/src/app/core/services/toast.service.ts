@@ -39,8 +39,13 @@ export class ToastService {
     const id = ++this.idCounter;
     const toast: Toast = { id, message, type, duration };
 
+    console.log('ToastService: Adding toast:', toast);
+    console.log('ToastService: Current toasts before:', this.toastsSubject.value);
+
     // Ajouter le toast
     this.toastsSubject.next([...this.toastsSubject.value, toast]);
+
+    console.log('ToastService: Current toasts after:', this.toastsSubject.value);
 
     // Supprimer automatiquement après `duration`
     setTimeout(() => {

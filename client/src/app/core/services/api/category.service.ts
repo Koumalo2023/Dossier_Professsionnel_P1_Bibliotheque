@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { 
-  Category,
-  CreateCategoryRequest,
-  UpdateCategoryRequest 
-} from '../../models/books/book.model';
-
+import { Category, CreateCategoryRequest, UpdateCategoryRequest } from '../../models/book.model';
+ 
 @Injectable({
   providedIn: 'root'
 })

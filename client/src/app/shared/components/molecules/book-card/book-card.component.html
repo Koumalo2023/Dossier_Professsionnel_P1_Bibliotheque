@@ -45,24 +45,89 @@
     <!-- Actions -->
     @if (showActions && !loading) {
       <div class="book-card__actions">
-        @if (book.available) {
-          <app-button
-            variant="primary"
-            size="small"
-            (clicked)="onBorrow()"
-            iconLeft="fa-book-open"
-          >
-            Emprunter
-          </app-button>
-        } @else {
-          <app-button
-            variant="outline"
-            size="small"
-            (clicked)="onReserve()"
-            iconLeft="fa-calendar-plus"
-          >
-            Réserver
-          </app-button>
+        
+        <!-- Actions Admin/Manager -->
+        @if (showAdminActions) {
+          <div class="book-card__admin-actions">
+            <app-button
+              variant="primary"
+              size="small"
+              (clicked)="onEdit()"
+              iconLeft="fa-edit"
+            >
+              <app-icon name="fa-edit" size="sm"></app-icon>
+              Modifier
+            </app-button>
+            <app-button
+              variant="outline"
+              size="small"
+              (clicked)="onViewDetails()"
+              iconLeft="fa-eye"
+            >
+              <app-icon name="fa-eye" size="sm"></app-icon>
+              Détails
+            </app-button>
+            <app-button
+              variant="danger"
+              size="small"
+              (clicked)="onDelete()"
+              iconLeft="fa-trash"
+            >
+              <app-icon name="fa-trash" size="sm"></app-icon>
+              Supprimer
+            </app-button>
+          </div>
+        }
+
+        <!-- Actions Utilisateur Simple -->
+        @if (showUserActions) {
+          <div class="book-card__user-actions">
+            @if (book.available) {
+              <app-button
+                variant="primary"
+                size="small"
+                (clicked)="onBorrow()"
+                iconLeft="fa-book-open"
+              >
+                <app-icon name="fa-book-open" size="sm"></app-icon>
+                Emprunter
+              </app-button>
+            } @else {
+              <app-button
+                variant="outline"
+                size="small"
+                (clicked)="onReserve()"
+                iconLeft="fa-calendar-plus"
+              >
+                <app-icon name="fa-calendar-plus" size="sm"></app-icon>
+                Réserver
+              </app-button>
+            }
+            <app-button
+              variant="outline"
+              size="small"
+              (clicked)="onViewDetails()"
+              iconLeft="fa-eye"
+            >
+              <app-icon name="fa-eye" size="sm"></app-icon>
+              Détails
+            </app-button>
+          </div>
+        }
+
+        <!-- Actions pour utilisateurs non connectés -->
+        @if (showActions && !isLoggedIn && !isAdminOrManager) {
+          <div class="book-card__guest-actions">
+            <app-button
+              variant="outline"
+              size="small"
+              (clicked)="onViewDetails()"
+              iconLeft="fa-eye"
+            >
+              <app-icon name="fa-eye" size="sm"></app-icon>
+              Détails
+            </app-button>
+          </div>
         }
       </div>
     }

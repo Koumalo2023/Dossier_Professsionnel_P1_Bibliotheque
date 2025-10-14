@@ -5,6 +5,7 @@ import { AdminLoansPageComponent } from './admin-loans-page/admin-loans-page.com
 import { AdminReservationManagementPageComponent } from './admin-reservation-management-page/admin-reservation-management-page.component';
 import { AdminNotificationManagementPageComponent } from './admin-notification-management-page/admin-notification-management-page.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
+import { BookEditComponent } from '../books/book-edit/book-edit.component';
 
 export const adminRoutes: Routes = [
   {
@@ -14,6 +15,8 @@ export const adminRoutes: Routes = [
       { path: '', component: AdminDashboardPageComponent },
       { path: 'books', component: AdminBookManagementPageComponent },
       { path: 'loans', component: AdminLoansPageComponent },
+      { path: 'book-edit', component: BookEditComponent },
+      { path: 'book-edit/:id', component: BookEditComponent },
       { path: 'reservations', component: AdminReservationManagementPageComponent },
       { path: 'notifications', component: AdminNotificationManagementPageComponent }
     ]

@@ -1,0 +1,223 @@
+<div class="reservation-statistics-page">
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <h1 class="page-title">📊 Statistiques des Réservations</h1>
+    <p class="page-description">
+      Analysez les tendances et performances des réservations de livres
+    </p>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="periodFilter" class="filter-label">Période :</label>
+      <select 
+        id="periodFilter" 
+        [(ngModel)]="selectedPeriod" 
+        (change)="onPeriodChange()"
+        class="filter-select"
+      >
+        <option value="7days">7 derniers jours</option>
+        <option value="30days">30 derniers jours</option>
+        <option value="90days">90 derniers jours</option>
+        <option value="year">Cette année</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="categoryFilter" class="filter-label">Catégorie :</label>
+      <select 
+        id="categoryFilter" 
+        [(ngModel)]="selectedCategory" 
+        (change)="onCategoryChange()"
+        class="filter-select"
+      >
+        <option value="all">Toutes les catégories</option>
+        <option value="fiction">Fiction</option>
+        <option value="science-fiction">Science-Fiction</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="philosophie">Philosophie</option>
+        <option value="histoire">Histoire</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Indicateurs de chargement et d'erreur -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Chargement des statistiques des réservations...</p>
+  </div>
+
+  <div *ngIf="hasError && !isLoading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>Erreur lors du chargement des statistiques. Veuillez réessayer.</p>
+    <button (click)="loadReservationStatistics()" class="retry-button">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Métriques principales -->
+  <div *ngIf="!isLoading && !hasError" class="metrics-grid">
+    <div class="metric-card">
+      <div class="metric-icon">📚</div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ totalReservations }}</h3>
+        <p class="metric-label">Réservations totales</p>
+        <span class="metric-trend positive">+12%</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">⏳</div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ activeReservations }}</h3>
+        <p class="metric-label">Réservations actives</p>
+        <span class="metric-trend neutral">+5%</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">✅</div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ conversionRate }}%</h3>
+        <p class="metric-label">Taux de conversion</p>
+        <span class="metric-trend positive">+8%</span>
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-icon">⏰</div>
+      <div class="metric-content">
+        <h3 class="metric-value">{{ avgCompletionTime }} jours</h3>
+        <p class="metric-label">Durée moyenne</p>
+        <span class="metric-trend negative">-2%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques détaillées par période -->
+  <div *ngIf="!isLoading && !hasError" class="stats-section">
+    <h2 class="section-title">Statistiques par Période</h2>
+    <div class="stats-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Période</th>
+            <th>Total</th>
+            <th>Actives</th>
+            <th>Complétées</th>
+            <th>Annulées</th>
+            <th>Durée moyenne</th>
+            <th>Taux de conversion</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let stat of reservationStats">
+            <td class="period-cell">{{ stat.period }}</td>
+            <td class="number-cell">{{ stat.totalReservations }}</td>
+            <td class="number-cell">
+              <span class="status-badge active">{{ stat.activeReservations }}</span>
+            </td>
+            <td class="number-cell">
+              <span class="status-badge completed">{{ stat.completedReservations }}</span>
+            </td>
+            <td class="number-cell">
+              <span class="status-badge cancelled">{{ stat.cancelledReservations }}</span>
+            </td>
+            <td class="number-cell">{{ stat.avgReservationDuration }} jours</td>
+            <td class="number-cell">{{ stat.conversionRate }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Livres les plus réservés -->
+  <div *ngIf="!isLoading && !hasError" class="popular-books-section">
+    <h2 class="section-title">📖 Livres les Plus Réservés</h2>
+    <div class="books-grid">
+      <div *ngFor="let book of popularBooks" class="book-card">
+        <div class="book-header">
+          <h3 class="book-title">{{ book.title }}</h3>
+          <span class="reservation-count" [class]="getPopularityColor(book.reservationCount)">
+            {{ book.reservationCount }} réservations
+          </span>
+        </div>
+        <p class="book-author">{{ book.author }}</p>
+        <div class="book-footer">
+          <span class="book-category">{{ book.category }}</span>
+          <span class="trend-indicator">📈</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tendances des réservations -->
+  <div *ngIf="!isLoading && !hasError" class="trends-section">
+    <h2 class="section-title">📈 Tendances des 7 Derniers Jours</h2>
+    <div class="trends-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Nouvelles réservations</th>
+            <th>Complétions</th>
+            <th>Annulations</th>
+            <th>Tendance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trend of reservationTrends">
+            <td class="date-cell">{{ trend.date }}</td>
+            <td class="number-cell">{{ trend.reservations }}</td>
+            <td class="number-cell">{{ trend.completions }}</td>
+            <td class="number-cell">{{ trend.cancellations }}</td>
+            <td class="trend-cell">
+              <span class="trend-indicator" [class.positive]="trend.reservations > 10" 
+                    [class.negative]="trend.reservations <= 10">
+                {{ getTrendIcon(trend.reservations - 10) }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Insights et recommandations -->
+  <div *ngIf="!isLoading && !hasError" class="insights-section">
+    <h2 class="section-title">💡 Insights</h2>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <h3>📊 Performance des Catégories</h3>
+        <ul>
+          <li>Fiction: 35% des réservations totales</li>
+          <li>Science-Fiction: 22% des réservations totales</li>
+          <li>Fantasy: 18% des réservations totales</li>
+          <li>Philosophie: 15% des réservations totales</li>
+          <li>Histoire: 10% des réservations totales</li>
+        </ul>
+      </div>
+
+      <div class="insight-card">
+        <h3>🎯 Opportunités</h3>
+        <ul>
+          <li>Taux d'annulation élevé pour les livres de philosophie (25%)</li>
+          <li>Demande croissante pour les livres de science-fiction</li>
+          <li>Durée de réservation moyenne en baisse de 2%</li>
+          <li>Meilleur taux de conversion pour la fiction (48%)</li>
+        </ul>
+      </div>
+
+      <div class="insight-card">
+        <h3>🚀 Recommandations</h3>
+        <ul>
+          <li>Augmenter le stock des livres de science-fiction</li>
+          <li>Améliorer la promotion des livres de philosophie</li>
+          <li>Créer des collections thématiques basées sur les tendances</li>
+          <li>Optimiser le processus de réservation pour réduire les annulations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

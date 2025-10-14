@@ -1,16 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  AnalyticsOverview,
-  PopularCategory,
-  BorrowTrend,
-  TopBook,
-  ActiveUser,
-  ReservationStats,
-  AuditLog,
-  AnalyticsPeriod
-} from '../../models/analytics/analytics.model';
+import { ActiveUser, AnalyticsOverview, AnalyticsPeriod, AuditLog, BorrowTrend, PopularCategory, ReservationStats, TopBook } from '../../models/analytics.model';
+
 
 @Injectable({
   providedIn: 'root'

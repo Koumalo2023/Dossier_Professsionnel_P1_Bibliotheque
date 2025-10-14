@@ -1,4 +1,319 @@
 <div class="loan-trends-page">
-  <h1>Tendances des Emprunts</h1>
-  <p>Page des tendances des emprunts - À implémenter</p>
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <h1>Tendances des Emprunts</h1>
+    <p>Analyse des tendances et des performances des emprunts au fil du temps</p>
+    
+    <!-- Contrôles de filtrage -->
+    <div class="filter-controls">
+      <!-- Filtre de période -->
+      <div class="filter-group">
+        <label for="periodFilter">Période :</label>
+        <select 
+          id="periodFilter" 
+          [(ngModel)]="periodFilter" 
+          (change)="onPeriodFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of periodOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Type de vue -->
+      <div class="filter-group">
+        <label for="viewType">Vue :</label>
+        <select 
+          id="viewType" 
+          [(ngModel)]="viewType" 
+          (change)="onViewTypeChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of viewOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Projection -->
+      <div class="filter-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="showProjection"
+            class="checkbox-input"
+          >
+          <span class="checkbox-text">Afficher les projections</span>
+        </label>
+      </div>
+
+      <!-- Bouton d'export -->
+      <button 
+        class="export-btn" 
+        (click)="exportTrendsReport()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">📊 Exporter le rapport</span>
+        <span *ngIf="loading">Export en cours...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicateurs clés -->
+  <div class="key-metrics" *ngIf="!loading && !error">
+    <div class="metric-card">
+      <div class="metric-value">{{ getTotalBorrows() }}</div>
+      <div class="metric-label">Total Emprunts</div>
+      <div class="metric-trend" [class]="getTrendColor(comparisonData.change)">
+        {{ getTrendIcon(comparisonData.change) }} {{ comparisonData.change > 0 ? '+' : '' }}{{ comparisonData.change }}
+      </div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getTotalReturns() }}</div>
+      <div class="metric-label">Retours</div>
+      <div class="metric-detail">
+        {{ getCompletionRate() | number:'1.1-1' }}% de taux de retour
+      </div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getTotalOverdue() }}</div>
+      <div class="metric-label">Retards</div>
+      <div class="metric-detail">
+        {{ getOverdueRate() | number:'1.1-1' }}% de taux de retard
+      </div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getAverageDuration() | number:'1.1-1' }}</div>
+      <div class="metric-label">Durée Moyenne (jours)</div>
+      <div class="metric-detail">
+        Période d'emprunt moyenne
+      </div>
+    </div>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des tendances d'emprunt...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadLoanTrends()">Réessayer</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading && !error" class="page-content">
+    <!-- Graphiques principaux -->
+    <div class="charts-section">
+      <!-- Tendances des emprunts et retours -->
+      <div class="chart-card full-width">
+        <h3>Tendances des Emprunts et Retours</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📊</div>
+            <p>Visualisation des tendances d'emprunt et de retour</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graphiques secondaires -->
+      <div class="chart-card">
+        <h3>Évolution des Retards</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📈</div>
+            <p>Analyse des retards d'emprunt</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Durée Moyenne d'Emprunt</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">⏱️</div>
+            <p>Évolution de la durée moyenne</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des tendances détaillées -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Détails des Tendances par Période</h3>
+        <div class="table-info">
+          Affichage de {{ loanTrends.length }} période(s)
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Période</th>
+              <th>Emprunts</th>
+              <th>Retours</th>
+              <th>Retards</th>
+              <th>Durée Moyenne</th>
+              <th>Tendance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trend of loanTrends" class="trend-row">
+              <td class="period">
+                <strong>{{ trend.period }}</strong>
+              </td>
+              <td class="borrow-count">
+                {{ trend.borrowCount }}
+              </td>
+              <td class="return-count">
+                {{ trend.returnCount }}
+                <div class="completion-rate">
+                  {{ (trend.returnCount / trend.borrowCount * 100) | number:'1.1-1' }}%
+                </div>
+              </td>
+              <td class="overdue-count">
+                {{ trend.overdueCount }}
+                <div class="overdue-rate">
+                  {{ (trend.overdueCount / trend.borrowCount * 100) | number:'1.1-1' }}%
+                </div>
+              </td>
+              <td class="average-duration">
+                {{ trend.averageDuration }} jours
+              </td>
+              <td class="trend">
+                <span 
+                  class="trend-indicator" 
+                  [class]="getTrendColor(trend.trend)"
+                  [title]="getTrendLabel(trend.trend)"
+                >
+                  {{ getTrendIcon(trend.trend) }}
+                </span>
+                <span class="trend-value">
+                  {{ trend.trend > 0 ? '+' : '' }}{{ trend.trend }}%
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Message si aucune donnée -->
+        <div *ngIf="loanTrends.length === 0" class="no-data">
+          <div class="no-data-icon">📊</div>
+          <p>Aucune donnée de tendance disponible</p>
+          <small>Essayez de modifier vos critères de filtrage</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analyse comparative -->
+    <div class="comparison-section" *ngIf="loanTrends.length > 0">
+      <h3>Analyse Comparative</h3>
+      <div class="comparison-cards">
+        <div class="comparison-card">
+          <h4>Comparaison avec la Période Précédente</h4>
+          <div class="comparison-content">
+            <div class="comparison-values">
+              <div class="current-value">
+                <div class="value">{{ comparisonData.currentPeriod }}</div>
+                <div class="label">Période actuelle</div>
+              </div>
+              <div class="previous-value">
+                <div class="value">{{ comparisonData.previousPeriod }}</div>
+                <div class="label">Période précédente</div>
+              </div>
+            </div>
+            <div class="comparison-change" [class]="getTrendColor(comparisonData.change)">
+              <span class="change-icon">{{ getTrendIcon(comparisonData.change) }}</span>
+              <span class="change-value">
+                {{ comparisonData.change > 0 ? '+' : '' }}{{ comparisonData.change }} 
+                ({{ comparisonData.changePercentage | number:'1.1-1' }}%)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison-card">
+          <h4>Période de Pointe</h4>
+          <div class="period-info">
+            <div class="period-name">{{ getPeakPeriod() }}</div>
+            <div class="period-detail">
+              {{ getPeakPeriodBorrowCount() }} emprunts
+            </div>
+          </div>
+        </div>
+
+        <div class="comparison-card">
+          <h4>Période la Plus Basse</h4>
+          <div class="period-info">
+            <div class="period-name">{{ getLowestPeriod() }}</div>
+            <div class="period-detail">
+              {{ getLowestPeriodBorrowCount() }} emprunts
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insights et recommandations -->
+    <div class="insights-section" *ngIf="loanTrends.length > 0">
+      <h3>Insights et Recommandations</h3>
+      <div class="insights-grid">
+        <div class="insight-card">
+          <div class="insight-icon">📈</div>
+          <div class="insight-content">
+            <h4>Tendance Générale</h4>
+            <p>
+              {{ getTrendLabel(comparisonData.changePercentage) }} de
+              {{ getAbsoluteChangePercentage() | number:'1.1-1' }}% par rapport à la période précédente.
+            </p>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-icon">⏱️</div>
+          <div class="insight-content">
+            <h4>Performance des Retours</h4>
+            <p>
+              Taux de retour de {{ getCompletionRate() | number:'1.1-1' }}%, 
+              {{ getCompletionRate() > 90 ? 'excellent' : getCompletionRate() > 75 ? 'bon' : 'à améliorer' }}.
+            </p>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-icon">⚠️</div>
+          <div class="insight-content">
+            <h4>Gestion des Retards</h4>
+            <p>
+              Taux de retard de {{ getOverdueRate() | number:'1.1-1' }}%, 
+              {{ getOverdueRate() < 5 ? 'très bon' : getOverdueRate() < 10 ? 'acceptable' : 'nécessite attention' }}.
+            </p>
+          </div>
+        </div>
+
+        <div class="insight-card">
+          <div class="insight-icon">📊</div>
+          <div class="insight-content">
+            <h4>Période Recommandée</h4>
+            <p>
+              Période optimale pour les promotions : {{ getPeakPeriod() }}
+              ({{ getPeakPeriodBorrowCount() }} emprunts).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

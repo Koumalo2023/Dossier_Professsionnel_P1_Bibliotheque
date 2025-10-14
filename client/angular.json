@@ -77,7 +77,8 @@
               "buildTarget": "library-management-client:build:production"
             },
             "development": {
-              "buildTarget": "library-management-client:build:development"
+              "buildTarget": "library-management-client:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

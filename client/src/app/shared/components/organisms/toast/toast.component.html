@@ -1,0 +1,11 @@
+<div class="toast" [class]="'toast--' + toast.type">
+  <div class="toast__icon">
+    <app-icon [name]="getIcon()" [color]="getColor()" size="lg"></app-icon>
+  </div>
+  <div class="toast__content">
+    <app-typography variant="body" weight="medium">{{ toast.message }}</app-typography>
+  </div>
+  <button class="toast__close" (click)="onClose()" aria-label="Fermer">
+    <app-icon name="fa-times" size="sm" color="text-secondary"></app-icon>
+  </button>
+</div>

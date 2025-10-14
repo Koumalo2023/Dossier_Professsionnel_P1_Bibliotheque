@@ -155,7 +155,7 @@ export const apiConfig: ApiConfig = {
 
 // Configuration pour l'environnement de développement
 export const devApiConfig: Partial<ApiConfig> = {
-  baseUrl: 'http://localhost:5265/api',
+  baseUrl: 'https://localhost:7028/api',
   timeout: 30000
 };
 

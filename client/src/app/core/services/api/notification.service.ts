@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { 
-  Notification, 
-  CreateNotificationRequest,
-  UnreadNotificationsResponse 
-} from '../../models/notifications/notification.model';
-import { PaginatedResponse } from '../../models/shared/shared.model';
+import { PaginatedResponse } from '../../models/shared.model';
+import { CreateNotificationRequest, UnreadNotificationsResponse } from '../../models/notification.model';
+
 
 @Injectable({
   providedIn: 'root'

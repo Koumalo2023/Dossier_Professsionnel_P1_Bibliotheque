@@ -1,13 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { 
-  Loan, 
-  CreateLoanRequest, 
-  ExtendLoanRequest, 
-  LoanStats 
-} from '../../models/loans/loan.model';
-import { PaginatedResponse } from '../../models/shared/shared.model';
+import { CreateLoanRequest, ExtendLoanRequest, Loan, LoanStats } from '../../models/loan.model';
+import { PaginatedResponse } from '../../models/shared.model';
+ 
 
 @Injectable({
   providedIn: 'root'

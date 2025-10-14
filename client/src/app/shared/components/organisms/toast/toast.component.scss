@@ -1,0 +1,128 @@
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: white;
+  border-left: 4px solid;
+  max-width: 400px;
+  min-width: 300px;
+  animation: slideIn 0.3s ease-out;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: currentColor;
+    animation: progress linear;
+  }
+
+  &.toast--success {
+    border-color: #10b981;
+    color: #10b981;
+
+    &::before {
+      animation-duration: var(--toast-duration, 4000ms);
+    }
+  }
+
+  &.toast--error {
+    border-color: #ef4444;
+    color: #ef4444;
+
+    &::before {
+      animation-duration: var(--toast-duration, 5000ms);
+    }
+  }
+
+  &.toast--warning {
+    border-color: #f59e0b;
+    color: #f59e0b;
+
+    &::before {
+      animation-duration: var(--toast-duration, 4000ms);
+    }
+  }
+
+  &.toast--info {
+    border-color: #3b82f6;
+    color: #3b82f6;
+
+    &::before {
+      animation-duration: var(--toast-duration, 4000ms);
+    }
+  }
+
+  .toast__icon {
+    flex-shrink: 0;
+  }
+
+  .toast__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .toast__message {
+    margin: 0;
+    color: #1f2937;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .toast__close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f3f4f6;
+      color: #6b7280;
+    }
+  }
+
+  &.toast--exiting {
+    animation: slideOut 0.3s ease-in forwards;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}

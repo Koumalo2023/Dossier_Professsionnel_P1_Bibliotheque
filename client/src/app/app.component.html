@@ -1,2 +1,15 @@
 
+<div class="app-container">
+  <!-- Conteneur principal de l'application -->
   <router-outlet></router-outlet>
+
+  <!-- Conteneur pour les toasts -->
+  <div class="toast-container">
+    @for (toast of toasts; track toast.id) {
+      <app-toast
+        [toast]="toast"
+        (close)="onToastClose($event)">
+      </app-toast>
+    }
+  </div>
+</div>

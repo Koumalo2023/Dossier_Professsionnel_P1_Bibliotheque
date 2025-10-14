@@ -1,21 +1,21 @@
 // Modèles de livres
 
 export interface Book {
-  available: any;
   id: string;
   title: string;
   author: string;
   category: string;
   isbn: string;
-  publicationDate?: string;
+  publicationDate: string;
   coverUrl: string;
   availableCopies: number;
   totalCopies: number;
-  description: string;
-  pageCount?: number;
-  publisher: string;
+  description: string | null;
+  pageCount: number | null;
+  publisher: string | null;
   createdAt: string;
   updatedAt: string;
+  available?: boolean;
 }
 
 export interface CreateBookRequest {
@@ -73,6 +73,7 @@ export interface Category {
   id: string;
   name: string;
   description?: string;
+  icon: string;
   bookCount: number;
   createdAt: string;
   updatedAt: string;

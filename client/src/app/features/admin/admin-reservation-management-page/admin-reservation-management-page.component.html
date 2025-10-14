@@ -1,4 +1,201 @@
-<div class="admin-reservation-management-page">
-  <h1>Gestion des Réservations - Administration</h1>
-  <p>Page de gestion des réservations administrateur - À implémenter</p>
+<div class="admin-reservations-page">
+  <div class="page-header">
+    <h1>Gestion des Réservations</h1>
+    <p>Gérez toutes les réservations de la bibliothèque</p>
+  </div>
+
+  <!-- Filtres et recherche -->
+  <div class="filters-section">
+    <div class="search-filter">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+        placeholder="Rechercher par livre, utilisateur ou ID..."
+        class="search-input"
+      />
+    </div>
+    
+    <div class="status-filter">
+      <select
+        [(ngModel)]="statusFilter"
+        (change)="onStatusFilterChange()"
+        class="status-select"
+      >
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="loading" class="loading-section">
+    <div class="loading-spinner"></div>
+    <p>Chargement des réservations...</p>
+  </div>
+
+  <!-- Erreur -->
+  <div *ngIf="error && !loading" class="error-section">
+    <div class="error-message">
+      {{ error }}
+    </div>
+    <button (click)="loadReservations()" class="retry-button">
+      Réessayer
+    </button>
+  </div>
+
+  <!-- Liste des réservations -->
+  <div *ngIf="!loading && !error" class="reservations-section">
+    <div class="reservations-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ filteredReservations.length }}</span>
+        <span class="stat-label">Réservations trouvées</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getPendingReservationsCount() }}</span>
+        <span class="stat-label">En attente</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getAvailableReservationsCount() }}</span>
+        <span class="stat-label">Disponibles</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ getExpiredReservationsCount() }}</span>
+        <span class="stat-label">Expirées</span>
+      </div>
+    </div>
+
+    <div class="reservations-table-container">
+      <table class="reservations-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Livre</th>
+            <th>Utilisateur</th>
+            <th>Date de réservation</th>
+            <th>Date d'expiration</th>
+            <th>Disponible depuis</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reservation of paginatedReservations" [class.expired]="isReservationExpired(reservation)">
+            <td class="reservation-id">{{ reservation.id }}</td>
+            <td class="book-title">{{ reservation.bookTitle }}</td>
+            <td class="user-name">{{ reservation.userName }}</td>
+            <td class="reservation-date">{{ reservation.reservationDate | date:'dd/MM/yyyy' }}</td>
+            <td class="expiry-date">{{ reservation.expiryDate | date:'dd/MM/yyyy' }}</td>
+            <td class="available-since">
+              {{ reservation.availableSince ? (reservation.availableSince | date:'dd/MM/yyyy') : '-' }}
+            </td>
+            <td>
+              <span [class]="'status-badge ' + getReservationStatusBadge(reservation.status)">
+                {{ getReservationStatusLabel(reservation.status) }}
+              </span>
+            </td>
+            <td class="actions">
+              <button
+                *ngIf="reservation.status !== 'CANCELLED' && reservation.status !== 'EXPIRED'"
+                (click)="openStatusModal(reservation)"
+                class="action-button status-button"
+                title="Modifier le statut"
+              >
+                Statut
+              </button>
+              <button
+                *ngIf="reservation.status !== 'CANCELLED' && reservation.status !== 'EXPIRED'"
+                (click)="openCancelModal(reservation)"
+                class="action-button cancel-button"
+                title="Annuler la réservation"
+              >
+                Annuler
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Aucun résultat -->
+      <div *ngIf="filteredReservations.length === 0" class="no-results">
+        <p>Aucune réservation trouvée avec les critères de recherche actuels.</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <app-paginator
+      *ngIf="filteredReservations.length > 0"
+      [currentPage]="currentPage"
+      [pageSize]="itemsPerPage"
+      [totalPages]="totalPages"
+      [totalCount]="totalItems"
+      (pageChange)="onPageChange($event)"
+    ></app-paginator>
+  </div>
+
+  <!-- Modal de modification de statut -->
+  <div *ngIf="showStatusModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Modifier le statut de la réservation</h3>
+        <button (click)="closeStatusModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="selectedReservation" class="reservation-info">
+          <p><strong>Livre :</strong> {{ selectedReservation.bookTitle }}</p>
+          <p><strong>Utilisateur :</strong> {{ selectedReservation.userName }}</p>
+          <p><strong>Date de réservation :</strong> {{ selectedReservation.reservationDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+        <div class="status-form">
+          <label for="newStatus">Nouveau statut :</label>
+          <select
+            id="newStatus"
+            [(ngModel)]="newStatus"
+            class="status-select"
+          >
+            <option value="PENDING">En attente</option>
+            <option value="AVAILABLE">Disponible</option>
+            <option value="CANCELLED">Annulée</option>
+            <option value="EXPIRED">Expirée</option>
+          </select>
+        </div>
+        <div *ngIf="newStatus === 'AVAILABLE'" class="available-since-field">
+          <label for="availableSince">Disponible depuis :</label>
+          <input
+            type="date"
+            id="availableSince"
+            [(ngModel)]="availableSince"
+            class="date-input"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeStatusModal()" class="cancel-button">Annuler</button>
+        <button (click)="updateStatus()" class="confirm-button">Mettre à jour</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal d'annulation -->
+  <div *ngIf="showCancelModal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Confirmer l'annulation</h3>
+        <button (click)="closeCancelModal()" class="close-button">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Êtes-vous sûr de vouloir annuler cette réservation ?</p>
+        <div *ngIf="selectedReservation" class="reservation-info">
+          <p><strong>Livre :</strong> {{ selectedReservation.bookTitle }}</p>
+          <p><strong>Utilisateur :</strong> {{ selectedReservation.userName }}</p>
+          <p><strong>Date de réservation :</strong> {{ selectedReservation.reservationDate | date:'dd/MM/yyyy' }}</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button (click)="closeCancelModal()" class="cancel-button">Annuler</button>
+        <button (click)="confirmCancel()" class="confirm-button">Confirmer l'annulation</button>
+      </div>
+    </div>
+  </div>
 </div>

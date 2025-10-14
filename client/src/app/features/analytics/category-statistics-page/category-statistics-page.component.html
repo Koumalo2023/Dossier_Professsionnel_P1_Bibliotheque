@@ -1,0 +1,236 @@
+<div class="category-statistics-page">
+  <!-- En-tête de la page -->
+  <div class="page-header">
+    <h1>Statistiques par Catégorie</h1>
+    <p>Analyse détaillée des performances par catégorie de livres</p>
+    
+    <!-- Contrôles de filtrage et de tri -->
+    <div class="filter-controls">
+      <!-- Filtre de période -->
+      <div class="filter-group">
+        <label for="periodFilter">Période :</label>
+        <select 
+          id="periodFilter" 
+          [(ngModel)]="periodFilter" 
+          (change)="onPeriodFilterChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of periodOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Recherche -->
+      <div class="filter-group">
+        <label for="searchTerm">Rechercher :</label>
+        <input 
+          type="text" 
+          id="searchTerm" 
+          [(ngModel)]="searchTerm" 
+          (input)="onSearchChange()"
+          placeholder="Nom de catégorie..."
+          class="form-input"
+        >
+      </div>
+
+      <!-- Tri -->
+      <div class="filter-group">
+        <label for="sortBy">Trier par :</label>
+        <select 
+          id="sortBy" 
+          [(ngModel)]="sortBy" 
+          (change)="onSortChange()"
+          class="form-select"
+        >
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        <button 
+          class="sort-direction-btn"
+          (click)="toggleSortDirection()"
+          [title]="sortDirection === 'asc' ? 'Tri croissant' : 'Tri décroissant'"
+        >
+          {{ sortDirection === 'asc' ? '↑' : '↓' }}
+        </button>
+      </div>
+
+      <!-- Bouton d'export -->
+      <button 
+        class="export-btn" 
+        (click)="exportCategoryReport()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">📊 Exporter le rapport</span>
+        <span *ngIf="loading">Export en cours...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicateurs clés -->
+  <div class="key-metrics" *ngIf="!loading && !error">
+    <div class="metric-card">
+      <div class="metric-value">{{ getTotalBorrows() }}</div>
+      <div class="metric-label">Total Emprunts</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getFilteredStats().length }}</div>
+      <div class="metric-label">Catégories</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getTopCategory() }}</div>
+      <div class="metric-label">Catégorie Populaire</div>
+    </div>
+    
+    <div class="metric-card">
+      <div class="metric-value">{{ getFilteredStats().length > 0 ? (getTotalBorrows() / getFilteredStats().length | number:'1.0-0') : 0 }}</div>
+      <div class="metric-label">Moyenne par Catégorie</div>
+    </div>
+  </div>
+
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement des statistiques par catégorie...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">⚠️</div>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="loadCategoryStats()">Réessayer</button>
+  </div>
+
+  <!-- Contenu principal -->
+  <div *ngIf="!loading && !error" class="page-content">
+    <!-- Graphiques -->
+    <div class="charts-section">
+      <!-- Distribution des catégories -->
+      <div class="chart-card">
+        <h3>Distribution par Catégorie</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📊</div>
+            <p>Répartition des emprunts par catégorie</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tendances d'emprunt -->
+      <div class="chart-card">
+        <h3>Tendances d'Emprunt</h3>
+        <div class="chart-container">
+          <div class="chart-placeholder">
+            <div class="placeholder-icon">📈</div>
+            <p>Comparaison des emprunts par catégorie</p>
+            <small>Fonctionnalité en cours de développement</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des statistiques détaillées -->
+    <div class="table-section">
+      <div class="table-header">
+        <h3>Détails par Catégorie</h3>
+        <div class="table-info">
+          Affichage de {{ getFilteredStats().length }} catégorie(s)
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Catégorie</th>
+              <th>Emprunts</th>
+              <th>Part</th>
+              <th>Durée Moyenne</th>
+              <th>Réservations</th>
+              <th>Tendance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stat of getFilteredStats()" class="category-row">
+              <td class="category-name">
+                <strong>{{ stat.category }}</strong>
+              </td>
+              <td class="borrow-count">
+                {{ stat.borrowCount }}
+              </td>
+              <td class="percentage">
+                <div class="percentage-bar">
+                  <div 
+                    class="percentage-fill" 
+                    [style.width.%]="stat.percentage"
+                  ></div>
+                  <span class="percentage-text">{{ stat.percentage }}%</span>
+                </div>
+              </td>
+              <td class="average-duration">
+                {{ stat.averageLoanDuration }} jours
+              </td>
+              <td class="reservation-count">
+                {{ stat.reservationCount }}
+              </td>
+              <td class="trend">
+                <span 
+                  class="trend-indicator" 
+                  [class]="getTrendColor(stat.trend)"
+                  [title]="stat.trend === 'up' ? 'En hausse' : stat.trend === 'down' ? 'En baisse' : 'Stable'"
+                >
+                  {{ getTrendIcon(stat.trend) }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Message si aucune donnée -->
+        <div *ngIf="getFilteredStats().length === 0" class="no-data">
+          <div class="no-data-icon">📚</div>
+          <p>Aucune catégorie trouvée</p>
+          <small *ngIf="searchTerm">Essayez de modifier vos critères de recherche</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résumé statistique -->
+    <div class="summary-section" *ngIf="getFilteredStats().length > 0">
+      <h3>Résumé Statistique</h3>
+      <div class="summary-cards">
+        <div class="summary-card">
+          <h4>Catégorie la Plus Populaire</h4>
+          <div class="summary-value">{{ getTopCategory() }}</div>
+          <div class="summary-detail">
+            {{ getTopCategoryBorrowCount() }} emprunts
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <h4>Durée Moyenne d'Emprunt</h4>
+          <div class="summary-value">
+            {{ getAverageLoanDuration() | number:'1.1-1' }} jours
+          </div>
+          <div class="summary-detail">
+            Toutes catégories confondues
+          </div>
+        </div>
+        
+        <div class="summary-card">
+          <h4>Taux de Réservation</h4>
+          <div class="summary-value">
+            {{ getReservationRate() | number:'1.1-1' }}%
+          </div>
+          <div class="summary-detail">
+            Réservations / Emprunts totaux
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

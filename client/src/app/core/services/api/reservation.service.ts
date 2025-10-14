@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { 
-  Reservation, 
-  CreateReservationRequest, 
-  UpdateReservationStatusRequest 
-} from '../../models/reservations/reservation.model';
-import { PaginatedResponse } from '../../models/shared/shared.model';
+import { CreateReservationRequest, Reservation, UpdateReservationStatusRequest } from '../../models/reservation.model';
+import { PaginatedResponse } from '../../models/shared.model';
+
 
 @Injectable({
   providedIn: 'root'
