@@ -4,14 +4,55 @@
     <app-heading level="h1" variant="default" class="dashboard-title">
       Tableau de Bord Administrateur
     </app-heading>
-    <app-button 
-      variant="primary" 
+    <app-button
+      variant="primary"
       size="medium"
       (click)="refreshData()"
       [disabled]="loading">
       <i class="fas fa-sync-alt"></i>
       Actualiser
     </app-button>
+  </div>
+
+  <!-- Section Actions Rapides - Barre de navigation secondaire -->
+  <div class="quick-actions-nav">
+    <div class="actions-nav-grid">
+      <app-button
+        variant="primary"
+        size="medium"
+        routerLink="/admin/books"
+        class="nav-action-button">
+        <i class="fas fa-book"></i>
+        Gérer les Livres
+      </app-button>
+
+      <app-button
+        variant="primary"
+        size="medium"
+        routerLink="/admin/users"
+        class="nav-action-button">
+        <i class="fas fa-users"></i>
+        Gérer les Utilisateurs
+      </app-button>
+
+      <app-button
+        variant="primary"
+        size="medium"
+        routerLink="/admin/loans"
+        class="nav-action-button">
+        <i class="fas fa-exchange-alt"></i>
+        Gérer les Emprunts
+      </app-button>
+
+      <app-button
+        variant="primary"
+        size="medium"
+        routerLink="/admin/analytics"
+        class="nav-action-button">
+        <i class="fas fa-chart-bar"></i>
+        Analytics Détaillés
+      </app-button>
+    </div>
   </div>
 
   <!-- Indicateur de chargement -->
@@ -197,48 +238,5 @@
       </div>
     </div>
 
-    <!-- Section Actions Rapides -->
-    <div class="quick-actions-section">
-      <app-heading level="h2" variant="default" class="section-title">
-        Actions Rapides
-      </app-heading>
-      <div class="actions-grid">
-        <app-button 
-          variant="primary" 
-          size="large"
-          routerLink="/admin/books"
-          class="action-button">
-          <i class="fas fa-book"></i>
-          Gérer les Livres
-        </app-button>
-
-        <app-button 
-          variant="primary" 
-          size="large"
-          routerLink="/admin/users"
-          class="action-button">
-          <i class="fas fa-users"></i>
-          Gérer les Utilisateurs
-        </app-button>
-
-        <app-button 
-          variant="primary" 
-          size="large"
-          routerLink="/admin/loans"
-          class="action-button">
-          <i class="fas fa-exchange-alt"></i>
-          Gérer les Emprunts
-        </app-button>
-
-        <app-button 
-          variant="primary" 
-          size="large"
-          routerLink="/admin/analytics"
-          class="action-button">
-          <i class="fas fa-chart-bar"></i>
-          Analytics Détaillés
-        </app-button>
-      </div>
-    </div>
   }
 </div>
