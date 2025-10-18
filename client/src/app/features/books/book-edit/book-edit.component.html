@@ -301,7 +301,7 @@
                     </app-typography>
                     
                     <!-- Catégories -->
-                    @if (book.categories?.length) {
+                    @if (book.categories.length) {
                       <div class="book-edit__result-categories">
                         @for (category of book.categories.slice(0, 3); track category) {
                           <span class="book-edit__result-category">{{ category }}</span>
