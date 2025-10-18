@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiConfigService } from '../../config/api.config';
 import { CreateReservationRequest, Reservation, UpdateReservationStatusRequest } from '../../models/reservation.model';
 import { PaginatedResponse } from '../../models/shared.model';
 
@@ -9,13 +10,15 @@ import { PaginatedResponse } from '../../models/shared.model';
   providedIn: 'root'
 })
 export class ReservationService {
-  private apiUrl = '/api/reservations';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private apiConfig = inject(ApiConfigService);
 
   // Gestion des réservations
   createReservation(reservationRequest: CreateReservationRequest): Observable<Reservation> {
-    return this.http.post<Reservation>(this.apiUrl, reservationRequest);
+    return this.http.post<Reservation>(
+      this.apiConfig.buildReservationsUrl('create'),
+      reservationRequest
+    );
   }
 
   getReservations(filters?: any): Observable<PaginatedResponse<Reservation>> {
@@ -27,30 +30,42 @@ export class ReservationService {
         }
       });
     }
-    return this.http.get<PaginatedResponse<Reservation>>(this.apiUrl, { params });
+    return this.http.get<PaginatedResponse<Reservation>>(
+      this.apiConfig.buildReservationsUrl('base'),
+      { params }
+    );
   }
 
   getReservationById(id: string): Observable<Reservation> {
-    return this.http.get<Reservation>(`${this.apiUrl}/${id}`);
+    return this.http.get<Reservation>(this.apiConfig.buildReservationByIdUrl(id));
   }
 
   cancelReservation(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(
+      `${this.apiConfig.buildReservationByIdUrl(id)}/cancel`
+    );
   }
 
   canReserveBook(bookId: string): Observable<{ canReserve: boolean; reason?: string }> {
-    return this.http.get<{ canReserve: boolean; reason?: string }>(`${this.apiUrl}/can-reserve/${bookId}`);
+    return this.http.get<{ canReserve: boolean; reason?: string }>(
+      `${this.apiConfig.buildReservationsUrl('base')}/can-reserve/${bookId}`
+    );
   }
 
   getExpiredReservations(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(`${this.apiUrl}/expired`);
+    return this.http.get<Reservation[]>(
+      `${this.apiConfig.buildReservationsUrl('base')}/expired`
+    );
   }
 
   getAvailableReservations(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(`${this.apiUrl}/available`);
+    return this.http.get<Reservation[]>(this.apiConfig.buildReservationsUrl('available'));
   }
 
   updateReservationStatus(id: string, statusRequest: UpdateReservationStatusRequest): Observable<Reservation> {
-    return this.http.put<Reservation>(`${this.apiUrl}/${id}/status`, statusRequest);
+    return this.http.put<Reservation>(
+      `${this.apiConfig.buildReservationByIdUrl(id)}/status`,
+      statusRequest
+    );
   }
 }

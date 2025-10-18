@@ -185,6 +185,7 @@ export class BookEditComponent implements OnInit, OnChanges {
       console.log('Category:', this.book.category);
       console.log('CoverUrl:', this.book.coverUrl);
       console.log('PageCount:', this.book.pageCount);
+      console.log('TotalCopies:', this.book.totalCopies);
       
       const patchData: any = {
         title: this.book.title || '',
@@ -194,7 +195,8 @@ export class BookEditComponent implements OnInit, OnChanges {
         publisher: this.book.publisher || '',
         category: this.book.category || '',
         coverUrl: this.book.coverUrl || '',
-        pageCount: this.book.pageCount || null
+        pageCount: this.book.pageCount || null,
+        totalCopies: this.book.totalCopies || 1
       };
 
       // Gestion de la date de publication
@@ -212,11 +214,6 @@ export class BookEditComponent implements OnInit, OnChanges {
         }
       } else {
         patchData.publicationDate = '';
-      }
-
-      // Gestion du nombre d'exemplaires (seulement en mode création)
-      if (!this.isEditMode) {
-        patchData.totalCopies = this.book.totalCopies || 1;
       }
 
       console.log('=== PATCH DATA ===');

@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiConfigService } from '../../config/api.config';
 import { ActiveUser, AnalyticsOverview, AnalyticsPeriod, AuditLog, BorrowTrend, PopularCategory, ReservationStats, TopBook } from '../../models/analytics.model';
 
 
@@ -8,13 +9,12 @@ import { ActiveUser, AnalyticsOverview, AnalyticsPeriod, AuditLog, BorrowTrend, 
   providedIn: 'root'
 })
 export class AnalyticsService {
-  private apiUrl = '/api/analytics';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private apiConfig = inject(ApiConfigService);
 
   // Vue d'ensemble
   getOverview(): Observable<AnalyticsOverview> {
-    return this.http.get<AnalyticsOverview>(`${this.apiUrl}/overview`);
+    return this.http.get<AnalyticsOverview>(this.apiConfig.buildAnalyticsUrl('dashboard'));
   }
 
   // Catégories populaires
@@ -23,7 +23,7 @@ export class AnalyticsService {
     if (period) {
       params = params.set('period', period);
     }
-    return this.http.get<PopularCategory[]>(`${this.apiUrl}/categories/popular`, { params });
+    return this.http.get<PopularCategory[]>(this.apiConfig.buildAnalyticsUrl('popularBooks'), { params });
   }
 
   // Tendances des emprunts
@@ -32,12 +32,12 @@ export class AnalyticsService {
     if (period) {
       params = params.set('period', period);
     }
-    return this.http.get<BorrowTrend[]>(`${this.apiUrl}/trends/borrows`, { params });
+    return this.http.get<BorrowTrend[]>(this.apiConfig.buildAnalyticsUrl('loans'), { params });
   }
 
   // Statistiques des réservations
   getReservationStats(): Observable<ReservationStats> {
-    return this.http.get<ReservationStats>(`${this.apiUrl}/reservations/stats`);
+    return this.http.get<ReservationStats>(`${this.apiConfig.buildAnalyticsUrl('base')}/reservations/stats`);
   }
 
   // Livres les plus empruntés
@@ -46,7 +46,7 @@ export class AnalyticsService {
     if (limit) {
       params = params.set('limit', limit.toString());
     }
-    return this.http.get<TopBook[]>(`${this.apiUrl}/books/top`, { params });
+    return this.http.get<TopBook[]>(this.apiConfig.buildAnalyticsUrl('books'), { params });
   }
 
   // Utilisateurs actifs
@@ -55,7 +55,7 @@ export class AnalyticsService {
     if (limit) {
       params = params.set('limit', limit.toString());
     }
-    return this.http.get<ActiveUser[]>(`${this.apiUrl}/users/active`, { params });
+    return this.http.get<ActiveUser[]>(this.apiConfig.buildAnalyticsUrl('users'), { params });
   }
 
   // Logs d'audit
@@ -68,6 +68,6 @@ export class AnalyticsService {
         }
       });
     }
-    return this.http.get<AuditLog[]>(`${this.apiUrl}/audit/logs`, { params });
+    return this.http.get<AuditLog[]>(`${this.apiConfig.buildAnalyticsUrl('base')}/audit/logs`, { params });
   }
 }

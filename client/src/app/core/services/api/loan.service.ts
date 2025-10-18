@@ -1,17 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateLoanRequest, ExtendLoanRequest, Loan, LoanStats } from '../../models/loan.model';
 import { PaginatedResponse } from '../../models/shared.model';
+import { ApiConfigService } from '../../config/api.config';
  
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoanService {
-  private apiUrl = '/api/loans';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private apiConfig = inject(ApiConfigService);
 
   // Gestion des emprunts
   getLoans(filters?: any): Observable<PaginatedResponse<Loan>> {
@@ -23,42 +23,59 @@ export class LoanService {
         }
       });
     }
-    return this.http.get<PaginatedResponse<Loan>>(this.apiUrl, { params });
+    return this.http.get<PaginatedResponse<Loan>>(
+      this.apiConfig.buildLoansUrl('base'),
+      { params }
+    );
   }
 
   getOverdueLoans(): Observable<Loan[]> {
-    return this.http.get<Loan[]>(`${this.apiUrl}/overdue`);
+    return this.http.get<Loan[]>(this.apiConfig.buildLoansUrl('overdue'));
   }
 
   getUserLoans(userId: string): Observable<Loan[]> {
-    return this.http.get<Loan[]>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<Loan[]>(`${this.apiConfig.buildLoansUrl('userLoans')}/${userId}`);
   }
 
   createLoan(loanRequest: CreateLoanRequest): Observable<Loan> {
-    return this.http.post<Loan>(this.apiUrl, loanRequest);
+    return this.http.post<Loan>(
+      this.apiConfig.buildLoansUrl('borrow'),
+      loanRequest
+    );
   }
 
   getLoanById(id: string): Observable<Loan> {
-    return this.http.get<Loan>(`${this.apiUrl}/${id}`);
+    return this.http.get<Loan>(this.apiConfig.buildLoanByIdUrl(id));
   }
 
   returnLoan(id: string): Observable<Loan> {
-    return this.http.put<Loan>(`${this.apiUrl}/${id}/return`, {});
+    return this.http.put<Loan>(
+      `${this.apiConfig.buildLoanByIdUrl(id)}/return`,
+      {}
+    );
   }
 
   extendLoan(id: string, extendRequest: ExtendLoanRequest): Observable<Loan> {
-    return this.http.put<Loan>(`${this.apiUrl}/${id}/extend`, extendRequest);
+    return this.http.put<Loan>(
+      `${this.apiConfig.buildLoanByIdUrl(id)}/extend`,
+      extendRequest
+    );
   }
 
   notifyOverdueLoan(id: string): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}/notify-overdue`, {});
+    return this.http.put<void>(
+      `${this.apiConfig.buildLoanByIdUrl(id)}/notify-overdue`,
+      {}
+    );
   }
 
   canBorrowBook(bookId: string): Observable<{ canBorrow: boolean; reason?: string }> {
-    return this.http.get<{ canBorrow: boolean; reason?: string }>(`${this.apiUrl}/can-borrow/${bookId}`);
+    return this.http.get<{ canBorrow: boolean; reason?: string }>(
+      `${this.apiConfig.buildLoansUrl('base')}/can-borrow/${bookId}`
+    );
   }
 
   getLoanStats(): Observable<LoanStats> {
-    return this.http.get<LoanStats>(`${this.apiUrl}/stats`);
+    return this.http.get<LoanStats>(`${this.apiConfig.buildLoansUrl('base')}/stats`);
   }
 }

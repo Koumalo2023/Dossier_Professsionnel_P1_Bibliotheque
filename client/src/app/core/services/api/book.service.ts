@@ -32,7 +32,7 @@ export class BookService {
       });
     }
     return this.http.get<PaginatedResponse<Book>>(
-      this.apiConfig.buildBooksUrl('base'), 
+      this.apiConfig.buildBooksUrl('base'),
       { params }
     ).pipe(
       tap(books => {
@@ -61,7 +61,7 @@ export class BookService {
       });
     }
     return this.http.get<PaginatedResponse<Book>>(
-      this.apiConfig.buildBooksUrl('search'), 
+      this.apiConfig.buildBooksUrl('search'),
       { params }
     );
   }
@@ -94,7 +94,7 @@ export class BookService {
 
   createBook(book: CreateBookRequest): Observable<Book> {
     return this.http.post<Book>(
-      this.apiConfig.buildBooksUrl('create'), 
+      this.apiConfig.buildBooksUrl('create'),
       book
     ).pipe(
       tap(newBook => {
@@ -106,7 +106,7 @@ export class BookService {
 
   updateBook(id: string, book: UpdateBookRequest): Observable<Book> {
     return this.http.put<Book>(
-      this.apiConfig.buildBookByIdUrl(id), 
+      this.apiConfig.buildBookByIdUrl(id),
       book
     ).pipe(
       tap(updatedBook => {
@@ -129,7 +129,7 @@ export class BookService {
 
   addBookCopies(id: string, copies: number): Observable<Book> {
     return this.http.post<Book>(
-      `${this.apiConfig.buildBookByIdUrl(id)}/copies`, 
+      `${this.apiConfig.buildBookByIdUrl(id)}/copies`,
       { copies }
     ).pipe(
       tap(updatedBook => {
@@ -141,7 +141,7 @@ export class BookService {
 
   updateBookAvailability(id: string, available: boolean): Observable<Book> {
     return this.http.put<Book>(
-      `${this.apiConfig.buildBookByIdUrl(id)}/availability`, 
+      `${this.apiConfig.buildBookByIdUrl(id)}/availability`,
       { available }
     ).pipe(
       tap(updatedBook => {
@@ -202,7 +202,7 @@ export class BookService {
 
   createCategory(category: CreateCategoryRequest): Observable<Category> {
     return this.http.post<Category>(
-      this.apiConfig.buildBooksUrl('categories'), 
+      this.apiConfig.buildBooksUrl('categories'),
       category
     ).pipe(
       tap(newCategory => {
@@ -213,7 +213,7 @@ export class BookService {
 
   updateCategory(id: string, category: UpdateCategoryRequest): Observable<Category> {
     return this.http.put<Category>(
-      `${this.apiConfig.buildBooksUrl('categories')}/${id}`, 
+      `${this.apiConfig.buildBooksUrl('categories')}/${id}`,
       category
     ).pipe(
       tap(updatedCategory => {

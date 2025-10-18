@@ -16,6 +16,7 @@
       [attr.aria-invalid]="errorMessage ? 'true' : 'false'"
       [class.app-input__field--error]="errorMessage"
       [class.app-input__field--focused]="isFocused"
+      [value]="value"
       (input)="onInputChange($event)"
       (focus)="onFocus()"
       (blur)="onBlur()"

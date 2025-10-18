@@ -78,7 +78,7 @@ export interface ApiConfig {
 
 // Configuration par défaut
 export const apiConfig: ApiConfig = {
-  baseUrl: 'http://localhost:5000/api',
+  baseUrl: '/api',
   endpoints: {
     auth: {
       login: '/auth/login',
@@ -155,19 +155,19 @@ export const apiConfig: ApiConfig = {
 
 // Configuration pour l'environnement de développement
 export const devApiConfig: Partial<ApiConfig> = {
-  baseUrl: 'https://localhost:7028/api',
+  baseUrl: '/api',
   timeout: 30000
 };
 
 // Configuration pour l'environnement de production
 export const prodApiConfig: Partial<ApiConfig> = {
-  baseUrl: 'https://api.bibliotheque-numerique.com/api',
+  baseUrl: '/api',
   timeout: 15000
 };
 
 // Configuration pour l'environnement de staging
 export const stagingApiConfig: Partial<ApiConfig> = {
-  baseUrl: 'https://staging-api.bibliotheque-numerique.com/api',
+  baseUrl: '/api',
   timeout: 20000
 };
 

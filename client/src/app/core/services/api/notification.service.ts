@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ApiConfigService } from '../../config/api.config';
 import { PaginatedResponse } from '../../models/shared.model';
 import { CreateNotificationRequest, UnreadNotificationsResponse } from '../../models/notification.model';
 
@@ -9,9 +10,8 @@ import { CreateNotificationRequest, UnreadNotificationsResponse } from '../../mo
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = '/api/notifications';
-
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+  private apiConfig = inject(ApiConfigService);
 
   // Gestion des notifications
   getNotifications(filters?: any): Observable<PaginatedResponse<Notification>> {
@@ -23,22 +23,36 @@ export class NotificationService {
         }
       });
     }
-    return this.http.get<PaginatedResponse<Notification>>(this.apiUrl, { params });
+    return this.http.get<PaginatedResponse<Notification>>(
+      this.apiConfig.buildNotificationsUrl('userNotifications'),
+      { params }
+    );
   }
 
   markAsRead(id: string): Observable<Notification> {
-    return this.http.put<Notification>(`${this.apiUrl}/${id}/read`, {});
+    return this.http.put<Notification>(
+      `${this.apiConfig.buildNotificationsUrl('base')}/${id}/read`,
+      {}
+    );
   }
 
   markAllAsRead(): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/mark-all-read`, {});
+    return this.http.put<void>(
+      this.apiConfig.buildNotificationsUrl('markAllRead'),
+      {}
+    );
   }
 
   createNotification(notification: CreateNotificationRequest): Observable<Notification> {
-    return this.http.post<Notification>(this.apiUrl, notification);
+    return this.http.post<Notification>(
+      this.apiConfig.buildNotificationsUrl('base'),
+      notification
+    );
   }
 
   getUnreadCount(): Observable<UnreadNotificationsResponse> {
-    return this.http.get<UnreadNotificationsResponse>(`${this.apiUrl}/unread-count`);
+    return this.http.get<UnreadNotificationsResponse>(
+      `${this.apiConfig.buildNotificationsUrl('base')}/unread-count`
+    );
   }
 }
