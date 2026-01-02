@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AnalyticsDashboardComponent } from '../../../shared/components/organisms/analytics-dashboard/analytics-dashboard.component';
-import { ChartComponent } from '../../../../styles/shared/components/organims/chart/chart.component'; 
 import { TypographyComponent } from '../../../shared/components/atoms/typography/typography.component';
 import { ButtonComponent } from '../../../shared/components/atoms/button/button.component';
 import { UserAvatarComponent } from '../../../shared/components/molecules/user-avatar/user-avatar.component';
@@ -33,13 +32,13 @@ interface RecentActivity {
     CommonModule,
     RouterModule,
     AnalyticsDashboardComponent,
-    ChartComponent, 
     TypographyComponent,
     ButtonComponent,
     UserAvatarComponent,
     HeadingComponent
   ],
-  templateUrl: './admin-dashboard-page.component.html'
+  templateUrl: './admin-dashboard-page.component.html',
+  styleUrls: ['./admin-dashboard-page.component.scss']
 })
 export class AdminDashboardPageComponent implements OnInit {
   stats: DashboardStats = {

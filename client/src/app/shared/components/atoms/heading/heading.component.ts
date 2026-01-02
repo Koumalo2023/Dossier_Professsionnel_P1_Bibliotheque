@@ -14,6 +14,6 @@ export type HeadingVariant = 'default' | 'serif'; // serif = Merriweather (livre
 export class HeadingComponent {
   @Input() level: HeadingLevel = 'h2';
   @Input() variant: HeadingVariant = 'default';
-  @Input() color: string = 'text-primary'; // clé de couleur
+  @Input() color: 'text-primary' | 'text-secondary' | 'text-muted' | 'danger' | 'success' | 'warning' | 'info' = 'text-primary';
   @Input() align: 'left' | 'center' | 'right' = 'left';
 }

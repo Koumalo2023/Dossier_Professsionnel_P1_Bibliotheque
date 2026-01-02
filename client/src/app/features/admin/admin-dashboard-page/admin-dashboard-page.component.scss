@@ -1,8 +1,194 @@
-.admin-dashboard-page {
+.admin-dashboard {
   padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
   
-  h1 {
-    margin-bottom: 1rem;
-    color: #333;
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    
+    .dashboard-title {
+      margin: 0;
+      color: #1a1a1a;
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
   }
+  
+  .quick-actions-nav {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    
+    .actions-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    
+    .nav-action-button {
+      width: 100%;
+      justify-content: flex-start;
+      padding: 1rem;
+    }
+  }
+  
+  .loading-container,
+  .error-container {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .error-container {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    color: #721c24;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    
+    .stat-card {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
+      .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.2rem;
+      }
+      
+      .stat-content {
+        .stat-value {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #1a1a1a;
+          margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+          color: #666;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+  
+  .charts-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+    
+    .chart-container {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
+      .section-title {
+        margin-bottom: 1rem;
+        color: #1a1a1a;
+      }
+    }
+  }
+  
+  .activities-section {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      
+      .section-title {
+        margin: 0;
+        color: #1a1a1a;
+      }
+    }
+    
+    .activities-list {
+      .activity-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f0f0f0;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .activity-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          
+          &.activity-success { background: #28a745; }
+          &.activity-warning { background: #ffc107; }
+          &.activity-danger { background: #dc3545; }
+          &.activity-info { background: #17a2b8; }
+        }
+        
+        .activity-content {
+          flex: 1;
+          
+          .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+          }
+          
+          .activity-user {
+            margin-top: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Styles spécifiques pour le composant app-heading dans le contexte du dashboard
+.dashboard-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: #1a1a1a !important;
+}
+
+.section-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #1a1a1a !important;
 }

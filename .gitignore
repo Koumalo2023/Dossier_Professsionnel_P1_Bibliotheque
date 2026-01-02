@@ -29,6 +29,12 @@
 # Fichiers AssemblyInfo
 *AssemblyInfo.cs
 
+
+# ============================================
+# Documentations (à ne pas commiter)
+# ============================================
+documentations/
+
 # Fichiers Source Link
 *.sourceLink.json
 
